@@ -1,9 +1,28 @@
-target/
-.idea/
-*.iml
 .mvn/
 mvnw
 mvnw.cmd
 .DS_Store
-application.yml
+
+# IntelliJ 관련 파일 제외
+.idea/
+*.iml
+
+# Maven/Gradle 빌드 파일 제외
+target/
+build/
+
+# 환경 설정 파일 제외 (보안)
 application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+# 로그 파일 제외
+logs/
+*.log
+
+# IDE 설정 파일 제외
+.vscode/
+
+.env
+

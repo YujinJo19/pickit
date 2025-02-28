@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PickitApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PickitApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PickitApplication.class, args);
+    }
 
 }
