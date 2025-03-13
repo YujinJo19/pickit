@@ -28,9 +28,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+<<<<<<< HEAD
 	implementation ("org.projectlombok:lombok")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+=======
+	compileOnly("org.projectlombok:lombok")
+//	developmentOnly("org.springframework.boot:spring-boot-devtools")
+>>>>>>> 8bcf57a7defa6c723bf1881f3f1147d73f38914c
 	runtimeOnly("com.mysql:mysql-connector-j")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
