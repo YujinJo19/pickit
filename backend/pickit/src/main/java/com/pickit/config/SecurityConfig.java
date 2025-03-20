@@ -1,18 +1,10 @@
 package com.pickit.config;
 
-<<<<<<< HEAD
-import jakarta.persistence.*;
-
-@Entity
-public class SecurityConfig {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-}
-=======
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -23,9 +15,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**").permitAll() // 모든 요청 허용
                 )
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .formLogin(login -> login.disable()); // 로그인 화면 비활성화
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
+                .formLogin(AbstractHttpConfigurer::disable); // 로그인 화면 비활성화
         return http.build();
     }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
->>>>>>> 7c95bd218e0b5a62f76228e374640e6b029cbba8
