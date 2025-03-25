@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Created by https://www.toptal.com/developers/gitignore/api/java,react,git,visualstudiocode,redis,database,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=java,react,git,visualstudiocode,redis,database,windows
-
-### Database ###
+## Database ###
 *.accdb
 *.db
 *.dbf
@@ -118,8 +114,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/java,react,git,visualstudiocode,redis,database,windows
-=======
 .mvn/
 mvnw
 mvnw.cmd
@@ -128,6 +122,7 @@ mvnw.cmd
 # IntelliJ 관련 파일 제외
 .idea/
 *.iml
+*.yml
 
 # Maven/Gradle 빌드 파일 제외
 target/
@@ -148,4 +143,3 @@ logs/
 
 .env
 
->>>>>>> 8bcf57a7defa6c723bf1881f3f1147d73f38914c
