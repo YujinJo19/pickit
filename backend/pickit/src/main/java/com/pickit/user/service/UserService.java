@@ -1,6 +1,7 @@
 package com.pickit.user.service;
 
 import com.pickit.global.common.Role;
+import com.pickit.user.dto.UserResponse;
 import com.pickit.user.entity.User;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface UserService {
     Optional<User> authenticateUser(String email, String password);
 
     // 3. 회원정보 조회
-    Optional<User> getUserById(Long id);
+    Optional<UserResponse> getUserById(Long id);
     Optional<User> getUserByEmail(String email);
 
     // 4. 회원탈퇴

@@ -1,6 +1,7 @@
 package com.pickit.user.service.impl;
 
 import com.pickit.global.common.Role;
+import com.pickit.user.dto.UserResponse;
 import com.pickit.user.entity.User;
 import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.UserService;
@@ -67,8 +68,9 @@ public class UserServiceImpl implements UserService {
 
     // 3. 회원정보 조회
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public Optional<UserResponse> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(User::toResponse);
     }
 
     @Override

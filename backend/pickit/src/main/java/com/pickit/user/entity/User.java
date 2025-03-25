@@ -3,6 +3,7 @@ package com.pickit.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pickit.global.common.BaseEntity;
 import com.pickit.global.common.Role;
+import com.pickit.user.dto.UserResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -51,4 +52,16 @@ public class User extends BaseEntity {
 
     @Column(name = "social_provider")
     private String socialProvider;
+
+    public UserResponse toResponse() {
+        return UserResponse.builder()
+                .id(this.getId())
+                .email(this.getEmail())
+                .name(this.getName())
+                .nickname(this.getNickname())
+                .phoneNumber(this.getPhoneNumber())
+                .profileImageUrl(this.getProfileImageUrl())
+                .role(this.getRole())
+                .build();
+    }
 }
