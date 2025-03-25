@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user") // 테이블 이름을 user로 설정
+@Table(name = "users")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,16 +52,4 @@ public class User extends BaseEntity {
 
     @Column(name = "social_provider")
     private String socialProvider;
-
-    public UserResponse toResponse() {
-        return UserResponse.builder()
-                .id(this.getId())
-                .email(this.getEmail())
-                .name(this.getName())
-                .nickname(this.getNickname())
-                .phoneNumber(this.getPhoneNumber())
-                .profileImageUrl(this.getProfileImageUrl())
-                .role(this.getRole())
-                .build();
-    }
 }

@@ -1,8 +1,11 @@
 package com.pickit.user.service.impl;
 
 import com.pickit.global.common.Role;
+import com.pickit.user.dto.UserProfileUpdateRequest;
 import com.pickit.user.dto.UserResponse;
+import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
+import com.pickit.user.mapper.UserMapper;
 import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     // ID로 유저 조회
     private User getExistingUserById(Long id) {
@@ -31,18 +35,23 @@ public class UserServiceImpl implements UserService {
 
     // 1. 회원가입 (비밀번호 암호화 후 저장)
     @Override
-    public User registerUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            log.warn("회원가입 실패 - 이미 존재하는 이메일: {}", user.getEmail());
+    public User registerUser(UserSignupRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("회원가입 실패 - 이미 존재하는 이메일: {}", request.getEmail());
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        // 기본 role 설정
-        user.setRole(Optional.ofNullable(user.getRole()).orElse(Role.USER));
-
-        User savedUser = userRepository.save(user);
-        log.info("회원가입 성공 - 이메일: {}", savedUser.getEmail());
-        return savedUser;
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .nickname(request.getNickname())
+                .phoneNumber(request.getPhoneNumber())
+                .profileImageUrl(request.getProfileImageUrl())
+                .socialLogin(request.getSocialLogin() != null && request.getSocialLogin())
+                .socialProvider(request.getSocialProvider())
+                .role(request.getRole() != null ? request.getRole() : Role.USER)
+                .build();
+        return userRepository.save(user);
     }
 
     // 2. 로그인 (이메일로 사용자 찾고 비밀번호 확인)
@@ -68,14 +77,17 @@ public class UserServiceImpl implements UserService {
 
     // 3. 회원정보 조회
     @Override
-    public Optional<UserResponse> getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(User::toResponse);
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+        return UserMapper.toResponse(user);
     }
 
     @Override
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+        return UserMapper.toResponse(user);
     }
 
     // 4. 회원탈퇴
@@ -88,14 +100,14 @@ public class UserServiceImpl implements UserService {
 
     // 5. 프로필 수정 (닉네임, 전화번호, 프로필 이미지)
     @Override
-    public User updateUserProfile(Long id, String nickname, String phoneNumber, String profileImageUrl) {
+    public UserResponse updateUserProfile(Long id, UserProfileUpdateRequest request) {
         User user = getExistingUserById(id);
-        user.setNickname(nickname);
-        user.setPhoneNumber(phoneNumber);
-        user.setProfileImageUrl(profileImageUrl);
+
+        UserMapper.updateUserFromRequest(user, request);
+
         User updatedUser = userRepository.save(user);
-        log.info("프로필 수정 완료 - ID: {}", id);
-        return updatedUser;
+
+        return UserMapper.toResponse(updatedUser);
     }
 
     // 6. 역할 변경

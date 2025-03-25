@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // 특정 사용자의 모든 주소 조회
-    List<Address> findByUser(User user);
+    List<Address> findByUserId(Long userId);
 
     // 특정 사용자의 기본 배송지 조회 (isDefault = true)
     Optional<Address> findByUserAndIsDefaultTrue(User user);

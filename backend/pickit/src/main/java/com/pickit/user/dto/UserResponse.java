@@ -1,8 +1,7 @@
 package com.pickit.user.dto;
 
 import com.pickit.global.common.Role;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder

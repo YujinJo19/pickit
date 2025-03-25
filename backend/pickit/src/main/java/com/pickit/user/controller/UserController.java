@@ -1,9 +1,13 @@
 package com.pickit.user.controller;
 
+import com.pickit.global.common.Role;
 import com.pickit.user.dto.LoginRequest;
+import com.pickit.user.dto.UserProfileUpdateRequest;
 import com.pickit.user.dto.UserResponse;
+import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
 import com.pickit.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +22,8 @@ public class UserController {
 
     // 1. 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody User user) {
-        User created = userService.registerUser(user);
+    public ResponseEntity<User> signup(@RequestBody UserSignupRequest request) {
+        User created = userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -28,15 +32,14 @@ public class UserController {
     public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
         return userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword())
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                .orElseThrow(() -> new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다."));
     }
 
     // 3. 회원정보 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        UserResponse userResponse = userService.getUserById(id);
+        return ResponseEntity.ok(userResponse);
     }
 
     // 4. 회원탈퇴
@@ -47,9 +50,19 @@ public class UserController {
     }
 
     // 5. 프로필 수정
-//    @PutMapping("/{id}/profile")
-//    public ResponseEntity<User> updateProfile(
-//
-//    )
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<UserResponse> updateProfile(
+            @PathVariable Long id,
+            @RequestBody UserProfileUpdateRequest request
+    ) {
+        UserResponse updatedUser = userService.updateUserProfile(id, request);
+        return ResponseEntity.ok(updatedUser);
+    }
+
     // 6. 역할 변경
+    @PutMapping("{id}/role")
+    public ResponseEntity<User> updateRole(@PathVariable Long id, @RequestParam Role newRole) {
+        User updated = userService.updateUserRole(id, newRole);
+        return ResponseEntity.ok(updated);
+    }
 }
