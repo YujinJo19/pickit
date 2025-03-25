@@ -1,0 +1,24 @@
+spring:
+  security:
+    user:
+      name: admin   # 기본값 'admin'
+      password: pickit1839  # 기본값 'defaultPass'
+  datasource:
+    url: jdbc:mysql://localhost:3306/pickit
+    username: admin
+    password: cho3852
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update  # 개발 중에는 `update`, 배포 시 `validate`
+      show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+  redis:
+    host: localhost
+    port: 6379
+  # 서버 설정
+  server:
+    port: 8080
