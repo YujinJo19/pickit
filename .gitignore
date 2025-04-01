@@ -143,3 +143,11 @@ logs/
 
 .env
 
+.gradle/
+.idea_modules/
+*.iws
+*.ipr
+*.swp
+*~
+test-output/
+out/
