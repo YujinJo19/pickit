@@ -119,4 +119,10 @@ public class UserServiceImpl implements UserService {
         log.info("역할 변경 완료 - ID: {}, 새로운 역할: {}", id, newRole);
         return updatedUser;
     }
+
+    // 7. 이메일 중복 확인
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }

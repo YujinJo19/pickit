@@ -7,7 +7,6 @@ import com.pickit.user.dto.UserResponse;
 import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
 import com.pickit.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,5 +63,17 @@ public class UserController {
     public ResponseEntity<User> updateRole(@PathVariable Long id, @RequestParam Role newRole) {
         User updated = userService.updateUserRole(id, newRole);
         return ResponseEntity.ok(updated);
+    }
+
+    // 7. 이메일 중복 확인
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmailDuplicate(@RequestParam String email) {
+        boolean isDuplicate = userService.isEmailDuplicate(email);
+        if (isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("이미 가입된 이메일입니다.");
+        } else {
+            return ResponseEntity.ok("사용가능한 이메일입니다.");
+        }
     }
 }
