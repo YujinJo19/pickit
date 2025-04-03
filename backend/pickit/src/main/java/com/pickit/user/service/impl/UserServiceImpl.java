@@ -43,7 +43,9 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
 
-        String verified = redisTemplate.opsForValue().get(request.getEmail());
+        String verifiedKey = "email:verified:" + request.getEmail();
+        String verified = redisTemplate.opsForValue().get(verifiedKey);
+
         if (!"true".equals(verified)) {
             throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
         }
