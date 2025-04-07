@@ -19,7 +19,7 @@ public class EmailServiceImpl implements EmailService {
     private final StringRedisTemplate redisTemplate;
 
     private static final long CODE_EXPIRE_MINUTES = 5;  // 인증번호 유효시간 5분
-    private static final int MAT_ATTEMPTS_PER_DAY = 5;  // 인증 요청 하루 최대 5회 (이메일 당)
+    private static final int MAX_ATTEMPTS_PER_DAY = 5;  // 인증 요청 하루 최대 5회 (이메일 당)
     private static final long ATTEMPT_EXPIRE_HOURS = 24;  // 인증 요청 갱신 시간
 
     @Value("${spring.mail.username}")
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
         String attemptsStr = redisTemplate.opsForValue().get(attemptKey);
         int attempts = attemptsStr != null ? Integer.parseInt(attemptsStr) : 0;
 
-        if (attempts >= MAT_ATTEMPTS_PER_DAY) {
+        if (attempts >= MAX_ATTEMPTS_PER_DAY) {
             throw new RuntimeException("이메일 인증 요청 횟수를 초과하였습니다. 내일 다시 시도해주세요");
         }
 
