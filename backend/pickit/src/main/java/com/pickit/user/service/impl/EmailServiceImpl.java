@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService {
 
     private static final long CODE_EXPIRE_MINUTES = 5;  // 인증번호 유효시간 5분
     private static final int MAT_ATTEMPTS_PER_DAY = 5;  // 인증 요청 하루 최대 5회 (이메일 당)
-    private static final long ATTEMP_EXPIRE_HOURS = 24;  // 인증 요청 갱신 시간
+    private static final long ATTEMPT_EXPIRE_HOURS = 24;  // 인증 요청 갱신 시간
 
     @Value("${spring.mail.username}")
     private String from;
@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         redisTemplate.opsForValue().increment(attemptKey);
-        redisTemplate.expire(attemptKey, ATTEMP_EXPIRE_HOURS, TimeUnit.HOURS);
+        redisTemplate.expire(attemptKey, ATTEMPT_EXPIRE_HOURS, TimeUnit.HOURS);
 
         // redis에 저장
         String redisKey = "email:code:" + toEmail;
@@ -63,9 +63,14 @@ public class EmailServiceImpl implements EmailService {
         String redisCodeKey = "email:code:" + email;
         String savedCode = redisTemplate.opsForValue().get(redisCodeKey);
 
-        // 인증 코드 불일치 또는 없는 경우
-        if (savedCode == null || !savedCode.equals(code)) {
-            return false;
+        // 인증 코드 만료 또는 없는 경우
+        if (savedCode == null) {
+            throw new RuntimeException("인증번호가 존재하지 않거나 만료되었습니다.");
+        }
+
+        // 인증 코드 불일치
+        if (!savedCode.equals(code)) {
+            throw new RuntimeException("인증번호가 일치하지 않습니다.");
         }
 
         // 인증 성공

@@ -31,15 +31,7 @@ public class EmailController {
     // 인증 코드 검증
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
-        try {
-            boolean verified = emailService.verifyCode(email, code);
-            if (verified) {
-                return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        boolean verified = emailService.verifyCode(email, code);
+        return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
     }
 }
