@@ -10,6 +10,7 @@ import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final StringRedisTemplate redisTemplate;
 
     // ID로 유저 조회
     private User getExistingUserById(Long id) {
@@ -40,6 +42,14 @@ public class UserServiceImpl implements UserService {
             log.warn("회원가입 실패 - 이미 존재하는 이메일: {}", request.getEmail());
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
+
+        String verifiedKey = "email:verified:" + request.getEmail();
+        String verified = redisTemplate.opsForValue().get(verifiedKey);
+
+        if (!"true".equals(verified)) {
+            throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
+        }
+
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -118,5 +128,11 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(user);
         log.info("역할 변경 완료 - ID: {}, 새로운 역할: {}", id, newRole);
         return updatedUser;
+    }
+
+    // 7. 이메일 중복 확인
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

@@ -28,4 +28,7 @@ public interface UserService {
 
     // 6. 역할 변경
     User updateUserRole(Long id, Role newRole);
+
+    // 7. 이메일 중복 확인
+    boolean isEmailDuplicate(String email);
 }
