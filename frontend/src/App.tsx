@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { getHelloMessage } from './services/api';
+import { Route, Routes } from 'react-router-dom';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
-  const [message, setMessage] = useState<string>('');
-  console.log({message})
-  useEffect(() => {
-      const fetchMessage = async () => {
-          const data = await getHelloMessage();
-          setMessage(data);
-      };
-
-      fetchMessage();
-  }, []);
-  return (
-    <div>
-        <h1>{message}</h1>
-    </div>
+    
+    return (
+    <>
+        <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+        </Routes>
+    </>
 );
 }
 
