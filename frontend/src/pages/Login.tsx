@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import LoginForm from "../components/auth/LoginForm";
 import { styled, css } from "styled-components";
 import LoginImage from "../assets/images/login.jpg";
@@ -34,13 +34,20 @@ const LoginFormContainer = styled.div`
 `;
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onSubmit= (e: any)=>{
+    e.preventDefault()
+    console.log('email=>', email,'password=>', password)
+  }
   return (
     <LoginPageContainer>
       <LoginImageContainer>
         <img src={LoginImage} width={"100%"} alt="loginImage" />
       </LoginImageContainer>
       <LoginFormContainer>
-        <LoginForm />
+        <LoginForm setEmail={setEmail} setPassword={setPassword} onSubmit={onSubmit} />
       </LoginFormContainer>
     </LoginPageContainer>
   );

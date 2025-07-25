@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 
 interface Props {
   contents: string;
+  onSubmit: React.Dispatch<React.SetStateAction<any>>
 }
 
 const StyledButton = styled.button`
@@ -22,10 +23,10 @@ const StyledButton = styled.button`
   }
 `;
 
-const Button = ({ contents }: Props) => {
+const Button = ({ contents, onSubmit }: Props) => {
   return (
     <div>
-      <StyledButton>{contents}</StyledButton>
+      <StyledButton onSubmit={onSubmit}>{contents}</StyledButton>
     </div>
   );
 };

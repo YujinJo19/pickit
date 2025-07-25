@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled, css } from "styled-components";
 
 interface Props {
   label?: string;
   type?: string;
+  setEmail?: React.Dispatch<React.SetStateAction<string>>
+  setPassword?: React.Dispatch<React.SetStateAction<string>>
 }
 
 interface StyledInputProps {
@@ -54,11 +56,23 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({ label, type }: Props) => {
+const Input = ({ label, type, setEmail,setPassword  }: Props) => {
+  const [text, setText] = useState('');
+
+  const onChange=(e: any)=> {
+    setText(e.target.value)
+    if (setEmail) {
+      setEmail(text)
+    }
+    if (setPassword) {
+      setPassword(text)
+    }
+  }
+
   return (
     <StyledInput type={type}>
       {label && <label>{label}</label>}
-      <input type={type} />
+      <input type={type} onChange={onChange} value={text} />
     </StyledInput>
   );
 };
