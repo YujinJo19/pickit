@@ -11,6 +11,13 @@ function getHeaders() {
     Authorization: token && `Bearer ${token}`,
   };
 }
+export function axiosGet(url: string) {
+  return axiosInstance({
+    method: "GET",
+    url,
+    headers: getHeaders(),
+  });
+}
 
 export function axiosPost(url: string, data: any) {
   return axiosInstance({
@@ -24,14 +31,6 @@ export function axiosPost(url: string, data: any) {
 export function axiosDel(url: string) {
   return axiosInstance({
     method: "DELETE",
-    url,
-    headers: getHeaders(),
-  });
-}
-
-export function axiosGet(url: string) {
-  return axiosInstance({
-    method: "GET",
     url,
     headers: getHeaders(),
   });

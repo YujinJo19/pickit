@@ -4,12 +4,12 @@ import { styled, css } from "styled-components";
 interface Props {
   label?: string;
   type?: string;
-  setEmail?: React.Dispatch<React.SetStateAction<string>>
-  setPassword?: React.Dispatch<React.SetStateAction<string>>
-  setName?: React.Dispatch<React.SetStateAction<string>>,
-  setAuthCode?:React.Dispatch<React.SetStateAction<string>>,
-  setPhoneNumber?:React.Dispatch<React.SetStateAction<string>>,
-  setPassword2?:React.Dispatch<React.SetStateAction<string>>
+  setEmail?: React.Dispatch<React.SetStateAction<string>>;
+  setPassword?: React.Dispatch<React.SetStateAction<string>>;
+  setName?: React.Dispatch<React.SetStateAction<string>>;
+  setAuthCode?: React.Dispatch<React.SetStateAction<string>>;
+  setPhoneNumber?: React.Dispatch<React.SetStateAction<string>>;
+  setPassword2?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface StyledInputProps {
@@ -60,18 +60,28 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({ label, type, setEmail,setPassword, setName, setAuthCode, setPassword2, setPhoneNumber  }: Props) => {
-  const [text, setText] = useState('');
+const Input = ({
+  label,
+  type,
+  setEmail,
+  setPassword,
+  setName,
+  setAuthCode,
+  setPassword2,
+  setPhoneNumber,
+}: Props) => {
+  const [text, setText] = useState("");
 
-  const onChange=(e: any)=> {
-    setText(e.target.value)
+  const onChange = (e: any) => {
+    const value = e.target.value;
+    setText(value);
     if (setEmail) {
-      setEmail(text)
+      setEmail(value);
     }
     if (setPassword) {
-      setPassword(text)
+      setPassword(value);
     }
-  }
+  };
 
   return (
     <StyledInput type={type}>
