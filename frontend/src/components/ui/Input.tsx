@@ -6,6 +6,10 @@ interface Props {
   type?: string;
   setEmail?: React.Dispatch<React.SetStateAction<string>>
   setPassword?: React.Dispatch<React.SetStateAction<string>>
+  setName?: React.Dispatch<React.SetStateAction<string>>,
+  setAuthCode?:React.Dispatch<React.SetStateAction<string>>,
+  setPhoneNumber?:React.Dispatch<React.SetStateAction<string>>,
+  setPassword2?:React.Dispatch<React.SetStateAction<string>>
 }
 
 interface StyledInputProps {
@@ -56,7 +60,7 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({ label, type, setEmail,setPassword  }: Props) => {
+const Input = ({ label, type, setEmail,setPassword, setName, setAuthCode, setPassword2, setPhoneNumber  }: Props) => {
   const [text, setText] = useState('');
 
   const onChange=(e: any)=> {
