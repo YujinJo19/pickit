@@ -64,16 +64,4 @@ public class UserController {
         User updated = userService.updateUserRole(id, newRole);
         return ResponseEntity.ok(updated);
     }
-
-    // 7. 이메일 중복 확인
-    @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmailDuplicate(@RequestParam String email) {
-        boolean isDuplicate = userService.isEmailDuplicate(email);
-        if (isDuplicate) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("이미 가입된 이메일입니다.");
-        } else {
-            return ResponseEntity.ok("사용가능한 이메일입니다.");
-        }
-    }
 }
