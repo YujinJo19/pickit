@@ -23,7 +23,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
     private final StringRedisTemplate redisTemplate;
 
     // ID로 유저 조회
@@ -85,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    // 3. 회원정보 조회
+    // 3. 회원정보 조회 - id
     @Override
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -93,6 +92,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toResponse(user);
     }
 
+    // 3. 회원정보 조회 - email
     @Override
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)

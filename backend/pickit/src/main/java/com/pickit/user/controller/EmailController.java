@@ -1,7 +1,6 @@
 package com.pickit.user.controller;
 
 import com.pickit.user.dto.EmailVerificationRequest;
-import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.EmailService;
 import com.pickit.user.service.UserService;
 import jakarta.validation.Valid;
@@ -15,10 +14,22 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final EmailService emailService;
     private final UserService userService;
+    private final EmailService emailService;
 
-    // 인증 코드 전송
+    // 1. 이메일 중복 확인
+    @GetMapping("/check")
+    public ResponseEntity<?> checkEmailDuplicate(@RequestParam String email) {
+        boolean isDuplicate = userService.isEmailDuplicate(email);
+        if (isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("이미 가입된 이메일입니다.");
+        } else {
+            return ResponseEntity.ok("사용가능한 이메일입니다.");
+        }
+    }
+
+    // 2. 인증 코드 전송
     @PostMapping("/send")
     public ResponseEntity<String> sendVerificationCode(@RequestBody @Valid EmailVerificationRequest request) {
         if (userService.isEmailDuplicate(request.getEmail())) {
@@ -28,7 +39,7 @@ public class EmailController {
         return ResponseEntity.ok("인증코드 전송 완료");
     }
 
-    // 인증 코드 검증
+    // 3. 인증 코드 검증
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
         boolean verified = emailService.verifyCode(email, code);
