@@ -1,12 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 interface Props {
   contents: string;
-  onSubmit: React.Dispatch<React.SetStateAction<any>>
+  onSubmit?: React.Dispatch<React.SetStateAction<any>>;
+  onClick?: (e: any) => void;
 }
 
-const StyledButton = styled.button`
+export const StyledButton = styled.button`
   padding: 12px 20px;
   background-color: #000;
   color: white;
@@ -23,10 +25,12 @@ const StyledButton = styled.button`
   }
 `;
 
-const Button = ({ contents, onSubmit }: Props) => {
+const Button = ({ contents, onSubmit, onClick }: Props) => {
   return (
     <div>
-      <StyledButton onSubmit={onSubmit}>{contents}</StyledButton>
+      <StyledButton onSubmit={onSubmit} onClick={onClick}>
+        {contents}
+      </StyledButton>
     </div>
   );
 };

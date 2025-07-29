@@ -38,6 +38,7 @@ export const AuthFormContainer = styled.div`
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [autoLoginFlag, setAutoLoginFlag] = useState(false);
   const dispatch = useAppDispatch();
 
   const onSubmit = (e: any) => {
@@ -54,6 +55,7 @@ const Login = () => {
         <LoginForm
           setEmail={setEmail}
           setPassword={setPassword}
+          setAutoLoginFlag={setAutoLoginFlag}
           onSubmit={onSubmit}
         />
       </AuthFormContainer>

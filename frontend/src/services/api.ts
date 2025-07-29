@@ -11,10 +11,11 @@ function getHeaders() {
     Authorization: token && `Bearer ${token}`,
   };
 }
-export function axiosGet(url: string) {
+export function axiosGet(url: string, params?: any) {
   return axiosInstance({
     method: "GET",
     url,
+    params,
     headers: getHeaders(),
   });
 }

@@ -4,8 +4,10 @@ import { styled, css } from "styled-components";
 interface Props {
   label?: string;
   type?: string;
+  name: string;
   setEmail?: React.Dispatch<React.SetStateAction<string>>;
   setPassword?: React.Dispatch<React.SetStateAction<string>>;
+  setAutoLoginFlag?: React.Dispatch<React.SetStateAction<boolean>>;
   setName?: React.Dispatch<React.SetStateAction<string>>;
   setAuthCode?: React.Dispatch<React.SetStateAction<string>>;
   setPhoneNumber?: React.Dispatch<React.SetStateAction<string>>;
@@ -63,30 +65,41 @@ const StyledInput = styled.div<StyledInputProps>`
 const Input = ({
   label,
   type,
+  name,
   setEmail,
-  setPassword,
-  setName,
   setAuthCode,
+  setPassword,
   setPassword2,
+  setName,
   setPhoneNumber,
+  setAutoLoginFlag,
 }: Props) => {
   const [text, setText] = useState("");
+  const setters: any = {
+    email: setEmail,
+    authCode: setAuthCode,
+    password: setPassword,
+    password2: setPassword2,
+    name: setName,
+    phoneNumber: setPhoneNumber,
+    autoLoginFlag: setAutoLoginFlag,
+  };
 
   const onChange = (e: any) => {
-    const value = e.target.value;
+    const { name, value, type, checked } = e.target;
+    const setter = setters[name];
+
+    if (setter) {
+      setter(type === "checkbox" ? checked : value);
+    }
+
     setText(value);
-    if (setEmail) {
-      setEmail(value);
-    }
-    if (setPassword) {
-      setPassword(value);
-    }
   };
 
   return (
     <StyledInput type={type}>
       {label && <label>{label}</label>}
-      <input type={type} onChange={onChange} value={text} />
+      <input type={type} onChange={onChange} value={text} name={name} />
     </StyledInput>
   );
 };
