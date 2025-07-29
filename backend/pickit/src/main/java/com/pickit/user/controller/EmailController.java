@@ -1,10 +1,13 @@
 package com.pickit.user.controller;
 
+import com.pickit.user.dto.EmailCodeVerificationRequest;
 import com.pickit.user.dto.EmailVerificationRequest;
 import com.pickit.user.service.EmailService;
 import com.pickit.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +39,14 @@ public class EmailController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 가입된 이메일입니다.");
         }
         emailService.sendVerificationCode(request);
+//        logger.info("인증코드", code);
         return ResponseEntity.ok("인증코드 전송 완료");
     }
 
     // 3. 인증 코드 검증
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
-        boolean verified = emailService.verifyCode(email, code);
+    public ResponseEntity<String> verifyCode(@RequestBody @Valid EmailCodeVerificationRequest request) {
+        boolean verified = emailService.verifyCode(request.getEmail(), request.getCode());
         return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
     }
 }

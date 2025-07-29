@@ -1,8 +1,11 @@
 package com.pickit.user.service.impl;
 
+import com.pickit.user.controller.EmailController;
 import com.pickit.user.dto.EmailVerificationRequest;
 import com.pickit.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
@@ -26,6 +29,8 @@ public class EmailServiceImpl implements EmailService {
     private String from;
 
     private static final long EXPIRE_MINUTES = 5;
+    private final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
+
 
     @Override
     public void sendVerificationCode(EmailVerificationRequest request) {
@@ -56,6 +61,8 @@ public class EmailServiceImpl implements EmailService {
         message.setText("인증코드: " + code + "\n유효시간: " + EXPIRE_MINUTES);
 
         mailSender.send(message);
+        logger.info(code);
+        System.out.println(code);
     }
 
     @Override

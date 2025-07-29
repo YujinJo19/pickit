@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import LoginForm from "../components/auth/LoginForm";
 import { styled, css } from "styled-components";
 import LoginImage from "../assets/images/login.jpg";
+import { authLogin } from "../store/slices/authSlice";
+import { useAppDispatch } from "../store/hooks";
 
 export const AuthPageContainer = styled.div`
   display: flex;
@@ -36,10 +38,13 @@ export const AuthFormContainer = styled.div`
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [autoLoginFlag, setAutoLoginFlag] = useState(false);
+  const dispatch = useAppDispatch();
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    console.log("email=>", email, "password=>", password);
+    const data = { email: email, password: password };
+    dispatch(authLogin(data));
   };
   return (
     <AuthPageContainer>
@@ -50,6 +55,7 @@ const Login = () => {
         <LoginForm
           setEmail={setEmail}
           setPassword={setPassword}
+          setAutoLoginFlag={setAutoLoginFlag}
           onSubmit={onSubmit}
         />
       </AuthFormContainer>
