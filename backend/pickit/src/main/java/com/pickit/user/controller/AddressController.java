@@ -17,6 +17,7 @@ public class AddressController {
 
     private final AddressService addressService;
 
+    // 주소 설정
     @PostMapping
     public ResponseEntity<AddressResponse> create(
             @PathVariable Long userId,
@@ -25,11 +26,13 @@ public class AddressController {
                 .body(addressService.createAddress(userId, request));
     }
 
+    // 주소 가져오기
     @GetMapping
     public ResponseEntity<List<AddressResponse>> list(@PathVariable Long userId) {
         return ResponseEntity.ok(addressService.getAddresses(userId));
     }
 
+    // 주소 삭제
     @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> delete(@PathVariable Long addressId) {
         addressService.deleteAddress(addressId);
