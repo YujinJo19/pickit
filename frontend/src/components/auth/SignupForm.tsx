@@ -3,18 +3,29 @@ import Input from "../ui/Input";
 import Button, { StyledButton } from "../ui/Button";
 import styled from "styled-components";
 import { StyledLoginForm } from "./LoginForm";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface Props {
   onSubmit: (e: any) => void;
+  register: UseFormRegister<{
+    name: string;
+    email: string;
+    code: string;
+    password: string;
+    password2: string;
+    phoneNumber: string;
+  }>;
+  errors: FieldErrors<{
+    name: string;
+    email: string;
+    code: string;
+    password: string;
+    password2: string;
+    phoneNumber: string;
+  }>;
   dispatchEmailCheck: () => void;
   dispatchCodeSend: () => void;
   dispatchCodeVerify: () => void;
-  setName: React.Dispatch<React.SetStateAction<string>>;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-  setAuthCode: React.Dispatch<React.SetStateAction<string>>;
-  setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
-  setPassword: React.Dispatch<React.SetStateAction<string>>;
-  setPassword2: React.Dispatch<React.SetStateAction<string>>;
   isEmailDuplicated: boolean;
   isCodeSent: boolean;
   isCodeVerified: boolean;
@@ -43,15 +54,11 @@ const StyledCheckButton = styled.button`
 
 const SignupForm = ({
   onSubmit,
+  register,
+  errors,
   dispatchEmailCheck,
   dispatchCodeSend,
   dispatchCodeVerify,
-  setName,
-  setEmail,
-  setAuthCode,
-  setPhoneNumber,
-  setPassword,
-  setPassword2,
   isEmailDuplicated,
   isCodeSent,
   isCodeVerified,
@@ -60,11 +67,21 @@ const SignupForm = ({
     <StyledLoginForm onSubmit={onSubmit}>
       <h2>회원가입</h2>
       <div>
-        <Input label="이름" setName={setName} name="name" />
+        <Input
+          label="이름"
+          field={register("name")}
+          error={errors.name?.message}
+          name={"name"}
+        />
         {isEmailDuplicated ? (
           <IinputButtonContainer>
             <div>
-              <Input label="이메일" setEmail={setEmail} name="email" />
+              <Input
+                label="이메일"
+                field={register("email")}
+                error={errors.email?.message}
+                name={"email"}
+              />
             </div>
             <StyledCheckButton onClick={dispatchEmailCheck}>
               중복확인
@@ -73,7 +90,12 @@ const SignupForm = ({
         ) : isCodeSent ? (
           <IinputButtonContainer>
             <div>
-              <Input label="인증코드" setAuthCode={setAuthCode} name="code" />
+              <Input
+                label="인증코드"
+                field={register("code")}
+                error={errors.code?.message}
+                name={"code"}
+              />
             </div>
             <StyledCheckButton onClick={dispatchCodeVerify}>
               코드확인
@@ -82,31 +104,40 @@ const SignupForm = ({
         ) : (
           <IinputButtonContainer>
             <div>
-              <Input label="이메일" name="email" />
+              <Input
+                label="이메일"
+                field={register("email")}
+                error={errors.email?.message}
+                name={"email"}
+              />
             </div>
             <StyledCheckButton onClick={dispatchCodeSend}>
               코드전송
             </StyledCheckButton>
           </IinputButtonContainer>
         )}
-        <div>
-          <Input label="인증번호" setEmail={setAuthCode} name="code" />
-        </div>
         <Input
           label="전화번호"
-          setPhoneNumber={setPhoneNumber}
-          name="phoneNumber"
+          field={register("phoneNumber")}
+          error={errors.phoneNumber?.message}
+          name={"phoneNumber"}
         />
-        <Input label="비밀번호" setPassword={setPassword} name="password" />
+        <Input
+          label="비밀번호"
+          field={register("password")}
+          error={errors.password?.message}
+          name={"password"}
+        />
         <Input
           label="비밀번호 확인"
-          setPassword2={setPassword2}
-          name="password2"
+          field={register("password2")}
+          error={errors.password2?.message}
+          name={"password2"}
         />
         <Input
           label="이용약관에 모두 동의합니다"
           type="checkbox"
-          name="checkbox"
+          name={"checkbox"}
         />
         <Button contents="회원가입" onSubmit={onSubmit} />
       </div>

@@ -1,17 +1,14 @@
 import React, { useState } from "react";
+import { UseFormRegister, UseFormRegisterReturn } from "react-hook-form";
 import { styled, css } from "styled-components";
 
 interface Props {
   label?: string;
   type?: string;
+  field?: UseFormRegisterReturn;
+
+  error?: string;
   name: string;
-  setEmail?: React.Dispatch<React.SetStateAction<string>>;
-  setPassword?: React.Dispatch<React.SetStateAction<string>>;
-  setAutoLoginFlag?: React.Dispatch<React.SetStateAction<boolean>>;
-  setName?: React.Dispatch<React.SetStateAction<string>>;
-  setAuthCode?: React.Dispatch<React.SetStateAction<string>>;
-  setPhoneNumber?: React.Dispatch<React.SetStateAction<string>>;
-  setPassword2?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface StyledInputProps {
@@ -62,44 +59,14 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({
-  label,
-  type,
-  name,
-  setEmail,
-  setAuthCode,
-  setPassword,
-  setPassword2,
-  setName,
-  setPhoneNumber,
-  setAutoLoginFlag,
-}: Props) => {
+const Input = ({ label, type, field, error, name }: Props) => {
   const [text, setText] = useState("");
-  const setters: any = {
-    email: setEmail,
-    authCode: setAuthCode,
-    password: setPassword,
-    password2: setPassword2,
-    name: setName,
-    phoneNumber: setPhoneNumber,
-    autoLoginFlag: setAutoLoginFlag,
-  };
-
-  const onChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    const setter = setters[name];
-
-    if (setter) {
-      setter(type === "checkbox" ? checked : value);
-    }
-
-    setText(value);
-  };
 
   return (
     <StyledInput type={type}>
-      {label && <label>{label}</label>}
-      <input type={type} onChange={onChange} value={text} name={name} />
+      {label && <label htmlFor={name}>{label}</label>}
+      <input id={name} type={type} {...field} />
+      {error && <span>{error}</span>}
     </StyledInput>
   );
 };

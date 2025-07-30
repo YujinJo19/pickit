@@ -31,6 +31,8 @@ export const login = createAsyncThunk(
 export const emailCheck: any = createAsyncThunk(
   "auth/emailcheck",
   async (args: any, { rejectWithValue }) => {
+    console.log(args);
+
     try {
       const response = await authAPI.emailCheck(args);
       console.log("emailcheck try =>", response.data);

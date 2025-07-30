@@ -37,16 +37,11 @@ const LoginForm = ({
       <p>Pick It에 오신 것을 환영합니다! 로그인 후 즐거운 쇼핑을 시작하세요.</p>
       <div>
         <div>
-          <Input label="아이디" setEmail={setEmail} name="email" />
-          <Input label="비밀번호" setPassword={setPassword} name="password" />
+          <Input label="아이디" name={"email"} />
+          <Input label="비밀번호" name={"password"} />
         </div>
         <StyledCheckboxContainer>
-          <Input
-            label="자동로그인"
-            type="checkbox"
-            name="checkbox"
-            setAutoLoginFlag={setAutoLoginFlag}
-          />
+          <Input label="자동로그인" type="checkbox" name={"checkbox"} />
           <TextButton>비밀번호 찾기</TextButton>
         </StyledCheckboxContainer>
         <Button contents="로그인" onSubmit={onSubmit} />
