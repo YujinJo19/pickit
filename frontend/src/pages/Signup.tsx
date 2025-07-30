@@ -8,13 +8,20 @@ import {
 } from "./Login";
 import { useAppDispatch } from "../store/hooks";
 import {
-  authCodeSend,
-  authCodeVerify,
-  authEmailCheck,
   signup,
-} from "../store/slices/authSlice";
-
+  emailCheck,
+  sendCode,
+  verifyCode,
+} from "../store/thunks/authThunk";
+import { useSignupForm } from "../components/auth/hooks/useSignupForm";
 const Signup = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    watch,
+  } = useSignupForm();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isEmailDuplicated, setIsEmailDuplicated] = useState(true);
@@ -56,36 +63,50 @@ const Signup = () => {
 
   const dispatch = useAppDispatch();
 
-  const dispatchEmailCheck = () => {
-    dispatch(authEmailCheck(email)).then((res: any) => {
-      if (res.meta.requestStatus === "fulfilled") {
-        setIsEmailDuplicated(false);
-      } else {
-        setIsEmailDuplicated(true);
-      }
-    });
-  };
+  const onValid = async (data: any) => {
+    const { email, code, password, name } = data;
 
-  const dispatchCodeSend = () => {
-    dispatch(authCodeSend({ email: email })).then((res: any) => {
-      if (res.meta.requestStatus === "fulfilled") {
-        setIsCodeSent(true);
-      } else {
-        setIsCodeSent(false);
-      }
-    });
-  };
-
-  const dispatchCodeVerify = () => {
-    dispatch(authCodeVerify({ email: email, code: authCode })).then(
-      (res: any) => {
-        if (res.meta.requestStatus === "fulfilled") {
-          setisCodeVerified(true);
-        } else {
-          setisCodeVerified(false);
-        }
-      }
+    // 회원가입 요청
+    const signupRes = await dispatch(
+      signup({
+        data: {
+          email,
+          password,
+          name,
+          phoneNumber,
+        },
+      })
     );
+    if (signupRes.meta.requestStatus === "fulfilled") {
+      console.log("회원가입 성공");
+    } else {
+      console.log("회원가입 실패");
+    }
+  };
+
+  // 이메일 중복 확인
+  const dispatchEmailCheck = async () => {
+    const email = watch("email");
+    const res = await dispatch(emailCheck(email));
+    if (res.meta.requestStatus !== "fulfilled") {
+      setError("email", { message: "이미 사용 중인 이메일입니다" });
+    }
+  };
+
+  // 인증코드 확인
+  const dispatchCodeVerify = async () => {
+    const code = watch("code");
+    const res = await dispatch(verifyCode({ email, code }));
+    if (res.meta.requestStatus !== "fulfilled") {
+      setError("code", { message: "인증코드가 올바르지 않습니다" });
+      return;
+    }
+  };
+
+  // 인증코드 보내기
+  const dispatchCodeSend = async () => {
+    const email = watch("email");
+    await dispatch(sendCode({ email }));
   };
   return (
     <AuthPageContainer>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LoginForm from "../components/auth/LoginForm";
 import { styled, css } from "styled-components";
 import LoginImage from "../assets/images/login.jpg";
-import { authLogin } from "../store/slices/authSlice";
+import { login } from "../store/thunks/authThunk";
 import { useAppDispatch } from "../store/hooks";
 
 export const AuthPageContainer = styled.div`
@@ -44,7 +44,7 @@ const Login = () => {
   const onSubmit = (e: any) => {
     e.preventDefault();
     const data = { email: email, password: password };
-    dispatch(authLogin(data));
+    dispatch(login(data));
   };
   return (
     <AuthPageContainer>
