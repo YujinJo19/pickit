@@ -4,12 +4,18 @@ import Input from "../ui/Input";
 import TextButton from "../ui/TextButton";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 interface Props {
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-  setPassword: React.Dispatch<React.SetStateAction<string>>;
-  setAutoLoginFlag: React.Dispatch<React.SetStateAction<boolean>>;
   onSubmit: (e: any) => void;
+  register: UseFormRegister<{
+    email: string;
+    password: string;
+  }>;
+  errors: FieldErrors<{
+    email: string;
+    password: string;
+  }>;
 }
 
 export const StyledLoginForm = styled.form`
@@ -25,20 +31,26 @@ const StyledCheckboxContainer = styled.div`
   justify-content: space-between;
 `;
 
-const LoginForm = ({
-  setEmail,
-  setPassword,
-  setAutoLoginFlag,
-  onSubmit,
-}: Props) => {
+const LoginForm = ({ onSubmit, register, errors }: Props) => {
   return (
     <StyledLoginForm onSubmit={onSubmit}>
       <h2>환영합니다!</h2>
       <p>Pick It에 오신 것을 환영합니다! 로그인 후 즐거운 쇼핑을 시작하세요.</p>
       <div>
         <div>
-          <Input label="아이디" name={"email"} />
-          <Input label="비밀번호" name={"password"} />
+          <Input
+            label="아이디"
+            field={register("email")}
+            error={errors.email?.message}
+            name={"email"}
+          />
+          <Input
+            label="비밀번호"
+            field={register("password")}
+            error={errors.password?.message}
+            name={"password"}
+            type="password"
+          />
         </div>
         <StyledCheckboxContainer>
           <Input label="자동로그인" type="checkbox" name={"checkbox"} />

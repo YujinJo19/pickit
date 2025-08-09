@@ -4,6 +4,8 @@ import { styled, css } from "styled-components";
 import LoginImage from "../assets/images/login.jpg";
 import { login } from "../store/thunks/authThunk";
 import { useAppDispatch } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
+import { useLoginForm } from "../components/auth/hooks/useSignupForm";
 
 export const AuthPageContainer = styled.div`
   display: flex;
@@ -36,15 +38,26 @@ export const AuthFormContainer = styled.div`
 `;
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    watch,
+  } = useLoginForm();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [autoLoginFlag, setAutoLoginFlag] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    const data = { email: email, password: password };
-    dispatch(login(data));
+  const onValid = async (data: any) => {
+    const { email, password } = data;
+    const loginData = { email: email, password: password };
+    const loginRes = await dispatch(login(loginData));
+    if (loginRes.meta.requestStatus === "fulfilled") {
+      navigate("/");
+    }
   };
   return (
     <AuthPageContainer>
@@ -53,10 +66,9 @@ const Login = () => {
       </AuthImageContainer>
       <AuthFormContainer>
         <LoginForm
-          setEmail={setEmail}
-          setPassword={setPassword}
-          setAutoLoginFlag={setAutoLoginFlag}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit(onValid)}
+          register={register}
+          errors={errors}
         />
       </AuthFormContainer>
     </AuthPageContainer>
