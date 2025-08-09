@@ -1,30 +1,35 @@
 import React, { useState } from "react";
 import { UseFormRegister, UseFormRegisterReturn } from "react-hook-form";
 import { styled, css } from "styled-components";
+import { ErrorMessage } from "../auth/EmailVerification";
 
 interface Props {
   label?: string;
   type?: string;
   field?: UseFormRegisterReturn;
-
   error?: string;
   name: string;
+  readOnly?: boolean;
 }
 
 interface StyledInputProps {
   type?: string;
 }
 
-const StyledInput = styled.div<StyledInputProps>`
-  display: grid;
+export const StyledInput = styled.div<StyledInputProps>`
+  display: flex;
   width: 100%;
+  flex-direction: column;
   border-radius: 4px;
+  flex: 1;
+
   // type이 'checkbox'일 경우
   ${(props) =>
     props.type === "checkbox" &&
     css`
       display: flex;
       align-items: center;
+      flex-direction: row;
     `}
 
   label {
@@ -39,13 +44,13 @@ const StyledInput = styled.div<StyledInputProps>`
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
+    width: 100%;
 
     // type이 'checkbox'일 경우
     ${(props) =>
       props.type === "checkbox" &&
       css`
         width: auto;
-        flex-grow: 0;
         margin: 0 10px;
         padding: 0;
         transform: scale(1.2);
@@ -59,14 +64,12 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({ label, type, field, error, name }: Props) => {
-  const [text, setText] = useState("");
-
+const Input = ({ label, type, field, error, name, readOnly }: Props) => {
   return (
     <StyledInput type={type}>
       {label && <label htmlFor={name}>{label}</label>}
-      <input id={name} type={type} {...field} />
-      {error && <span>{error}</span>}
+      <input id={name} type={type} {...field} readOnly={readOnly} />
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </StyledInput>
   );
 };

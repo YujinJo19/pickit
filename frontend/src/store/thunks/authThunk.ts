@@ -64,8 +64,6 @@ export const sendCode: any = createAsyncThunk(
 export const verifyCode: any = createAsyncThunk(
   "auth/codeVerify",
   async (args: any, { rejectWithValue }) => {
-    console.log(args);
-
     try {
       const response = await authAPI.verifyCode(args);
       console.log("codeVerify try =>", response.data);
@@ -83,7 +81,7 @@ export const signup: any = createAsyncThunk(
   async (args: any, { rejectWithValue }) => {
     console.log("args=>", args);
     try {
-      const response = await authAPI.signup(args);
+      const response = await authAPI.signup(args.data);
       console.log("signup try=>", response.data);
       return response.data;
     } catch (err: any) {
