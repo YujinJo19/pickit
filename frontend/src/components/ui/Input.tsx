@@ -1,33 +1,35 @@
 import React, { useState } from "react";
+import { UseFormRegister, UseFormRegisterReturn } from "react-hook-form";
 import { styled, css } from "styled-components";
+import { ErrorMessage } from "../auth/EmailVerification";
 
 interface Props {
   label?: string;
   type?: string;
+  field?: UseFormRegisterReturn;
+  error?: string;
   name: string;
-  setEmail?: React.Dispatch<React.SetStateAction<string>>;
-  setPassword?: React.Dispatch<React.SetStateAction<string>>;
-  setAutoLoginFlag?: React.Dispatch<React.SetStateAction<boolean>>;
-  setName?: React.Dispatch<React.SetStateAction<string>>;
-  setAuthCode?: React.Dispatch<React.SetStateAction<string>>;
-  setPhoneNumber?: React.Dispatch<React.SetStateAction<string>>;
-  setPassword2?: React.Dispatch<React.SetStateAction<string>>;
+  readOnly?: boolean;
 }
 
 interface StyledInputProps {
   type?: string;
 }
 
-const StyledInput = styled.div<StyledInputProps>`
-  display: grid;
+export const StyledInput = styled.div<StyledInputProps>`
+  display: flex;
   width: 100%;
+  flex-direction: column;
   border-radius: 4px;
+  flex: 1;
+
   // type이 'checkbox'일 경우
   ${(props) =>
     props.type === "checkbox" &&
     css`
       display: flex;
       align-items: center;
+      flex-direction: row;
     `}
 
   label {
@@ -42,13 +44,13 @@ const StyledInput = styled.div<StyledInputProps>`
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
+    width: 100%;
 
     // type이 'checkbox'일 경우
     ${(props) =>
       props.type === "checkbox" &&
       css`
         width: auto;
-        flex-grow: 0;
         margin: 0 10px;
         padding: 0;
         transform: scale(1.2);
@@ -62,44 +64,12 @@ const StyledInput = styled.div<StyledInputProps>`
   }
 `;
 
-const Input = ({
-  label,
-  type,
-  name,
-  setEmail,
-  setAuthCode,
-  setPassword,
-  setPassword2,
-  setName,
-  setPhoneNumber,
-  setAutoLoginFlag,
-}: Props) => {
-  const [text, setText] = useState("");
-  const setters: any = {
-    email: setEmail,
-    authCode: setAuthCode,
-    password: setPassword,
-    password2: setPassword2,
-    name: setName,
-    phoneNumber: setPhoneNumber,
-    autoLoginFlag: setAutoLoginFlag,
-  };
-
-  const onChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    const setter = setters[name];
-
-    if (setter) {
-      setter(type === "checkbox" ? checked : value);
-    }
-
-    setText(value);
-  };
-
+const Input = ({ label, type, field, error, name, readOnly }: Props) => {
   return (
     <StyledInput type={type}>
-      {label && <label>{label}</label>}
-      <input type={type} onChange={onChange} value={text} name={name} />
+      {label && <label htmlFor={name}>{label}</label>}
+      <input id={name} type={type} {...field} readOnly={readOnly} />
+      {error && <ErrorMessage>{error}</ErrorMessage>}
     </StyledInput>
   );
 };

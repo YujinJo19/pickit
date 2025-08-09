@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { styled } from "styled-components";
+import Main from "./pages/Main";
 
 const AppContainer = styled.div`
   display: grid;
@@ -11,6 +12,7 @@ function App() {
   return (
     <AppContainer>
       <Routes>
+        <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
