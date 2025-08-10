@@ -1,11 +1,9 @@
 package com.pickit.user.controller;
 
 import com.pickit.global.common.Role;
-import com.pickit.user.dto.LoginRequest;
-import com.pickit.user.dto.UserProfileUpdateRequest;
-import com.pickit.user.dto.UserResponse;
-import com.pickit.user.dto.UserSignupRequest;
+import com.pickit.user.dto.*;
 import com.pickit.user.entity.User;
+import com.pickit.user.service.AuthService;
 import com.pickit.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     // 1. 회원가입
     @PostMapping("/signup")
@@ -28,10 +27,8 @@ public class UserController {
 
     // 2. 로그인
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
-        return userService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword())
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다."));
+    public ResponseEntity <TokenResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request.getEmail(), request.getPassword()));
     }
 
     // 3. 회원정보 조회
@@ -63,5 +60,19 @@ public class UserController {
     public ResponseEntity<User> updateRole(@PathVariable Long id, @RequestParam Role newRole) {
         User updated = userService.updateUserRole(id, newRole);
         return ResponseEntity.ok(updated);
+    }
+
+    // 7. 토큰 재발급
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
+    }
+
+    // 8. 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        String accessToken = authHeader.replace("Bearer ", "");
+        authService.logout(accessToken);
+        return ResponseEntity.ok().build();
     }
 }
