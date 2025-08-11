@@ -1,16 +1,19 @@
 package com.pickit.global.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
+
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -23,22 +26,45 @@ public class JwtService {
     private String secret;
 
     @Value("${spring.jwt.access-token-validity}")
-    private long accessExpiration;
+    private long accessExpiration; // ms
 
     @Value("${spring.jwt.refresh-token-validity}")
-    private long refreshExpiration;
+    private long refreshExpiration; // ms
 
     private Key key;
-
     private final StringRedisTemplate redisTemplate;
-    private final UserDetailsService userDetailsService;
+
     private static final String REDIS_REFRESH_TOKEN_PREFIX = "RT:";
     private static final String REDIS_BLACKLIST_PREFIX = "BL:";
 
-
     @PostConstruct
     public void init() {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        try {
+            if (isBase64(secret)) {
+                byte[] decoded = Base64.getDecoder().decode(secret);
+                if (decoded.length < 32) {
+                    throw new IllegalArgumentException("Decoded JWT secret must be at least 32 bytes.");
+                }
+                this.key = Keys.hmacShaKeyFor(decoded);
+            } else {
+                if (secret.length() < 32) {
+                    throw new IllegalArgumentException("JWT secret key must be at least 32 characters for HS256.");
+                }
+                this.key = Keys.hmacShaKeyFor(secret.getBytes());
+            }
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid JWT secret configuration: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    private boolean isBase64(String s) {
+        try {
+            Base64.getDecoder().decode(s);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public String createAccessToken(String username) {
@@ -47,7 +73,6 @@ public class JwtService {
 
     public String createRefreshToken(String username) {
         String token = createToken(username, refreshExpiration);
-        // Redis 저장 (TTL 적용)
         redisTemplate.opsForValue().set(REDIS_REFRESH_TOKEN_PREFIX + username, token, refreshExpiration, TimeUnit.MILLISECONDS);
         return token;
     }
@@ -63,7 +88,7 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
@@ -71,22 +96,25 @@ public class JwtService {
         }
     }
 
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+        return parseClaims(token).getSubject();
     }
 
     public void blacklistAccessToken(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-        Date expiration = claims.getExpiration();
-        long now = System.currentTimeMillis();
-        long expirationMs = expiration.getTime() - now;
-
+        Claims claims = parseClaims(token);
+        long expirationMs = claims.getExpiration().getTime() - System.currentTimeMillis();
         if (expirationMs > 0) {
             redisTemplate.opsForValue().set(REDIS_BLACKLIST_PREFIX + token, "logout", expirationMs, TimeUnit.MILLISECONDS);
         }
     }
-
 
     public boolean isBlacklisted(String token) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(REDIS_BLACKLIST_PREFIX + token));
@@ -95,10 +123,6 @@ public class JwtService {
     public boolean isRefreshTokenValid(String username, String refreshToken) {
         String stored = redisTemplate.opsForValue().get(REDIS_REFRESH_TOKEN_PREFIX + username);
         return stored != null && stored.equals(refreshToken);
-    }
-
-    public UserDetails loadUserByUsername(String username) {
-        return userDetailsService.loadUserByUsername(username);
     }
 
     public void deleteRefreshToken(String username) {

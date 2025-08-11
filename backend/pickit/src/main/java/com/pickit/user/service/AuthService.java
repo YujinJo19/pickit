@@ -17,6 +17,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    // 로그인 시 accessToken, refreshToken 생성 후 반환
     public TokenResponse login(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
@@ -28,6 +29,7 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    // refreshToken 재발급
     public TokenResponse refresh(String refreshToken) {
         if (!jwtService.validateToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token");
@@ -45,10 +47,10 @@ public class AuthService {
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
+    // 로그아웃 시 블랙리스트에 accessToken 추가
     public void logout(String accessToken) {
         String username = jwtService.getUsernameFromToken(accessToken);
         jwtService.blacklistAccessToken(accessToken);
-        // Refresh Token 삭제
         jwtService.deleteRefreshToken(username);
     }
 }

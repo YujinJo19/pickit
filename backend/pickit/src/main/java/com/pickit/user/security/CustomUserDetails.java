@@ -51,7 +51,6 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    // 필요하다면 User 엔티티 접근용 getter 추가
     public User getUser() {
         return user;
     }
