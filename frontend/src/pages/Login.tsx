@@ -6,6 +6,7 @@ import { login } from "../store/thunks/authThunk";
 import { useAppDispatch } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { useLoginForm } from "../components/auth/hooks/useSignupForm";
+import { setToken } from "../services/token";
 
 export const AuthPageContainer = styled.div`
   display: flex;
@@ -45,17 +46,18 @@ const Login = () => {
     setError,
     watch,
   } = useLoginForm();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [autoLoginFlag, setAutoLoginFlag] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onValid = async (data: any) => {
-    const { email, password } = data;
+    const { email, password, autoLogin } = data;
     const loginData = { email: email, password: password };
     const loginRes = await dispatch(login(loginData));
     if (loginRes.meta.requestStatus === "fulfilled") {
+      if (autoLogin) {
+        localStorage.setItem("autoLogin", "true");
+      }
+      setToken(loginRes.payload.accessToken);
       navigate("/");
     }
   };
