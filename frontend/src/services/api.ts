@@ -1,75 +1,64 @@
 import axios from "axios";
+import { getToken, removeToken, setToken } from "./token";
 
 const API_URL = process.env.REACT_APP_BACKEND_BASEURI;
 let axiosInstance = axios.create({
   baseURL: API_URL,
+  headers: { "Content-Type": "application/json" },
 });
 
-function getHeaders() {
-  const token = window.localStorage.getItem("token");
-  return {
-    Authorization: token && `Bearer ${token}`,
-  };
-}
-export function axiosGet(url: string, params?: any) {
-  return axiosInstance({
-    method: "GET",
-    url,
-    params,
-    headers: getHeaders(),
-  });
-}
+// 요청 인터셉터 - 모든 요청에 토큰 포함 시킴
+axiosInstance.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-export function axiosPost(url: string, data: any) {
-  return axiosInstance({
-    method: "POST",
-    url,
-    data,
-    headers: getHeaders(),
-  });
-}
+// 응답 인터셉터 - 토큰 만료 시 refresh
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      try {
+        const refreshResponse = await axios.post(
+          `${API_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+        const newToken = refreshResponse.data.accessToken;
+        setToken(newToken);
 
-export function axiosDel(url: string) {
-  return axiosInstance({
-    method: "DELETE",
-    url,
-    headers: getHeaders(),
-  });
-}
+        error.config.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstance(error.config);
+      } catch (refreshError) {
+        removeToken();
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
-export function axiosPut(url: string, data: any) {
-  return axiosInstance({
-    method: "PUT",
-    url,
-    data,
-    headers: getHeaders(),
-  });
-}
+export const axiosGet = (url: string, params?: any) =>
+  axiosInstance.get(url, { params });
 
-export function axiosPatch(url: string, data: any) {
-  return axiosInstance({
-    method: "PATCH",
-    url,
-    data,
-    headers: getHeaders(),
-  });
-}
+export const axiosPost = (url: string, data?: any) =>
+  axiosInstance.post(url, data);
 
-export function axiosGetFile(url: string) {
-  return axiosInstance({
-    method: "GET",
-    url,
-    responseType: "blob",
-    headers: getHeaders(),
-  });
-}
+export const axiosDel = (url: string) => axiosInstance.delete(url);
 
-export function axiosPostFile(url: string, data: any) {
-  return axiosInstance({
-    method: "POST",
-    url,
-    data,
-    responseType: "blob",
-    headers: getHeaders(),
-  });
-}
+export const axiosPut = (url: string, data: any) =>
+  axiosInstance.put(url, data);
+
+export const axiosPatch = (url: string, data: any) =>
+  axiosInstance.patch(url, data);
+
+export const axiosGetFile = (url: string) =>
+  axiosInstance.get(url, { responseType: "blob" });
+
+export const axiosPostFile = (url: string, data: any) =>
+  axiosInstance.post(url, data, { responseType: "blob" });
+
+export default axiosInstance;
