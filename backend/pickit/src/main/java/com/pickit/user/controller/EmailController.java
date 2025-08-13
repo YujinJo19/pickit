@@ -34,7 +34,7 @@ public class EmailController {
 
     // 2. 인증 코드 전송
     @PostMapping("/send")
-    public ResponseEntity<String> sendVerificationCode(@RequestBody @Valid EmailVerificationRequest request) {
+    public ResponseEntity<String> sendVerificationCode(@Valid @RequestBody EmailVerificationRequest request) {
         if (userService.isEmailDuplicate(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 가입된 이메일입니다.");
         }
@@ -45,7 +45,7 @@ public class EmailController {
 
     // 3. 인증 코드 검증
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyCode(@RequestBody @Valid EmailCodeVerificationRequest request) {
+    public ResponseEntity<String> verifyCode(@Valid @RequestBody EmailCodeVerificationRequest request) {
         boolean verified = emailService.verifyCode(request.getEmail(), request.getCode());
         return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
     }
