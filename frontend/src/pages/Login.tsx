@@ -43,8 +43,6 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
-    watch,
   } = useLoginForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
