@@ -1,7 +1,7 @@
 import { axiosGet, axiosPost } from "./api";
 
 // 회원정보 조회
-export const getUser = (id: string) => axiosGet(`/auth/${id}`);
+export const getUser = (id: string) => axiosGet(`/user/${id}`);
 
 // 로그인
 export const login = (data: any) => axiosPost("/auth/login", data);
@@ -18,3 +18,9 @@ export const verifyCode = (data: any) => axiosPost("/email/verify", data);
 
 // 회원가입
 export const signup = (data: any) => axiosPost("/auth/signup", data);
+
+// accessToken 재발급
+export const refresh = (data?: any) => axiosPost("/auth/refresh", data);
+
+// 로그아웃
+export const logout = (data?: any) => axiosPost("/auth/logout", data);

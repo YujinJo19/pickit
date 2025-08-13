@@ -17,4 +17,5 @@ export const getToken = () => {
 export const removeToken = () => {
   localStorage.removeItem("accessToken");
   sessionStorage.removeItem("accessToken");
+  localStorage.removeItem("autoLogin");
 };

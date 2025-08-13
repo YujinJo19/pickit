@@ -3,6 +3,7 @@ package com.pickit.user.controller;
 import com.pickit.user.dto.EmailVerificationRequest;
 import com.pickit.user.service.PasswordResetService;
 import com.pickit.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class PasswordController {
 
     // 1. 비밀번호 찾기
     @PostMapping("/reset-request")
-    public ResponseEntity<?> resetPassword(@RequestBody EmailVerificationRequest request) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody EmailVerificationRequest request) {
         boolean isExcist = userService.isEmailDuplicate(request.getEmail());
         if (isExcist) {
             passwordResetService.processResetPassword(request.getEmail());

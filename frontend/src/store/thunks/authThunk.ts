@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authAPI from "../../services/auth";
+import axiosInstance from "../../services/api";
 
 // 회원정보 조회
 export const getUser = createAsyncThunk(
@@ -86,6 +87,36 @@ export const signup: any = createAsyncThunk(
       return response.data;
     } catch (err: any) {
       console.log("signup catch=>", err.response);
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
+// accessToken 재발급
+export const refreshAccessToken: any = createAsyncThunk(
+  "auth/refreshAccessToken",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.refresh();
+      console.log("refreshAccessToken try=>", response.data.accessToken);
+      return response.data.accessToken;
+    } catch (err: any) {
+      console.log("refreshAccessToken catch=>", err.response);
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
+// 로그아웃
+export const logout: any = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authAPI.logout();
+      console.log("logout try=>", response.data);
+      return response.data;
+    } catch (err: any) {
+      console.log("logout catch=>", err.response);
       return rejectWithValue(err.response);
     }
   }
