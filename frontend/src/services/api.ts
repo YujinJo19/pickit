@@ -4,6 +4,7 @@ import { getToken, removeToken, setToken } from "./token";
 const API_URL = process.env.REACT_APP_BACKEND_BASEURI;
 let axiosInstance = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -20,7 +21,9 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       try {
         const refreshResponse = await axios.post(
           `${API_URL}/auth/refresh`,
@@ -29,12 +32,12 @@ axiosInstance.interceptors.response.use(
         );
         const newToken = refreshResponse.data.accessToken;
         setToken(newToken);
-
-        error.config.headers.Authorization = `Bearer ${newToken}`;
-        return axiosInstance(error.config);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         removeToken();
         window.location.href = "/login";
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);

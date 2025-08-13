@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAppDispatch } from "../store/hooks";
-import { getUser } from "../store/thunks/authThunk";
+import { logout } from "../store/thunks/authThunk";
+import { useNavigate } from "react-router-dom";
+import { removeToken } from "../services/token";
 
 const Main = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const onClick = async () => {
-    const response = await dispatch(getUser(2));
+    const response = await dispatch(logout());
     if (response.meta.requestStatus === "fulfilled") {
+      removeToken();
       console.log(response);
+      navigate("/");
     }
   };
   return (
     <>
-      <button onClick={onClick}>유저 정보 불러오기</button>
+      <button onClick={onClick}>로그아웃</button>
     </>
   );
 };
