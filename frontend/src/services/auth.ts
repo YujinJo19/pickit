@@ -1,4 +1,3 @@
-// services/auth.ts
 import { axiosGet, axiosPost } from "./api";
 
 // 회원정보 조회

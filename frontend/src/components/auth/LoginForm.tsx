@@ -11,10 +11,12 @@ interface Props {
   register: UseFormRegister<{
     email: string;
     password: string;
+    autoLogin: boolean;
   }>;
   errors: FieldErrors<{
     email: string;
     password: string;
+    autoLogin: boolean;
   }>;
 }
 
@@ -53,7 +55,12 @@ const LoginForm = ({ onSubmit, register, errors }: Props) => {
           />
         </div>
         <StyledCheckboxContainer>
-          <Input label="자동로그인" type="checkbox" name={"checkbox"} />
+          <Input
+            label="자동로그인"
+            type="checkbox"
+            name={"checkbox"}
+            field={register("autoLogin")}
+          />
           <TextButton>비밀번호 찾기</TextButton>
         </StyledCheckboxContainer>
         <Button contents="로그인" onSubmit={onSubmit} />
