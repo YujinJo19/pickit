@@ -2,8 +2,11 @@ package com.pickit.seller.entity;
 
 import com.pickit.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 
+@Builder
 @Entity
 @Table(name = "seller")
 public class Seller {
@@ -29,6 +32,7 @@ public class Seller {
     @Column(nullable = false, unique = true)
     private String storeAddress;
 
+    @Builder.Default
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SellerStatus status = SellerStatus.PENDING;
