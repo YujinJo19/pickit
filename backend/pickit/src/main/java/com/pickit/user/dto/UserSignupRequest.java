@@ -20,13 +20,17 @@ public class UserSignupRequest {
     private String password;
 
     @NotBlank(message = "이름은 필수입니다.")
+    @Size(min = 2, max = 30, message = "이름은 2~30자 이내로 입력해주세요.")
     private String name;
 
+    @Size(min = 2, max = 20, message = "닉네임은 2~20자 이내로 입력해주세요.")
+    @Pattern(regexp = "^[a-zA-Z0-9가-힣]*$", message = "닉네임은 한글, 영문, 숫자만 입력 가능합니다.")
     private String nickname;
 
     @Pattern(regexp = "^\\d{10,11}$", message = "전화번호는 10~11자리 숫자여야 합니다.")
     private String phoneNumber;
 
+    @Pattern(regexp = "^(http|https)://.*$", message = "유효한 URL 형식이 아닙니다.")
     private String profileImageUrl;
 
     private Boolean socialLogin;
