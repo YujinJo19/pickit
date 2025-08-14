@@ -1,5 +1,7 @@
 package com.pickit.user.service.impl;
 
+import com.pickit.global.exception.customException.EmailVerificationFailedException;
+import com.pickit.global.exception.customException.TempPasswordRequestLimitExceededException;
 import com.pickit.user.controller.EmailController;
 import com.pickit.user.dto.EmailVerificationRequest;
 import com.pickit.user.service.EmailService;
@@ -43,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
         int attempts = attemptsStr != null ? Integer.parseInt(attemptsStr) : 0;
 
         if (attempts >= MAX_ATTEMPTS_PER_DAY) {
-            throw new RuntimeException("이메일 인증 요청 횟수를 초과하였습니다. 내일 다시 시도해주세요");
+            throw new TempPasswordRequestLimitExceededException("이메일 인증 요청 횟수를 초과하였습니다.");
         }
 
         redisTemplate.opsForValue().increment(attemptKey);
@@ -72,12 +74,12 @@ public class EmailServiceImpl implements EmailService {
 
         // 인증 코드 만료 또는 없는 경우
         if (savedCode == null) {
-            throw new RuntimeException("인증번호가 존재하지 않거나 만료되었습니다.");
+            throw new EmailVerificationFailedException("인증번호가 존재하지 않거나 만료되었습니다.");
         }
 
         // 인증 코드 불일치
         if (!savedCode.equals(code)) {
-            throw new RuntimeException("인증번호가 일치하지 않습니다.");
+            throw new EmailVerificationFailedException("인증번호가 일치하지 않습니다.");
         }
 
         // 인증 성공

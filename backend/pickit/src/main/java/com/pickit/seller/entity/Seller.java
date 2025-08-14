@@ -3,10 +3,14 @@ package com.pickit.seller.entity;
 import com.pickit.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
+
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "seller")
 public class Seller {
@@ -32,7 +36,6 @@ public class Seller {
     @Column(nullable = false, unique = true)
     private String storeAddress;
 
-    @Builder.Default
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SellerStatus status = SellerStatus.PENDING;
@@ -43,5 +46,23 @@ public class Seller {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public Seller(User user, String businessNumber, String storeName, String storeAddress) {
+        this.user = user;
+        this.businessNumber = businessNumber;
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+        this.status = SellerStatus.PENDING;
+    }
+
+    // 변경 메서드
+    public void updateStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public void updateStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
     }
 }
