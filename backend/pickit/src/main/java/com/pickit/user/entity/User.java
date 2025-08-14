@@ -3,6 +3,7 @@ package com.pickit.user.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pickit.global.common.BaseEntity;
 import com.pickit.global.common.Role;
+import com.pickit.seller.entity.Seller;
 import com.pickit.user.dto.UserResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -52,4 +53,7 @@ public class User extends BaseEntity {
 
     @Column(name = "social_provider")
     private String socialProvider;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Seller seller;
 }
