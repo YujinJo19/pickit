@@ -1,6 +1,9 @@
 package com.pickit.user.service.impl;
 
 import com.pickit.global.common.Role;
+import com.pickit.global.exception.customException.EmailAlreadyExistsException;
+import com.pickit.global.exception.customException.EmailNotVerifiedException;
+import com.pickit.global.exception.customException.UserNotFoundException;
 import com.pickit.user.dto.UserProfileUpdateRequest;
 import com.pickit.user.dto.UserResponse;
 import com.pickit.user.dto.UserSignupRequest;
@@ -28,25 +31,21 @@ public class UserServiceImpl implements UserService {
     // ID로 유저 조회
     private User getExistingUserById(Long id) {
         return userRepository.findById(id)
-            .orElseThrow(()-> {
-                log.error("사용자 조회 실패 - ID: {}", id);
-                return new RuntimeException("해당 사용자를 찾을 수 없습니다.");
-            });
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
     }
 
     // 1. 회원가입 (비밀번호 암호화 후 저장)
     @Override
     public User registerUser(UserSignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            log.warn("회원가입 실패 - 이미 존재하는 이메일: {}", request.getEmail());
-            throw new RuntimeException("이미 존재하는 이메일입니다.");
+            throw new EmailAlreadyExistsException("이미 존재하는 이메일입니다.");
         }
 
         String verifiedKey = "email:verified:" + request.getEmail();
         String verified = redisTemplate.opsForValue().get(verifiedKey);
 
         if (!"true".equals(verified)) {
-            throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
+            throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
         }
 
         User user = User.builder()

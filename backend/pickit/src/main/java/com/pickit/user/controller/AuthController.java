@@ -1,5 +1,9 @@
 package com.pickit.user.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pickit.global.common.Role;
+import com.pickit.seller.dto.SellerSignupRequest;
+import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
 import com.pickit.user.entity.User;
 import com.pickit.user.service.AuthService;
@@ -14,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 
 @Slf4j
@@ -22,19 +28,57 @@ import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final ObjectMapper objectMapper;
     private final UserService userService;
     private final AuthService authService;
+    private final SellerService sellerService;
 
     // 1. 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@Valid @RequestBody UserSignupRequest request) {
-        User created = userService.registerUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> signup(@RequestBody Map<String, Object> requestBody) {
+        String roleStr = (String) requestBody.get("role");
+        if (roleStr == null) {
+            return ResponseEntity.badRequest().body("Role is required");
+        }
+
+        Role role;
+        try {
+            role = Role.valueOf(roleStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid role");
+        }
+
+        switch (role) {
+            case USER:
+                UserSignupRequest userRequest = objectMapper.convertValue(requestBody, UserSignupRequest.class);
+                User createdUser = userService.registerUser(userRequest);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+
+            case SELLER:
+                SellerSignupRequest sellerSignupRequest = objectMapper.convertValue(requestBody, SellerSignupRequest.class);
+                sellerService.registerSeller(sellerSignupRequest);
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+
+            default:
+                return ResponseEntity.badRequest().body("Unsupported role");
+        }
     }
 
     // 2. 로그인
-    @PostMapping("/login")
-    public ResponseEntity <TokenResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+    @PostMapping("/login/{role}")
+    public ResponseEntity <TokenResponse> login(
+            @PathVariable String role,
+            @Valid @RequestBody LoginRequest request,
+                                                HttpServletResponse response) {
+        // Role 검증
+        Role userRole;
+        try {
+            userRole = Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
+        }
         TokenResponse tokenResponse = authService.login(request.getEmail(), request.getPassword());
 
         // 쿠키 생성

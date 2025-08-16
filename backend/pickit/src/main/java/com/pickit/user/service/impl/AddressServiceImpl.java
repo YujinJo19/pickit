@@ -1,5 +1,6 @@
 package com.pickit.user.service.impl;
 
+import com.pickit.global.exception.customException.UserNotFoundException;
 import com.pickit.user.dto.AddressRequest;
 import com.pickit.user.dto.AddressResponse;
 import com.pickit.user.entity.Address;
@@ -24,7 +25,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressResponse createAddress(Long userId, AddressRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
 
         Address address = Address.builder()
                 .user(user)

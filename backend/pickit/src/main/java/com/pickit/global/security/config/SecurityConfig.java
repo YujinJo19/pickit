@@ -46,7 +46,7 @@ public class SecurityConfig {
                         // static 리소스
                         .requestMatchers("/favicon.ico", "/static/**", "/public/**").permitAll()
                         // 인증 API 허용 (회원가입/로그인)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/email/**").permitAll()
 
                         // 그 외는 인증 필요
                         .anyRequest().authenticated()
