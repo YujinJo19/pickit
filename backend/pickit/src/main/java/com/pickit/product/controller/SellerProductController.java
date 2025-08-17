@@ -5,6 +5,7 @@ import com.pickit.product.dto.ProductCreateRequest;
 
 import com.pickit.product.dto.ProductUpdateRequest;
 import com.pickit.product.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Product API", description = "상품 관련 API")
 @RequestMapping("/api/seller/products")
 @RequiredArgsConstructor
 public class SellerProductController {

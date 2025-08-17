@@ -16,13 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
 
     @Override
+    @Transactional
     public ProductResponse create(ProductCreateRequest request, Long sellerId) {
         Seller seller =getSellerOrThrow(sellerId);
 
@@ -38,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId) {
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
@@ -50,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void delete(Long productId, Long sellerId) {
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
@@ -57,7 +60,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<ProductResponse> getMine(Long sellerId) {
         return productRepository.findAllBySellerId(sellerId)
                 .stream().map(this::toResponse).toList();
