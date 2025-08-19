@@ -53,29 +53,52 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
+    // 사용자를 찾을 수 없음
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, "User Not Found", ex.getMessage());
     }
 
+    // 중복된 이메일
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailExists(EmailAlreadyExistsException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Email Already Exists", ex.getMessage());
     }
 
+    // 인증되지 않은 이메일로 요청
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<ErrorResponse> handleEmailNotVerified(EmailNotVerifiedException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Email Not Verified", ex.getMessage());
     }
 
+    // 비밀번호 재설정 요청 초과
     @ExceptionHandler(TempPasswordRequestLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleTempPasswordLimit(TempPasswordRequestLimitExceededException ex) {
         return buildErrorResponse(HttpStatus.TOO_MANY_REQUESTS, "Temp Password Limit Exceeded", ex.getMessage());
     }
 
+    // 이메일 인증 실패
     @ExceptionHandler(EmailVerificationFailedException.class)
     public ResponseEntity<ErrorResponse> handleEmailVerificationFailed(EmailVerificationFailedException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Email Verification Failed", ex.getMessage());
+    }
+
+    // 판매자 조회 실패
+    @ExceptionHandler(SellerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleSellerNotFound(SellerNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Seller Not Found", ex.getMessage());
+    }
+
+    // 상품 조회 실패
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "Product Not Found", ex.getMessage());
+    }
+
+    // 비인가 상태에서 상품 접근 시
+    @ExceptionHandler(UnauthorizedProductAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedProduct(UnauthorizedProductAccessException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "Unauthorized Access", ex.getMessage());
     }
 
 }
