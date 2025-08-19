@@ -1,92 +1,71 @@
 package com.pickit.product.service.impl;
 
-import com.pickit.product.dto.ProductCreateRequest;
-import com.pickit.product.dto.ProductResponse;
-import com.pickit.product.dto.ProductUpdateRequest;
+import com.pickit.global.exception.customException.ProductNotFoundException;
+import com.pickit.product.dto.ProductDetailResponse;
 import com.pickit.product.entity.Product;
+import com.pickit.product.entity.ProductImage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.pickit.product.dto.ProductResponse;
+import com.pickit.product.mapper.ProductMapper;
 import com.pickit.product.repository.ProductRepository;
 import com.pickit.product.service.ProductService;
-import com.pickit.seller.entity.Seller;
-import com.pickit.seller.repository.SellerRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
 
     @Override
-    @Transactional
-    public ProductResponse create(ProductCreateRequest request, Long sellerId) {
-        Seller seller =getSellerOrThrow(sellerId);
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(ProductMapper::toResponse);
+    }
 
-        Product product = Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .seller(seller)
+    @Override
+    @Transactional(readOnly = true)
+    public ProductDetailResponse getProductDetail(Long id) {
+        Product product = productRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ProductNotFoundException("상품이 없습니다."));
+
+        return ProductDetailResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .discountPrice(product.getDiscountPrice())
+                .description(product.getDescription())
+                .categoryId(product.getCategory().getId())
+                .images(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .collect(Collectors.toList()))
+                .inventory(product.getInventories().stream()
+                        .map(inv -> new ProductDetailResponse.InventoryDto(
+                                inv.getColor(),
+                                inv.getSize(),
+                                inv.getQuantity()))
+                        .collect(Collectors.toList()))
                 .build();
-
-        Product saved = productRepository.save(product);
-        return toResponse(saved);
     }
 
     @Override
-    @Transactional
-    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId) {
-        Product product = getProductOrThrow(productId);
-        validateOwner(product, sellerId);
-
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setDescription(request.getDescription());
-
-        return toResponse(product);
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable) {
+        return productRepository.findByCategoryWithDetails(categoryId, pageable)
+                .map(ProductMapper::toResponse);
     }
 
     @Override
-    @Transactional
-    public void delete(Long productId, Long sellerId) {
-        Product product = getProductOrThrow(productId);
-        validateOwner(product, sellerId);
-        productRepository.delete(product);
-    }
-
-    @Override
-    public List<ProductResponse> getMine(Long sellerId) {
-        return productRepository.findAllBySellerId(sellerId)
-                .stream().map(this::toResponse).toList();
-    }
-
-    private Seller getSellerOrThrow(Long sellerId) {
-        return sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾을 수 없습니다."));
-    }
-
-    private Product getProductOrThrow(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
-    }
-
-    private void validateOwner(Product product, Long sellerId) {
-        if (!product.getSeller().getId().equals(sellerId)) {
-            throw new IllegalArgumentException("해당 판매자의 상품이 아닙니다.");
-        }
-    }
-
-    private ProductResponse toResponse(Product p) {
-        return ProductResponse.builder()
-                .id(p.getId())
-                .name(p.getName())
-                .price(p.getPrice())
-                .description(p.getDescription())
-                .build();
+    @Transactional(readOnly = true)
+    public Page<ProductResponse> searchProducts(String keyword, Pageable pageable) {
+        return productRepository.searchByKeyword(keyword, pageable)
+                .map(ProductMapper::toResponse);
     }
 }
+

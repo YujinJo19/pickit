@@ -1,21 +1,20 @@
 package com.pickit.product.service;
 
-import com.pickit.product.dto.ProductCreateRequest;
+import com.pickit.product.dto.ProductDetailResponse;
 import com.pickit.product.dto.ProductResponse;
-import com.pickit.product.dto.ProductUpdateRequest;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
-    // 상품 등록
-    ProductResponse create(ProductCreateRequest request, Long sellerId);
+    // 전체 상품 조회
+    Page<ProductResponse> getAllProducts(Pageable pageable);
 
-    // 상품 정보 수정
-    ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId);
+    // 상품 상세 조회
+    ProductDetailResponse getProductDetail(Long productId);
 
-    // 상품 삭제
-    void delete(Long productId, Long sellerId);
+    // 카테고리별 상품 조회
+    Page<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable);
 
-    // 내 상품 보기 - 판매자
-    List<ProductResponse> getMine(Long sellerId);
+    // 상품 검색
+    Page<ProductResponse> searchProducts(String keyword, Pageable pageable);
 }
