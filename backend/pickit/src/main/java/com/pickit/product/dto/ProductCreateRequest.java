@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,4 +22,12 @@ public class ProductCreateRequest {
 
     @NotBlank(message = "설명은 필수입니다.")
     private String description;
+
+    private Integer discountPrice;
+
+    private Long categoryId;
+
+    private List<String> images;
+
+    private List<ProductDetailResponse.InventoryDto> inventory;
 }
