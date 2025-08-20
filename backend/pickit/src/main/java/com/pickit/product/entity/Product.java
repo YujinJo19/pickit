@@ -1,8 +1,12 @@
 package com.pickit.product.entity;
 
 import com.pickit.seller.entity.Seller;
+import com.pickit.product.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,10 +26,33 @@ public class Product {
     @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = false)
+    private Integer discountPrice;
+
     @Column(nullable = false, length = 1000)
     private String description;
 
+    // 판매자
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    // 카테고리
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    // 상품 이미지 리스트
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    private List<ProductImage> images = new ArrayList<>();
+
+    // 상품 재고/옵션
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    private List<Inventory> inventories = new ArrayList<>();
 }
