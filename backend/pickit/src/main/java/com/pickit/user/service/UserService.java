@@ -31,4 +31,7 @@ public interface UserService {
 
     // 7. 이메일 중복 확인
     boolean isEmailDuplicate(String email);
+
+    // 8. 역할 조회
+    Role getRoleByEmail(String email);
 }

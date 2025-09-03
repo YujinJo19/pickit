@@ -1,5 +1,6 @@
 package com.pickit.global.security.jwt;
 
+import com.pickit.global.common.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -67,8 +68,14 @@ public class JwtService {
         }
     }
 
-    public String createAccessToken(String username) {
-        return createToken(username, accessExpiration);
+    public String createAccessToken(String username, Role role) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role.name())  // role 추가
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String createRefreshToken(String username) {

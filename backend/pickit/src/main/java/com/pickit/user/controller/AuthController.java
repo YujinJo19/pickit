@@ -65,20 +65,10 @@ public class AuthController {
     }
 
     // 2. 로그인
-    @PostMapping("/login/{role}")
+    @PostMapping("/login")
     public ResponseEntity <TokenResponse> login(
-            @PathVariable String role,
             @Valid @RequestBody LoginRequest request,
                                                 HttpServletResponse response) {
-        // Role 검증
-        Role userRole;
-        try {
-            userRole = Role.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(null);
-        }
         TokenResponse tokenResponse = authService.login(request.getEmail(), request.getPassword());
 
         // 쿠키 생성

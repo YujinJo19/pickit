@@ -134,4 +134,12 @@ public class UserServiceImpl implements UserService {
     public boolean isEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    // 8. 역할 조회
+    @Override
+    public Role getRoleByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("User not found"))
+                .getRole();
+    }
 }
