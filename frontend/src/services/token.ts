@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 export const isAutoLogin = () => localStorage.getItem("autoLogin") === "true";
 
 export const setToken = (token: string) => {
@@ -18,4 +20,20 @@ export const removeToken = () => {
   localStorage.removeItem("accessToken");
   sessionStorage.removeItem("accessToken");
   localStorage.removeItem("autoLogin");
+};
+
+export const decodeToken = (token: string) => {
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.log("Invalid token", error);
+    return null;
+  }
+};
+
+export const getRoleFromToken = (token: string) => {
+  const decoded: any = decodeToken(token);
+  console.log(decoded);
+
+  return decoded ? decoded?.role : null;
 };
