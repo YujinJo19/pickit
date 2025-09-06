@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 
 @Slf4j
@@ -35,20 +33,8 @@ public class AuthController {
 
     // 1. 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody Map<String, Object> requestBody) {
-        String roleStr = (String) requestBody.get("role");
-        if (roleStr == null) {
-            return ResponseEntity.badRequest().body("Role is required");
-        }
-
-        Role role;
-        try {
-            role = Role.valueOf(roleStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid role");
-        }
-
-        switch (role) {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest requestBody) {
+        switch (requestBody.getRole()) {
             case USER:
                 UserSignupRequest userRequest = objectMapper.convertValue(requestBody, UserSignupRequest.class);
                 User createdUser = userService.registerUser(userRequest);
@@ -65,20 +51,11 @@ public class AuthController {
     }
 
     // 2. 로그인
-    @PostMapping("/login/{role}")
+    @PostMapping("/login")
     public ResponseEntity <TokenResponse> login(
-            @PathVariable String role,
             @Valid @RequestBody LoginRequest request,
                                                 HttpServletResponse response) {
-        // Role 검증
-        Role userRole;
-        try {
-            userRole = Role.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(null);
-        }
+
         TokenResponse tokenResponse = authService.login(request.getEmail(), request.getPassword());
 
         // 쿠키 생성
