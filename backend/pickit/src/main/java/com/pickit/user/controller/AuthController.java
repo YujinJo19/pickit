@@ -1,7 +1,6 @@
 package com.pickit.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pickit.global.common.Role;
 import com.pickit.seller.dto.SellerSignupRequest;
 import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
@@ -18,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 
 @Slf4j
@@ -35,20 +32,9 @@ public class AuthController {
 
     // 1. 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody Map<String, Object> requestBody) {
-        String roleStr = (String) requestBody.get("role");
-        if (roleStr == null) {
-            return ResponseEntity.badRequest().body("Role is required");
-        }
+    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest requestBody) {
 
-        Role role;
-        try {
-            role = Role.valueOf(roleStr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid role");
-        }
-
-        switch (role) {
+        switch (requestBody.getRole()) {
             case USER:
                 UserSignupRequest userRequest = objectMapper.convertValue(requestBody, UserSignupRequest.class);
                 User createdUser = userService.registerUser(userRequest);
@@ -67,6 +53,7 @@ public class AuthController {
     // 2. 로그인
     @PostMapping("/login")
     public ResponseEntity <TokenResponse> login(
+            @PathVariable String role,
             @Valid @RequestBody LoginRequest request,
                                                 HttpServletResponse response) {
         TokenResponse tokenResponse = authService.login(request.getEmail(), request.getPassword());
