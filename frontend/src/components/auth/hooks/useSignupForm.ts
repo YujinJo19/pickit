@@ -2,6 +2,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, SignupFormValues } from "../../../schemas/signupSchema";
 import { LoginFormValues, loginSchema } from "../../../schemas/loginSchema";
+import {
+  SellerSignupFormValues,
+  sellerSignupSchema,
+} from "../../../schemas/sellerSignupSchema";
 
 export const useSignupForm = () =>
   useForm<SignupFormValues>({
@@ -12,5 +16,11 @@ export const useSignupForm = () =>
 export const useLoginForm = () =>
   useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    mode: "onBlur", // 포커스 벗어날 때 검증
+    mode: "onBlur",
+  });
+
+export const useSellerSignupForm = () =>
+  useForm<SellerSignupFormValues>({
+    resolver: zodResolver(sellerSignupSchema),
+    mode: "onBlur",
   });

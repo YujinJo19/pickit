@@ -35,7 +35,7 @@ const Signup = () => {
   const { formatTime, isExpired, startTimer, resetTimer } = useEmailTimer();
 
   const onValid = async (data: any) => {
-    const { email, password, name } = data;
+    const { email, password, name, phoneNumber } = data;
     if (!isCodeVerified) {
       setError("code", { message: "이메일 인증이 필요합니다." });
       return;
@@ -48,6 +48,8 @@ const Signup = () => {
           email,
           password,
           name,
+          phoneNumber,
+          role: "USER",
         },
       })
     );

@@ -2,6 +2,9 @@ import { z } from "zod";
 
 export const sellerSignupSchema = z
   .object({
+    storeName: z.string().min(1, "판매자명을 입력해주세요."),
+    storeAddress: z.string().min(1, "사업장 주소를 입력해주세요."),
+    businessNumber: z.string().min(1, "사업자번호 입력해주세요."),
     name: z.string().min(1, "이름을 입력해주세요."),
     email: z.string().email("올바른 이메일 형식이어야 합니다."),
     code: z.string().min(1, "인증 코드를 입력해주세요."),
@@ -16,4 +19,4 @@ export const sellerSignupSchema = z
     message: "비밀번호가 일치하지 않습니다.",
   });
 
-export type SignupFormValues = z.infer<typeof sellerSignupSchema>;
+export type SellerSignupFormValues = z.infer<typeof sellerSignupSchema>;

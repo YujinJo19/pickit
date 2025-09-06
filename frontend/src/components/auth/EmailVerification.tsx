@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { SignupProps } from "./SignupForm";
 import { styled } from "styled-components";
 import Input from "../ui/Input";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 const InputButtonContainer = styled.div`
   display: flex;
@@ -28,7 +28,27 @@ export const ErrorMessage = styled.p`
   margintop: 4px;
 `;
 
-const EmailVerification = ({
+// 1️⃣ 하위 컴포넌트용 폼 타입 정의
+export interface EmailVerificationForm {
+  email: string;
+  code: string;
+}
+
+// 2️⃣ 하위 컴포넌트 Props 정의
+interface EmailVerificationProps {
+  register: UseFormRegister<EmailVerificationForm>;
+  errors: FieldErrors<EmailVerificationForm>;
+  dispatchEmailCheck: () => void;
+  dispatchCodeSend: () => void;
+  dispatchCodeVerify: () => void;
+  isEmailDuplicated: boolean;
+  isCodeSent: boolean;
+  isCodeVerified: boolean;
+  formatTime: () => string;
+  isExpired: boolean;
+}
+
+function EmailVerification<TForm extends FieldValues & EmailVerificationForm>({
   register,
   errors,
   dispatchEmailCheck,
@@ -39,7 +59,7 @@ const EmailVerification = ({
   isCodeVerified,
   formatTime,
   isExpired,
-}: SignupProps) => {
+}: EmailVerificationProps) {
   if (isEmailDuplicated) {
     return (
       <>
@@ -117,6 +137,6 @@ const EmailVerification = ({
       name="email"
     />
   );
-};
+}
 
 export default EmailVerification;
