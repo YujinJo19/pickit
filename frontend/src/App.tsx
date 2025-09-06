@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { getToken, removeToken, setToken } from "./services/token";
 import { refreshAccessToken } from "./store/thunks/authThunk";
 import SellerDashboard from "./pages/SellerDashboard";
+import SellerSignup from "./pages/SellerSignup";
 
 const AppContainer = styled.div`
   display: grid;
@@ -42,6 +43,7 @@ function App() {
         // auth
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/signup/seller" element={<SellerSignup />} />
         // seller
         <Route path="/seller/dashboard" element={<SellerDashboard />} />
       </Routes>
