@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pickit.seller.dto.SellerSignupRequest;
 import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
-import com.pickit.user.entity.User;
 import com.pickit.user.service.AuthService;
 import com.pickit.user.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -12,14 +11,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -32,21 +31,18 @@ public class AuthController {
 
     // 1. 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest requestBody) {
-
-        switch (requestBody.getRole()) {
-            case USER:
-                UserSignupRequest userRequest = objectMapper.convertValue(requestBody, UserSignupRequest.class);
-                User createdUser = userService.registerUser(userRequest);
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-
-            case SELLER:
-                SellerSignupRequest sellerSignupRequest = objectMapper.convertValue(requestBody, SellerSignupRequest.class);
-                sellerService.registerSeller(sellerSignupRequest);
-                return ResponseEntity.status(HttpStatus.CREATED).build();
-
-            default:
-                return ResponseEntity.badRequest().body("Unsupported role");
+    public ResponseEntity<?> signup(@RequestBody Map<String, Object> requestBody) {
+        String role = (String) requestBody.get("role");
+        if ("USER".equals(role)) {
+            UserSignupRequest userRequest = objectMapper.convertValue(requestBody, UserSignupRequest.class);
+            userService.registerUser(userRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else if ("SELLER".equals(role)) {
+            SellerSignupRequest sellerRequest = objectMapper.convertValue(requestBody, SellerSignupRequest.class);
+            sellerService.registerSeller(sellerRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.badRequest().body("Unsupported role");
         }
     }
 
@@ -111,7 +107,6 @@ public class AuthController {
         try {
             authService.logout(accessToken);
         } catch (Exception e) {
-            log.error("logout failed", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

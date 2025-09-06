@@ -1,5 +1,4 @@
-package com.pickit.seller.service.impl;
-
+package com.pickit.seller.service.impl;;
 import com.pickit.seller.dto.SellerResponse;
 import com.pickit.seller.dto.SellerSignupRequest;
 import com.pickit.seller.dto.SellerUpdateRequest;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class SellerServiceImpl implements SellerService {
     private Seller getExistingSellerById(Long id) {
         return sellerRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.error("판매자 조회 실패 - ID: {}", id);
+                    SellerServiceImpl.log.error("판매자 조회 실패 - ID: {}", id);
                     return new NoSuchElementException("해당 판매자를 찾을 수 없습니다.");
                 });
     }
@@ -96,6 +94,6 @@ public class SellerServiceImpl implements SellerService {
     public void deleteSeller(Long id) {
         Seller seller = getExistingSellerById(id);
         sellerRepository.delete(seller);
-        log.info("판매자 삭제 완료 - ID: {}", id);
+        SellerServiceImpl.log.info("판매자 삭제 완료 - ID: {}", id);
     }
 }
