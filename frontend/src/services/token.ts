@@ -33,7 +33,5 @@ export const decodeToken = (token: string) => {
 
 export const getRoleFromToken = (token: string) => {
   const decoded: any = decodeToken(token);
-  console.log(decoded);
-
-  return decoded ? decoded?.role : null;
+  return decoded ? decoded?.role : "";
 };

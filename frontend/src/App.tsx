@@ -9,6 +9,7 @@ import { getToken, removeToken, setToken } from "./services/token";
 import { refreshAccessToken } from "./store/thunks/authThunk";
 import SellerDashboard from "./pages/SellerDashboard";
 import SellerSignup from "./pages/SellerSignup";
+import { PrivateRoute } from "./routes/PrivateRoute";
 
 const AppContainer = styled.div`
   display: grid;
@@ -45,7 +46,14 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup/seller" element={<SellerSignup />} />
         // seller
-        <Route path="/seller/dashboard" element={<SellerDashboard />} />
+        <Route
+          path="/seller/dashboard"
+          element={
+            <PrivateRoute roles={["SELLER"]}>
+              <SellerDashboard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </AppContainer>
   );
