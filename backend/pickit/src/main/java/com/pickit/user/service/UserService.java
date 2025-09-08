@@ -13,9 +13,9 @@ public interface UserService {
     // 1. 회원가입
     User registerUser(UserSignupRequest request);
 
-    // 2. 로그인
-    Optional<User> authenticateUser(String email, String password);
-
+    // 2. 유저 엔티티 조회
+    User getUserEntityByEmail(String email);
+    
     // 3. 회원정보 조회
     UserResponse getUserById(Long id);
     UserResponse getUserByEmail(String email);

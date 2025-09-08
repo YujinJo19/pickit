@@ -6,11 +6,14 @@ import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
 import com.pickit.user.service.AuthService;
 import com.pickit.user.service.UserService;
+import com.pickit.user.service.impl.EmailServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,9 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     private final SellerService sellerService;
+
+    private final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
 
     // 1. 회원가입
     @PostMapping("/signup")
@@ -49,11 +55,11 @@ public class AuthController {
     // 2. 로그인
     @PostMapping("/login")
     public ResponseEntity <TokenResponse> login(
-            @PathVariable String role,
             @Valid @RequestBody LoginRequest request,
                                                 HttpServletResponse response) {
         TokenResponse tokenResponse = authService.login(request.getEmail(), request.getPassword());
 
+        logger.info(String.valueOf(request));
         // 쿠키 생성
         Cookie refreshTokenCookie = new Cookie("refreshToken", tokenResponse.getRefreshToken());
         refreshTokenCookie.setHttpOnly(true);
