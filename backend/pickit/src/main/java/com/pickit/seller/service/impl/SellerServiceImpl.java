@@ -1,4 +1,6 @@
-package com.pickit.seller.service.impl;;
+package com.pickit.seller.service.impl;
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.seller.dto.SellerResponse;
 import com.pickit.seller.dto.SellerSignupRequest;
 import com.pickit.seller.dto.SellerUpdateRequest;
@@ -14,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,7 +30,7 @@ public class SellerServiceImpl implements SellerService {
         return sellerRepository.findById(id)
                 .orElseThrow(() -> {
                     SellerServiceImpl.log.error("판매자 조회 실패 - ID: {}", id);
-                    return new NoSuchElementException("해당 판매자를 찾을 수 없습니다.");
+                    return new BusinessException(ErrorCode.SELLER_NOT_FOUND);
                 });
     }
     
@@ -52,7 +53,7 @@ public class SellerServiceImpl implements SellerService {
 
         // 하나라도 중복이면 예외 발생
         if (!errors.isEmpty()) {
-            throw new IllegalArgumentException(errors + "가 이미 존재합니다.");
+            throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = userService.registerUser(request);
@@ -82,7 +83,7 @@ public class SellerServiceImpl implements SellerService {
         // 값이 없으면 예외 발생
         if ((request.getStoreName() == null || request.getStoreName().isBlank())
                 && (request.getStoreAddress() == null || request.getStoreAddress().isBlank())) {
-            throw new IllegalArgumentException("수정할 정보가 없습니다.");
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         SellerMapper.updateSellerFromRequest(seller, request);
         return SellerMapper.toResponse(seller);

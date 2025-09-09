@@ -1,9 +1,8 @@
 package com.pickit.user.service.impl;
 
 import com.pickit.global.common.Role;
-import com.pickit.global.exception.customException.EmailAlreadyExistsException;
-import com.pickit.global.exception.customException.EmailNotVerifiedException;
-import com.pickit.global.exception.customException.UserNotFoundException;
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.user.dto.UserProfileUpdateRequest;
 import com.pickit.user.dto.UserResponse;
 import com.pickit.user.dto.UserSignupRequest;
@@ -17,8 +16,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j  // 로그
 @Service
 @RequiredArgsConstructor
@@ -31,21 +28,21 @@ public class UserServiceImpl implements UserService {
     // ID로 유저 조회
     private User getExistingUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     // 1. 회원가입 (비밀번호 암호화 후 저장)
     @Override
     public User registerUser(UserSignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("이미 존재하는 이메일입니다.");
+            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
 
         String verifiedKey = "email:verified:" + request.getEmail();
         String verified = redisTemplate.opsForValue().get(verifiedKey);
 
         if (!"true".equals(verified)) {
-            throw new EmailNotVerifiedException("이메일 인증이 완료되지 않았습니다.");
+            throw new BusinessException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
 
         User user = User.builder()
@@ -66,14 +63,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(()-> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     // 3. 회원정보 조회 - id
     @Override
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return UserMapper.toResponse(user);
     }
 
@@ -81,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return UserMapper.toResponse(user);
     }
 
@@ -97,9 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUserProfile(Long id, UserProfileUpdateRequest request) {
         User user = getExistingUserById(id);
-
         UserMapper.updateUserFromRequest(user, request);
-
         User updatedUser = userRepository.save(user);
 
         return UserMapper.toResponse(updatedUser);
@@ -125,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Role getRoleByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(()-> new RuntimeException("User not found"))
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND))
                 .getRole();
     }
 }

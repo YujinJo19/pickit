@@ -1,9 +1,7 @@
 package com.pickit.product.service.impl;
 
-import com.pickit.global.exception.customException.CategoryNotFoundException;
-import com.pickit.global.exception.customException.ProductNotFoundException;
-import com.pickit.global.exception.customException.SellerNotFoundException;
-import com.pickit.global.exception.customException.UnauthorizedProductAccessException;
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.product.dto.ProductCreateRequest;
 import com.pickit.product.dto.ProductResponse;
 import com.pickit.product.dto.ProductUpdateRequest;
@@ -23,10 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.pickit.product.mapper.ProductMapper.toResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +37,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
     public ProductResponse create(ProductCreateRequest request, Long sellerId) {
         Seller seller =getSellerOrThrow(sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Product product = Product.builder()
                 .name(request.getName())
@@ -79,7 +74,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
 
         product.setName(request.getName());
         product.setPrice(request.getPrice());
@@ -126,17 +121,17 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     private Seller getSellerOrThrow(Long sellerId) {
         return sellerRepository.findById(sellerId)
-                .orElseThrow(() -> new SellerNotFoundException("판매자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SELLER_NOT_FOUND));
     }
 
     private Product getProductOrThrow(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     private void validateOwner(Product product, Long sellerId) {
         if (!product.getSeller().getId().equals(sellerId)) {
-            throw new UnauthorizedProductAccessException("해당 판매자의 상품이 아닙니다.");
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_PRODUCT_ACCESS);
         }
     }
 }

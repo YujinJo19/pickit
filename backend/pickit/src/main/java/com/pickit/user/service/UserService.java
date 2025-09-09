@@ -6,7 +6,6 @@ import com.pickit.user.dto.UserResponse;
 import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
 
-import java.util.Optional;
 
 public interface UserService {
 

@@ -6,7 +6,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ErrorResponse {
-    private int status;
-    private String error;
-    private String message;
+    private final int status;
+    private final String error;
+    private final String message;
+
+    public static ErrorResponse of(ErrorCode errorCode, String detailMessage) {
+        return new ErrorResponse(
+                errorCode.getStatus().value(),
+                errorCode.name(),
+                detailMessage != null ? detailMessage : errorCode.getMessage()
+        );
+    }
 }

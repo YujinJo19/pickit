@@ -1,7 +1,7 @@
 package com.pickit.user.service.impl;
 
-import com.pickit.global.exception.customException.TempPasswordRequestLimitExceededException;
-import com.pickit.global.exception.customException.UserNotFoundException;
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.user.entity.User;
 import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.PasswordResetService;
@@ -26,12 +26,12 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final RedisTemplate<String, String> redisTemplate;
 
     // 임시 비밀번호 생성 후 저장
-    public void processResetPassword(String email) throws RuntimeException {
+    public void processResetPassword(String email) {
         // 하루 최대 횟수 초과 확인
         checkRequestLimit(email);
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         String tempPassword = generateTempPassword();
         user.setPassword(passwordEncoder.encode(tempPassword));
@@ -51,7 +51,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         String key = "reset:" + email;
         String value = redisTemplate.opsForValue().get(key);
         int count = value == null ? 0 : Integer.parseInt(value);
-        if (count >= 3) throw new TempPasswordRequestLimitExceededException("하루 최대 요청 횟수를 초과했습니다.");
+        if (count >= 3) throw new BusinessException(ErrorCode.PASSWORD_REQUEST_LIMIT_EXCEEDED);
     }
 
     // 비밀번호 변경 요청 카운트 증가
