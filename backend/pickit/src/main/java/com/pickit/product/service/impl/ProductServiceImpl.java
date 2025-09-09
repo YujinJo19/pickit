@@ -1,6 +1,7 @@
 package com.pickit.product.service.impl;
 
-import com.pickit.global.exception.customException.ProductNotFoundException;
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.product.dto.ProductDetailResponse;
 import com.pickit.product.entity.Product;
 import com.pickit.product.entity.ProductImage;
@@ -33,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductDetail(Long id) {
         Product product = productRepository.findByIdWithDetails(id)
-                .orElseThrow(() -> new ProductNotFoundException("상품이 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         return ProductDetailResponse.builder()
                 .id(product.getId())

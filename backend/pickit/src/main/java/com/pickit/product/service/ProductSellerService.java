@@ -1,13 +1,10 @@
 package com.pickit.product.service;
 
 import com.pickit.product.dto.ProductCreateRequest;
-import com.pickit.product.dto.ProductDetailResponse;
 import com.pickit.product.dto.ProductResponse;
 import com.pickit.product.dto.ProductUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface ProductSellerService {
     // 상품 등록

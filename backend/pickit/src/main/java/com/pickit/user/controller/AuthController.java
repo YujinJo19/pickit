@@ -6,7 +6,6 @@ import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
 import com.pickit.user.service.AuthService;
 import com.pickit.user.service.UserService;
-import com.pickit.user.service.impl.EmailServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
