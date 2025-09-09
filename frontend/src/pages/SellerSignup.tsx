@@ -1,29 +1,30 @@
 import React, { useState } from "react";
-import SignupForm from "../components/auth/SignupForm";
-import SignupImage from "../assets/images/signup.png";
 import {
   AuthFormContainer,
   AuthImageContainer,
   AuthPageContainer,
 } from "./Login";
+import SignupImage from "../assets/images/signup.png";
+import SellerSignupForm from "../components/auth/SellerSignupForm";
+import { useSellerSignupForm } from "../components/auth/hooks/useSignupForm";
 import { useAppDispatch } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
+import useEmailTimer from "../components/auth/hooks/useEmailTimer";
 import {
   signup,
   emailCheck,
   sendCode,
   verifyCode,
 } from "../store/thunks/authThunk";
-import { useSignupForm } from "../components/auth/hooks/useSignupForm";
-import useEmailTimer from "../components/auth/hooks/useEmailTimer";
-import { useNavigate } from "react-router-dom";
-const Signup = () => {
+
+const SellerSignup = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
     watch,
-  } = useSignupForm();
+  } = useSellerSignupForm();
   const [isEmailDuplicated, setIsEmailDuplicated] = useState(true);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setisCodeVerified] = useState(false);
@@ -35,7 +36,15 @@ const Signup = () => {
   const { formatTime, isExpired, startTimer, resetTimer } = useEmailTimer();
 
   const onValid = async (data: any) => {
-    const { email, password, name, phoneNumber } = data;
+    const {
+      email,
+      password,
+      name,
+      phoneNumber,
+      storeName,
+      storeAddress,
+      businessNumber,
+    } = data;
     if (!isCodeVerified) {
       setError("code", { message: "이메일 인증이 필요합니다." });
       return;
@@ -49,7 +58,10 @@ const Signup = () => {
           password,
           name,
           phoneNumber,
-          role: "USER",
+          storeName,
+          storeAddress,
+          businessNumber,
+          role: "SELLER",
         },
       })
     );
@@ -107,7 +119,7 @@ const Signup = () => {
         <img src={SignupImage} width={"100%"} alt="SignupImage" />
       </AuthImageContainer>
       <AuthFormContainer>
-        <SignupForm
+        <SellerSignupForm
           onSubmit={handleSubmit(onValid)}
           register={register}
           errors={errors}
@@ -126,4 +138,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SellerSignup;

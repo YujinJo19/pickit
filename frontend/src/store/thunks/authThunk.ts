@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authAPI from "../../services/auth";
-import axiosInstance from "../../services/api";
 
 // 회원정보 조회
 export const getUser = createAsyncThunk(

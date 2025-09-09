@@ -62,26 +62,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    // 2. 로그인 (이메일로 사용자 찾고 비밀번호 확인)
+    // 2. 유저 엔티티 조회
     @Override
-    public Optional<User> authenticateUser(String email, String password) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-
-        if (userOptional.isEmpty()) {
-            log.warn("로그인 실패 - 존재하지 않는 이메일: {}", email);
-            return Optional.empty();
-        }
-
-        User user = userOptional.get();
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            log.warn("로그인 실패 - 이메일: {}, 비밀번호 불일치", email);
-            return Optional.empty();
-        }
-
-        log.info("로그인 성공 - 이메일: {}", email);
-        return Optional.of(user);
+    public User getUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
     }
-
 
     // 3. 회원정보 조회 - id
     @Override
@@ -133,5 +119,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    // 8. 역할 조회
+    @Override
+    public Role getRoleByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("User not found"))
+                .getRole();
     }
 }

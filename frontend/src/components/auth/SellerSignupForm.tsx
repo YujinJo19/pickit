@@ -4,18 +4,15 @@ import Button, { StyledButton } from "../ui/Button";
 import { StyledLoginForm } from "./LoginForm";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import EmailVerification, { EmailVerificationForm } from "./EmailVerification";
+import { SellerFormData } from "../../types/seller";
 
-export interface SignupProps {
+export interface SellerSignupProps {
   onSubmit?: (e: any) => void;
-  register: UseFormRegister<{
-    name: string;
-    email: string;
-    code: string;
-    password: string;
-    password2: string;
-    phoneNumber: string;
-  }>;
+  register: UseFormRegister<SellerFormData>;
   errors: FieldErrors<{
+    storeName: string;
+    storeAddress: string;
+    businessNumber: string;
     name: string;
     email: string;
     code: string;
@@ -34,7 +31,7 @@ export interface SignupProps {
   password?: string;
 }
 
-const SignupForm = ({
+const SellerSignupForm = ({
   onSubmit,
   register,
   errors,
@@ -47,10 +44,10 @@ const SignupForm = ({
   formatTime,
   isExpired,
   password,
-}: SignupProps) => {
+}: SellerSignupProps) => {
   return (
     <StyledLoginForm onSubmit={onSubmit}>
-      <h2>회원가입</h2>
+      <h2>판매자 회원가입</h2>
       <div>
         <Input
           label="이름"
@@ -77,6 +74,24 @@ const SignupForm = ({
           field={register("phoneNumber")}
           error={errors.phoneNumber?.message}
           name={"phoneNumber"}
+        />
+        <Input
+          label="판매자명"
+          field={register("storeName")}
+          error={errors.storeName?.message}
+          name={"storeName"}
+        />
+        <Input
+          label="사업장 주소"
+          field={register("storeAddress")}
+          error={errors.storeAddress?.message}
+          name={"storeAddress"}
+        />
+        <Input
+          label="사업장번호"
+          field={register("businessNumber")}
+          error={errors.businessNumber?.message}
+          name={"businessNumber"}
         />
         <Input
           label="비밀번호"
@@ -107,4 +122,4 @@ const SignupForm = ({
   );
 };
 
-export default SignupForm;
+export default SellerSignupForm;
