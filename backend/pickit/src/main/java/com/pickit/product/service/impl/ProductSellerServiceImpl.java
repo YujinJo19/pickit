@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     @Transactional
-    public ProductResponse create(ProductCreateRequest request, Long sellerId) {
+    public ProductResponse create(ProductCreateRequest request, Long sellerId, List<String> imageUrls) {
         Seller seller =getSellerOrThrow(sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -48,13 +49,12 @@ public class ProductSellerServiceImpl implements ProductSellerService {
                 .category(category)
                 .build();
 
-        product.setImages(request.getImages().stream()
+        product.setImages(imageUrls.stream()
                 .map(url -> ProductImage.builder()
                         .imageUrl(url)
                         .product(product)
                         .build())
-                        .collect(Collectors.toList())
-                );
+                .collect(Collectors.toList()));
 
         product.setInventories(request.getInventory().stream()
                 .map(inv -> Inventory.builder()
@@ -70,7 +70,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     @Transactional
-    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId) {
+    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId,  List<String> imageUrls) {
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -82,14 +82,16 @@ public class ProductSellerServiceImpl implements ProductSellerService {
         product.setDescription(request.getDescription());
         product.setCategory(category);
 
-        // 이미지 업데이트
-        product.getImages().clear();
-        product.getImages().addAll(request.getImages().stream()
-                .map(url -> ProductImage.builder()
-                        .imageUrl(url)
-                        .product(product)
-                        .build())
-                .toList());
+        // 이미지 업데이트: 새 이미지가 들어왔을 때만 변경
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            product.getImages().clear();
+            product.getImages().addAll(imageUrls.stream()
+                    .map(url -> ProductImage.builder()
+                            .imageUrl(url)
+                            .product(product)
+                            .build())
+                    .toList());
+        }
 
         // 인벤토리 업데이트
         product.getInventories().clear();
