@@ -2,6 +2,7 @@ package com.pickit.product.service.impl;
 
 import com.pickit.global.exception.BusinessException;
 import com.pickit.global.exception.ErrorCode;
+import com.pickit.product.dto.ImageUploadResult;
 import com.pickit.product.dto.ProductCreateRequest;
 import com.pickit.product.dto.ProductResponse;
 import com.pickit.product.dto.ProductUpdateRequest;
@@ -12,6 +13,7 @@ import com.pickit.product.entity.ProductImage;
 import com.pickit.product.mapper.ProductMapper;
 import com.pickit.product.repository.CategoryRepository;
 import com.pickit.product.repository.ProductRepository;
+import com.pickit.product.service.ProductImageService;
 import com.pickit.product.service.ProductSellerService;
 import com.pickit.seller.entity.Seller;
 import com.pickit.seller.repository.SellerRepository;
@@ -20,9 +22,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +36,13 @@ public class ProductSellerServiceImpl implements ProductSellerService {
     private final ProductRepository productRepository;
     private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductImageService productImageService;
+    private final ProductMapper productMapper;
 
     @Override
     @Transactional
-    public ProductResponse create(ProductCreateRequest request, Long sellerId, List<String> imageUrls) {
-        Seller seller =getSellerOrThrow(sellerId);
+    public ProductResponse create(ProductCreateRequest request, Long sellerId, List<MultipartFile> imageFiles) throws IOException {
+        Seller seller = getSellerOrThrow(sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
 
@@ -49,63 +55,94 @@ public class ProductSellerServiceImpl implements ProductSellerService {
                 .category(category)
                 .build();
 
-        product.setImages(imageUrls.stream()
-                .map(url -> ProductImage.builder()
-                        .imageUrl(url)
+        // 이미지 처리
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            boolean first = true;
+            for (MultipartFile file : imageFiles) {
+                ImageUploadResult res = productImageService.uploadFile(file);
+                ProductImage img = ProductImage.builder()
+                        .imageUrl(res.getImageUrl())
+                        .thumbnailUrl(res.getThumbnailUrl())
+                        .isThumbnail(first)
                         .product(product)
-                        .build())
-                .collect(Collectors.toList()));
+                        .build();
+                product.getImages().add(img);
+                first = false;
+            }
+        }
 
-        product.setInventories(request.getInventory().stream()
-                .map(inv -> Inventory.builder()
-                        .color(inv.getColor())
-                        .size(inv.getSize())
-                        .quantity(inv.getQuantity())
+        // 인벤토리 처리
+        if (request.getInventory() != null) {
+            for (var invDto : request.getInventory()) {
+                Inventory inv = Inventory.builder()
+                        .color(invDto.getColor())
+                        .size(invDto.getSize())
+                        .quantity(invDto.getQuantity())
                         .product(product)
-                        .build())
-                .collect(Collectors.toList()));
+                        .build();
+                product.getInventories().add(inv);
+            }
+        }
 
         return ProductMapper.toResponse(productRepository.save(product));
     }
 
     @Override
     @Transactional
-    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId,  List<String> imageUrls) {
+    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId, List<MultipartFile> imageFiles) throws IOException {
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
+
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
 
         product.setName(request.getName());
         product.setPrice(request.getPrice());
-        product.setDiscountPrice(request.getDiscountPrice());
         product.setDescription(request.getDescription());
+        product.setDiscountPrice(request.getDiscountPrice());
+
         product.setCategory(category);
 
-        // 이미지 업데이트: 새 이미지가 들어왔을 때만 변경
-        if (imageUrls != null && !imageUrls.isEmpty()) {
-            product.getImages().clear();
-            product.getImages().addAll(imageUrls.stream()
-                    .map(url -> ProductImage.builder()
-                            .imageUrl(url)
-                            .product(product)
-                            .build())
-                    .toList());
+        // 이미지 처리
+        List<ProductImage> images = product.getImages();
+        images.forEach(img -> productImageService.deleteFile(img.getImageUrl())); // S3 삭제
+        images.clear();
+
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            boolean first = true;
+            for (MultipartFile file : imageFiles) {
+                ImageUploadResult res = productImageService.uploadFile(file);
+                ProductImage img = ProductImage.builder()
+                        .imageUrl(res.getImageUrl())
+                        .thumbnailUrl(res.getThumbnailUrl())
+                        .isThumbnail(first)
+                        .product(product)
+                        .build();
+                images.add(img);
+                first = false;
+            }
         }
 
-        // 인벤토리 업데이트
-        product.getInventories().clear();
-        product.getInventories().addAll(request.getInventory().stream()
-                .map(inv -> Inventory.builder()
-                        .color(inv.getColor())
-                        .size(inv.getSize())
-                        .quantity(inv.getQuantity())
+        // 인벤토리 처리
+        Set<Inventory> inventories = product.getInventories();
+        inventories.clear();
+        if (request.getInventory() != null && !request.getInventory().isEmpty()) {
+            for (var invDto : request.getInventory()) {
+                Inventory inv = Inventory.builder()
+                        .color(invDto.getColor())
+                        .size(invDto.getSize())
+                        .quantity(invDto.getQuantity())
                         .product(product)
-                        .build())
-                .toList());
+                        .build();
+                inventories.add(inv);
+            }
+        }
 
-        return ProductMapper.toResponse(product);
+
+        return ProductMapper.toResponse(productRepository.save(product));
     }
+
+
 
     @Override
     @Transactional
@@ -117,7 +154,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     public Page<ProductResponse> getMine(Long sellerId, Pageable pageable) {
-        return productRepository.findAllBySellerId(sellerId, pageable)
+        return productRepository.findAllBySeller_Id(sellerId, pageable)
                 .map(ProductMapper::toResponse);
     }
 
