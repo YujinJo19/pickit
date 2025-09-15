@@ -1,6 +1,5 @@
 package com.pickit.product.entity;
 
-import com.pickit.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +19,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "category_name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "category")

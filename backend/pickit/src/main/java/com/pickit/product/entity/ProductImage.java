@@ -18,7 +18,13 @@ public class ProductImage {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(length = 2000)
+    private String thumbnailUrl;
+
+    @Column(nullable = false)
+    private boolean isThumbnail;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 }
