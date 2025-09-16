@@ -3,31 +3,46 @@ package com.pickit.product.mapper;
 import com.pickit.product.dto.ProductCreateRequest;
 import com.pickit.product.dto.ProductDetailResponse;
 import com.pickit.product.dto.ProductResponse;
-import com.pickit.product.dto.ProductUpdateRequest;
 import com.pickit.product.entity.Product;
 import com.pickit.product.entity.ProductImage;
-import com.pickit.seller.entity.Seller;
 import com.pickit.product.entity.Category;
+import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface ProductMapper {
+    // DTO → Entity 변환 (생성 시)
+    static Product toEntity(ProductCreateRequest req, com.pickit.seller.entity.Seller seller, Category category) {
+        return Product.builder()
+                .name(req.getName())
+                .price(req.getPrice())
+                .discountPrice(req.getDiscountPrice())
+                .description(req.getDescription())
+                .category(category)
+                .seller(seller)
+                .build();
+    }
 
-public class ProductMapper {
+    // Entity → Response 변환 (리스트용)
+    static ProductResponse toResponse(Product p) {
+        String thumbnailUrl = p.getImages().stream()
+                .filter(ProductImage::isThumbnail)
+                .findFirst()
+                .map(img -> img.getThumbnailUrl() != null ? img.getThumbnailUrl() : img.getImageUrl())
+                .orElse(null);
 
-    public static ProductResponse toResponse(Product p) {
-        String thumbnailUrl = p.getImages().isEmpty()
-                ? null
-                : p.getImages().get(0).getImageUrl();
         return ProductResponse.builder()
                 .id(p.getId())
                 .name(p.getName())
                 .price(p.getPrice())
-                .thumbnailUrl(thumbnailUrl )
                 .discountPrice(p.getDiscountPrice())
+                .thumbnailUrl(thumbnailUrl)
                 .categoryId(p.getCategory().getId())
                 .build();
     }
 
-    public static ProductDetailResponse toDetailResponse(Product p) {
+    // Entity → 상세 응답
+    static ProductDetailResponse toDetailResponse(Product p) {
         return ProductDetailResponse.builder()
                 .id(p.getId())
                 .name(p.getName())
@@ -37,7 +52,8 @@ public class ProductMapper {
                 .categoryId(p.getCategory().getId())
                 .images(
                         p.getImages().stream()
-                                .map(ProductImage::getImageUrl)
+                                .map(img -> img.getThumbnailUrl() != null ? img.getThumbnailUrl() : img.getImageUrl())
+                                .distinct()
                                 .toList()
                 )
                 .inventory(
@@ -46,26 +62,8 @@ public class ProductMapper {
                                         inv.getColor(),
                                         inv.getSize(),
                                         inv.getQuantity())
-                                ).collect(Collectors.toList())
+                                ).toList()
                 )
                 .build();
-    }
-
-
-    public static Product toEntity(ProductCreateRequest req, Seller seller, Category category) {
-        return Product.builder()
-                .name(req.getName())
-                .price(req.getPrice())
-                .discountPrice(req.getDiscountPrice())
-                .category(category)
-                .seller(seller)
-                .build();
-    }
-
-    public static void updateEntity(Product product, ProductUpdateRequest req, Category category) {
-        product.setName(req.getName());
-        product.setPrice(req.getPrice());
-        product.setDiscountPrice(req.getDiscountPrice());
-        product.setCategory(category);
     }
 }

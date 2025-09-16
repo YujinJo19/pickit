@@ -1,12 +1,13 @@
 package com.pickit.product.entity;
 
 import com.pickit.seller.entity.Seller;
-import com.pickit.product.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -54,5 +55,5 @@ public class Product {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @Builder.Default
-    private List<Inventory> inventories = new ArrayList<>();
+    private Set<Inventory> inventories = new HashSet<>();
 }

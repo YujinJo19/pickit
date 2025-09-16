@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.compile.JavaCompile
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.2.0"
@@ -37,12 +39,24 @@ dependencies {
 	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation ("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation ("software.amazon.awssdk:s3:2.20.40")
+	implementation ("software.amazon.awssdk:auth:2.20.40")
+	implementation("io.github.cdimascio:java-dotenv:5.2.2")
+	implementation("net.coobird:thumbnailator:0.4.1")
+    implementation ("org.sejda.imageio:webp-imageio:0.1.6")
+	implementation ("org.mapstruct:mapstruct:1.5.5.Final")
+	annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
 //	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	compileOnly ("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.withType<JavaCompile> {
+	options.annotationProcessorPath = configurations["annotationProcessor"]
 }
 
 tasks.withType<Test> {
