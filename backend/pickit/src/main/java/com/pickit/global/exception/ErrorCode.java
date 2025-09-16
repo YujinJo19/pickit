@@ -32,7 +32,14 @@ public enum ErrorCode {
     // Auth/Token 관련
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Refresh Token"),
     REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "Refresh Token Mismatch"),
-    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "Access Token Blacklisted");
+    ACCESS_TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "Access Token Blacklisted"),
+
+    // 인증/인가 관련 추가
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Authentication Required"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "Access Denied"),
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "Access Token Expired"),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Access Token");
+
 
     private final HttpStatus status;
     private final String message;

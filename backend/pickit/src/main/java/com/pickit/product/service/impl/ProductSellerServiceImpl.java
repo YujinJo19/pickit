@@ -2,6 +2,7 @@ package com.pickit.product.service.impl;
 
 import com.pickit.global.exception.BusinessException;
 import com.pickit.global.exception.ErrorCode;
+import com.pickit.global.security.util.SecurityUtil;
 import com.pickit.product.dto.ImageUploadResult;
 import com.pickit.product.dto.ProductCreateRequest;
 import com.pickit.product.dto.ProductResponse;
@@ -41,7 +42,8 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     @Transactional
-    public ProductResponse create(ProductCreateRequest request, Long sellerId, List<MultipartFile> imageFiles) throws IOException {
+    public ProductResponse create(ProductCreateRequest request, List<MultipartFile> imageFiles) throws IOException {
+        Long sellerId = SecurityUtil.getSellerIdFromContext();
         Seller seller = getSellerOrThrow(sellerId);
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -89,7 +91,8 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     @Transactional
-    public ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId, List<MultipartFile> imageFiles) throws IOException {
+    public ProductResponse update(Long productId, ProductUpdateRequest request, List<MultipartFile> imageFiles) throws IOException {
+        Long sellerId = SecurityUtil.getSellerIdFromContext();
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
 
@@ -146,14 +149,16 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     @Transactional
-    public void delete(Long productId, Long sellerId) {
+    public void delete(Long productId) {
+        Long sellerId = SecurityUtil.getSellerIdFromContext();
         Product product = getProductOrThrow(productId);
         validateOwner(product, sellerId);
         productRepository.delete(product);
     }
 
     @Override
-    public Page<ProductResponse> getMine(Long sellerId, Pageable pageable) {
+    public Page<ProductResponse> getMine(Pageable pageable) {
+        Long sellerId = SecurityUtil.getSellerIdFromContext();
         return productRepository.findAllBySellerId(sellerId, pageable)
                 .map(ProductMapper::toResponse);
     }

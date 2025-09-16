@@ -68,10 +68,11 @@ public class JwtService {
         }
     }
 
-    public String createAccessToken(String username, Role role) {
+    public String createAccessToken(String username, Role role, Long sellerId) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role.name())  // role 추가
+                .claim("sellerId", sellerId)   // sellerId 추가
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -109,6 +110,10 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Long getSellerIdFromToken(String token) {
+        return parseClaims(token).get("sellerId", Long.class);
     }
 
     public String getUsernameFromToken(String token) {
