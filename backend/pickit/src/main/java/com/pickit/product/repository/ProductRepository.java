@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 판매자별 상품 조회
-    Page<Product> findAllBySeller_Id(Long sellerId, Pageable pageable);
+    Page<Product> findAllBySellerId(Long sellerId, Pageable pageable);
 
     // 카테고리별 조회
-    Page<Product> findByCategory_Id(Long categoryId, Pageable pageable);
+    Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 
     // 키워드 검색 (페이징 가능)
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")

@@ -154,7 +154,7 @@ public class ProductSellerServiceImpl implements ProductSellerService {
 
     @Override
     public Page<ProductResponse> getMine(Long sellerId, Pageable pageable) {
-        return productRepository.findAllBySeller_Id(sellerId, pageable)
+        return productRepository.findAllBySellerId(sellerId, pageable)
                 .map(ProductMapper::toResponse);
     }
 
