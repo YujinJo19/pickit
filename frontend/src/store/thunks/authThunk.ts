@@ -60,6 +60,7 @@ export const sendCode: any = createAsyncThunk(
     }
   }
 );
+
 // 이메일 인증 확인
 export const verifyCode: any = createAsyncThunk(
   "auth/codeVerify",

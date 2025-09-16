@@ -7,9 +7,10 @@ import { useAppDispatch } from "./store/hooks";
 import { useEffect } from "react";
 import { getToken, removeToken, setToken } from "./services/token";
 import { refreshAccessToken } from "./store/thunks/authThunk";
-import SellerDashboard from "./pages/SellerDashboard";
+import SellerDashboard from "./pages/sellerDashboard/SellerDashboard";
 import SellerSignup from "./pages/SellerSignup";
 import { PrivateRoute } from "./routes/PrivateRoute";
+import ProductList from "./pages/sellerDashboard/ProductList";
 
 const AppContainer = styled.div`
   display: grid;
@@ -51,6 +52,14 @@ function App() {
           element={
             <PrivateRoute roles={["SELLER"]}>
               <SellerDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/seller/dashboard/products"
+          element={
+            <PrivateRoute roles={["SELLER"]}>
+              <ProductList />
             </PrivateRoute>
           }
         />
