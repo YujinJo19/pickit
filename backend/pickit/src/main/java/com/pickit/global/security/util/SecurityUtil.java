@@ -15,7 +15,7 @@ public class SecurityUtil {
         }
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long sellerId = userDetails.getUser().getId();
+        Long sellerId = userDetails.getUser().getSeller().getId();
 
         if (sellerId == null) {
             throw new BusinessException(ErrorCode.SELLER_NOT_FOUND);
