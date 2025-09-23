@@ -2,6 +2,8 @@ import axios from "axios";
 import { getToken, removeToken, setToken } from "./token";
 
 const API_URL = process.env.REACT_APP_BACKEND_BASEURI;
+const ACCESS_TOKEN = process.env.REACT_APP_DEV_ACCESS_TOKEN;
+
 let axiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,
@@ -10,9 +12,14 @@ let axiosInstance = axios.create({
 
 // 요청 인터셉터 - 모든 요청에 토큰 포함 시킴
 axiosInstance.interceptors.request.use((config) => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === "development" && ACCESS_TOKEN) {
+    config.headers.Authorization = `Bearer ${ACCESS_TOKEN}`;
+  } else {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
