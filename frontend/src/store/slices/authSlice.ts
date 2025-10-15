@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUser, login, logout } from "../thunks/authThunk";
-import { getRoleFromToken, getSellerIdFromToken } from "../../services/token";
+import { getRoleFromToken, getSellerIdFromToken } from "../../utils/token";
 
 interface AuthState {
   user: any;
