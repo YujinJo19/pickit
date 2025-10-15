@@ -1,9 +1,14 @@
 import { axiosDel, axiosGet, axiosPatch, axiosPost } from "./api";
 
 // 내 상품 조회
-export const getProduct = (sellerId: string) =>
-  axiosGet("/seller/products/mine", { sellerId });
-
+export const getProduct = (args: {
+  sellerId?: string;
+  page?: number;
+  size?: number;
+}) => {
+  const { page = 0, size = 10 } = args;
+  return axiosGet("/seller/products/mine", { page, size });
+};
 // 상품 등록
 export const createProduct = (data: any) => axiosPost("/seller/products", data);
 
