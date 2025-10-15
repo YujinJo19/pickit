@@ -1,6 +1,6 @@
 import React, { JSX } from "react";
 import { useSelector } from "react-redux";
-import { getRoleFromToken, getToken } from "../services/token";
+import { getRoleFromToken, getToken } from "../utils/token";
 import { Navigate } from "react-router-dom";
 
 interface PrivateRouteProps {

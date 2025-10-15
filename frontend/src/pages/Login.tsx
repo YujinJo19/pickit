@@ -6,7 +6,7 @@ import { login } from "../store/thunks/authThunk";
 import { useAppDispatch } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { useLoginForm } from "../components/auth/hooks/useSignupForm";
-import { getRoleFromToken, setToken } from "../services/token";
+import { getRoleFromToken, setToken } from "../utils/token";
 
 export const AuthPageContainer = styled.div`
   display: flex;

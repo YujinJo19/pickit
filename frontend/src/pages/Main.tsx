@@ -2,7 +2,7 @@ import React from "react";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../store/thunks/authThunk";
 import { useNavigate } from "react-router-dom";
-import { removeToken } from "../services/token";
+import { removeToken } from "../utils/token";
 
 const Main = () => {
   const dispatch = useAppDispatch();

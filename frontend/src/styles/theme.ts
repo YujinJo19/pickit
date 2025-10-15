@@ -6,6 +6,10 @@ const theme = {
     error: "#ff4d4f",
     gray: "#e5e5e5",
     white: "#ffffff",
+    text: "#333",
+    border: "#e0e0e0",
+    sidebarBg: "#fff",
+    hoverBg: "#f5f5f5",
   },
   fontSizes: {
     sm: "12px",

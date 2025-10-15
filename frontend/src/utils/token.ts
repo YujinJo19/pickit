@@ -35,3 +35,8 @@ export const getRoleFromToken = (token: string) => {
   const decoded: any = decodeToken(token);
   return decoded ? decoded?.role : "";
 };
+
+export const getSellerIdFromToken = (token: string) => {
+  const decoded: any = decodeToken(token);
+  return decoded ? decoded?.sellerId : "";
+};
