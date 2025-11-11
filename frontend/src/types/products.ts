@@ -20,3 +20,19 @@ export interface ProductListType {
   price: number;
   thumbnailUrl: string | null;
 }
+
+export interface ProductDetailType {
+  id: number;
+  name: string;
+  discountPrice: number;
+  description: string;
+  categoryId: number;
+  images: [];
+  inventory: InventoryType;
+}
+
+export interface InventoryType {
+  color: string;
+  size: string;
+  quantity: number;
+}
