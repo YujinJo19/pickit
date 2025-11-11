@@ -9,6 +9,10 @@ export const getProduct = (args: {
   const { page = 0, size = 10 } = args;
   return axiosGet("/seller/products/mine", { page, size });
 };
+
+// 상품 상세 조회
+export const getProductDetail = (id: string) => axiosGet(`/products/${id}`);
+
 // 상품 등록
 export const createProduct = (data: any) => axiosPost("/seller/products", data);
 

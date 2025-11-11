@@ -14,6 +14,19 @@ export const getProduct = createAsyncThunk(
   }
 );
 
+// 상품 상세 조회
+export const getProductDetail = createAsyncThunk(
+  "product/getProductDetail",
+  async (args: any, { rejectWithValue }) => {
+    try {
+      const res = await productAPI.getProductDetail(args);
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
 // 상품 등록
 export const createProduct = createAsyncThunk(
   "product/getMyProduct",
