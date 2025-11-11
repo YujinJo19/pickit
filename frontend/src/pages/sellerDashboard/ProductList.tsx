@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
 import { getProduct } from "../../store/thunks/productThunk";
-import { getSellerIdFromToken, getToken } from "../../utils/token";
 import { useSelector } from "react-redux";
 import { PageableType, ProductListType } from "../../types/products";
 import ProductItem from "../../components/product/ProductItem";
@@ -41,6 +40,10 @@ const ProductList = () => {
     setCurrentPage(newPage);
   };
 
+  const handleDeleteProduct = (id: number) => {
+    console.log("삭제 요청");
+  };
+
   const totalPages = Math.ceil(totalProducts / pageable.pageSize);
   return (
     <>
@@ -53,15 +56,29 @@ const ProductList = () => {
             <th>가격</th>
             <th>할인 가격</th>
             <th>썸네일</th>
+            <th>관리</th>
           </tr>
         </thead>
         <tbody>
           {productList.map((item) => (
-            <ProductItem product={item} key={item.id} />
+            <ProductItem
+              product={item}
+              key={item.id}
+              onDelete={handleDeleteProduct}
+            />
           ))}
         </tbody>
       </StyledTable>
-
+      {/* 모바일: 카드 리스트 */}
+      <MobileList>
+        {productList.map((product) => (
+          <ProductItem
+            key={product.id}
+            product={product}
+            onDelete={handleDeleteProduct}
+          />
+        ))}
+      </MobileList>
       {/* 페이지네이션 */}
       <div style={{ marginTop: "20px" }}>
         {Array.from({ length: totalPages }).map((_, idx) => (
@@ -110,6 +127,13 @@ const PaginationButton = styled.button<{ active?: boolean }>`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+`;
+
+const MobileList = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: block;
+  }
 `;
 
 export default ProductList;
