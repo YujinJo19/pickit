@@ -52,10 +52,11 @@ const ActionButton = styled.button`
 interface Props {
   product: ProductListType;
   key: number;
+  goToDetail: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
-const ProductItem = ({ product, key, onDelete }: Props) => {
+const ProductItem = ({ product, key, onDelete, goToDetail }: Props) => {
   const categoryName = getFullCategoryPath(product.categoryId);
   const navigate = useNavigate();
   return (
@@ -63,11 +64,7 @@ const ProductItem = ({ product, key, onDelete }: Props) => {
       {/* 테이블용 row */}
       <TableRow>
         <td>{categoryName}</td>
-        <td
-          onClick={() => navigate(`/seller/dashboard/products/${product.id}`)}
-        >
-          {product.name}
-        </td>
+        <td onClick={() => goToDetail(product.id)}>{product.name}</td>
         <td>{product.price}</td>
         <td>{product.discountPrice}</td>
         <td>
@@ -89,7 +86,7 @@ const ProductItem = ({ product, key, onDelete }: Props) => {
 
       {/* 모바일 카드용 */}
       <Card>
-        <div>
+        <div onClick={() => goToDetail(product.id)}>
           <strong>카테고리:</strong> {categoryName}
         </div>
         <div>

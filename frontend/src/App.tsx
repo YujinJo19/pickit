@@ -12,6 +12,7 @@ import SellerSignup from "./pages/SellerSignup";
 import { PrivateRoute } from "./routes/PrivateRoute";
 import ProductList from "./pages/sellerDashboard/ProductList";
 import DashboardHome from "./components/seller/DashboardHome";
+import ProductDetail from "./pages/sellerDashboard/ProductDetail";
 
 const AppContainer = styled.div`
   display: grid;
@@ -58,6 +59,7 @@ function App() {
         >
           <Route index element={<DashboardHome />} />
           <Route path="products" element={<ProductList />} />
+          <Route path="products/:id" element={<ProductDetail />} />
         </Route>
         {/* <Route
           path="/seller/dashboard/products"

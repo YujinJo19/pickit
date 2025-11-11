@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { PageableType, ProductListType } from "../../types/products";
 import ProductItem from "../../components/product/ProductItem";
 import { styled } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [productList, setProductList] = useState<ProductListType[]>([]);
@@ -15,10 +16,17 @@ const ProductList = () => {
     paged: true,
     sort: { empty: true, sorted: false, unsorted: true },
   });
-  const dispatch = useAppDispatch();
-  const sellerId = useSelector((state: any) => state.authApi.sellerId);
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const sellerId = useSelector((state: any) => state.authApi.sellerId);
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const goToDetail = (id: number) => {
+    navigate(`${id}`);
+  };
 
   const fetchProducts = async (page: number) => {
     const response = await dispatch(
@@ -64,21 +72,25 @@ const ProductList = () => {
             <ProductItem
               product={item}
               key={item.id}
+              goToDetail={goToDetail}
               onDelete={handleDeleteProduct}
             />
           ))}
         </tbody>
       </StyledTable>
+
       {/* 모바일: 카드 리스트 */}
       <MobileList>
         {productList.map((product) => (
           <ProductItem
             key={product.id}
             product={product}
+            goToDetail={goToDetail}
             onDelete={handleDeleteProduct}
           />
         ))}
       </MobileList>
+
       {/* 페이지네이션 */}
       <div style={{ marginTop: "20px" }}>
         {Array.from({ length: totalPages }).map((_, idx) => (
