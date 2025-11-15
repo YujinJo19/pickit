@@ -63,12 +63,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.withType<Jar> {
-	manifest {
-		attributes["Main-Class"] = "com.pickit.PickitApplication"
-	}
-}
-
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
 	mainClass.set("com.pickit.PickitApplication")
 }
