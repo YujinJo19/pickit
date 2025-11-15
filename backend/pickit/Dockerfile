@@ -11,7 +11,7 @@ COPY settings.gradle.kts .
 COPY src ./src
 
 RUN chmod +x gradlew
-RUN ./gradlew build -x test
+RUN ./gradlew bootJar -x test
 
 # 2. 실행용 이미지
 FROM eclipse-temurin:17-jdk-alpine
