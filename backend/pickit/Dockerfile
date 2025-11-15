@@ -1,5 +1,5 @@
 # 1. 빌드용 이미지
-FROM gradle:8.3.1-jdk17 AS builder
+FROM gradle:8.3-jdk17 AS builder
 
 # 작업 디렉토리
 WORKDIR /app
