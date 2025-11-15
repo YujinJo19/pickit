@@ -1,33 +1,28 @@
 # 1. 빌드용 이미지
-FROM gradle:8.3.1-jdk17 AS builder
+FROM gradle:8.3-jdk17 AS builder
 
-# 작업 디렉토리
 WORKDIR /app
 
-# Gradle Wrapper와 프로젝트 파일 복사
+# Gradle 프로젝트 파일 복사
 COPY gradlew .
 COPY gradle ./gradle
-COPY build.gradle .
-COPY settings.gradle .
-COPY backend/pickit/src ./src
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY src ./src
 
-# Gradle 권한 설정
 RUN chmod +x gradlew
+RUN ./gradlew bootJar -x test
 
-# 프로젝트 빌드 (테스트 제외)
-RUN ./gradlew build -x test
-
-# 2. 실행용 이미지 (경량 JDK)
-FROM eclipse-temurin:17-jdk-alpine
+# 2. 실행용 이미지 (Debian 기반 JDK)
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-# 빌드 결과물 복사
-COPY --from=builder /app/build/libs/*.jar app.jar
+# 빌드된 fat JAR 복사
+COPY --from=builder /app/build/libs/pickit-0.0.1-SNAPSHOT.jar app.jar
 
-# Render에서 지정하는 포트 환경변수
+# Render에서 요구하는 포트 환경 변수
 ENV PORT=10000
 EXPOSE 10000
 
-# 애플리케이션 실행
 ENTRYPOINT ["java","-jar","app.jar"]
