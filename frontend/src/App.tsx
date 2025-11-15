@@ -10,9 +10,10 @@ import { refreshAccessToken } from "./store/thunks/authThunk";
 import SellerDashboard from "./pages/sellerDashboard/SellerDashboard";
 import SellerSignup from "./pages/SellerSignup";
 import { PrivateRoute } from "./routes/PrivateRoute";
-import ProductList from "./pages/sellerDashboard/ProductList";
 import DashboardHome from "./components/seller/DashboardHome";
-import ProductDetail from "./pages/sellerDashboard/ProductDetail";
+import SellerProductList from "./pages/sellerDashboard/SellerProductList";
+import SellerProductDetail from "./pages/sellerDashboard/SellerProductDetail";
+import SellerProductCreate from "./pages/sellerDashboard/SellerProductCreate";
 
 const AppContainer = styled.div`
   display: grid;
@@ -58,17 +59,10 @@ function App() {
           }
         >
           <Route index element={<DashboardHome />} />
-          <Route path="products" element={<ProductList />} />
-          <Route path="products/:id" element={<ProductDetail />} />
+          <Route path="products" element={<SellerProductList />} />
+          <Route path="products/:id" element={<SellerProductDetail />} />
+          <Route path="products/create" element={<SellerProductCreate />} />
         </Route>
-        {/* <Route
-          path="/seller/dashboard/products"
-          element={
-            <PrivateRoute roles={["SELLER"]}>
-              <ProductList />
-            </PrivateRoute>
-          }
-        /> */}
       </Routes>
     </AppContainer>
   );

@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { getFullCategoryPath } from "../../utils/category";
 import { styled } from "styled-components";
 
-const ProductDetail = () => {
+const SellerProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [detailInfo, setDetailInfo] = useState<ProductDetailType | null>(null);
   const dispatch = useAppDispatch();
@@ -51,18 +51,24 @@ const ProductDetail = () => {
         </EditableField>
 
         <Inventory>
-          <EditableField>
-            <Label>색상:</Label>
-            <input type="text" defaultValue={detailInfo.inventory.color} />
-          </EditableField>
-          <EditableField>
-            <Label>사이즈:</Label>
-            <input type="text" defaultValue={detailInfo.inventory.size} />
-          </EditableField>
-          <EditableField>
-            <Label>수량:</Label>
-            <input type="number" defaultValue={detailInfo.inventory.quantity} />
-          </EditableField>
+          {detailInfo.inventory.map((item, index) => (
+            <InventoryGroup key={index}>
+              <EditableField>
+                <Label>색상:</Label>
+                <input type="text" defaultValue={item.color} />
+              </EditableField>
+
+              <EditableField>
+                <Label>사이즈:</Label>
+                <input type="text" defaultValue={item.size} />
+              </EditableField>
+
+              <EditableField>
+                <Label>수량:</Label>
+                <input type="number" defaultValue={item.quantity} />
+              </EditableField>
+            </InventoryGroup>
+          ))}
         </Inventory>
 
         <ButtonWrapper>
@@ -74,7 +80,7 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default SellerProductDetail;
 
 const Container = styled.div`
   display: flex;
@@ -126,6 +132,12 @@ const Label = styled.span`
 const Inventory = styled.div`
   display: flex;
   gap: 20px;
+`;
+
+const InventoryGroup = styled.div`
+  gap: 15px;
+  align-items: flex-end;
+  margin-bottom: 10px;
 `;
 
 const ButtonWrapper = styled.div`

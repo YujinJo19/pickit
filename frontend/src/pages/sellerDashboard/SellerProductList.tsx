@@ -7,7 +7,7 @@ import ProductItem from "../../components/product/ProductItem";
 import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const ProductList = () => {
+const SellerProductList = () => {
   const [productList, setProductList] = useState<ProductListType[]>([]);
   const [pageable, setPageable] = useState<PageableType>({
     offset: 0,
@@ -56,6 +56,7 @@ const ProductList = () => {
   return (
     <>
       <h2>상품 목록 ({totalProducts}개)</h2>
+      <button onClick={() => navigate("create")}>상품 추가</button>
       <StyledTable>
         <thead>
           <tr>
@@ -148,4 +149,4 @@ const MobileList = styled.div`
   }
 `;
 
-export default ProductList;
+export default SellerProductList;
