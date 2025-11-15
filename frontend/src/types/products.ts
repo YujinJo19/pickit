@@ -28,11 +28,23 @@ export interface ProductDetailType {
   description: string;
   categoryId: number;
   images: [];
-  inventory: InventoryType;
+  inventory: {
+    color: string;
+    size: string;
+    quantity: number;
+  }[];
 }
 
-export interface InventoryType {
-  color: string;
-  size: string;
-  quantity: number;
+export interface ProductCreateRequest {
+  name: string;
+  price: number;
+  description: string;
+  discountPrice: number;
+  categoryId: number;
+  images: File[];
+  inventory: {
+    color: string;
+    size: string;
+    quantity: number;
+  }[];
 }

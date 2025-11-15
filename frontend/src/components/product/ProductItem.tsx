@@ -71,13 +71,7 @@ const ProductItem = ({ product, key, onDelete, goToDetail }: Props) => {
           {product.thumbnailUrl && <StyledImg src={product.thumbnailUrl} />}
         </td>
         <td>
-          <ActionButton
-            onClick={() =>
-              navigate(`/seller/dashboard/products/${product.id}/edit`)
-            }
-          >
-            ✏️
-          </ActionButton>
+          <ActionButton onClick={() => goToDetail(product.id)}>✏️</ActionButton>
           <ActionButton onClick={() => onDelete(product.id)} className="delete">
             🗑️
           </ActionButton>
@@ -99,6 +93,10 @@ const ProductItem = ({ product, key, onDelete, goToDetail }: Props) => {
           <strong>할인:</strong> {product.discountPrice ?? "-"}
         </div>
         {product.thumbnailUrl && <StyledImg src={product.thumbnailUrl} />}
+        <ActionButton onClick={() => goToDetail(product.id)}>✏️</ActionButton>
+        <ActionButton onClick={() => onDelete(product.id)} className="delete">
+          🗑️
+        </ActionButton>
       </Card>
     </>
   );
