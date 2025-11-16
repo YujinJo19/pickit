@@ -5,11 +5,15 @@ import { styled } from "styled-components";
 import Main from "./pages/Main";
 import { useAppDispatch } from "./store/hooks";
 import { useEffect } from "react";
-import { getToken, removeToken, setToken } from "./services/token";
+import { getToken, removeToken, setToken } from "./utils/token";
 import { refreshAccessToken } from "./store/thunks/authThunk";
-import SellerDashboard from "./pages/SellerDashboard";
+import SellerDashboard from "./pages/sellerDashboard/SellerDashboard";
 import SellerSignup from "./pages/SellerSignup";
 import { PrivateRoute } from "./routes/PrivateRoute";
+import DashboardHome from "./components/seller/DashboardHome";
+import SellerProductList from "./pages/sellerDashboard/SellerProductList";
+import SellerProductDetail from "./pages/sellerDashboard/SellerProductDetail";
+import SellerProductCreate from "./pages/sellerDashboard/SellerProductCreate";
 
 const AppContainer = styled.div`
   display: grid;
@@ -53,7 +57,12 @@ function App() {
               <SellerDashboard />
             </PrivateRoute>
           }
-        />
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="products" element={<SellerProductList />} />
+          <Route path="products/:id" element={<SellerProductDetail />} />
+          <Route path="products/create" element={<SellerProductCreate />} />
+        </Route>
       </Routes>
     </AppContainer>
   );

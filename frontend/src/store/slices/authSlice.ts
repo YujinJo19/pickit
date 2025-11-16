@@ -1,19 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUser, login, logout } from "../thunks/authThunk";
-import { getRoleFromToken } from "../../services/token";
+import { getRoleFromToken, getSellerIdFromToken } from "../../utils/token";
 
 interface AuthState {
   user: any;
   role: string | null;
   loading: boolean;
   error: string | null;
+  sellerId: number;
 }
+
+const initialRole =
+  process.env.NODE_ENV === "development" &&
+  process.env.REACT_APP_DEV_ACCESS_TOKEN
+    ? getRoleFromToken(process.env.REACT_APP_DEV_ACCESS_TOKEN)
+    : null;
 
 const initialState: AuthState = {
   user: null,
-  role: null,
+  role: initialRole,
   loading: false,
   error: null,
+  sellerId: 0,
 };
 
 const authSlice = createSlice({
@@ -25,12 +33,14 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { accessToken } = action.payload;
         state.role = getRoleFromToken(accessToken);
+        state.sellerId = getSellerIdFromToken(accessToken);
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.role = null;
         state.loading = false;
         state.error = null;
+        state.sellerId = 0;
       })
       .addCase(getUser.pending, (state) => {
         state.loading = true;

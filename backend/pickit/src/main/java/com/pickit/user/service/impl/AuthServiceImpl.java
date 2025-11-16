@@ -34,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
         // 유저 Role 조회
         User user = userService.getUserEntityByEmail(username);
         Role role = user.getRole();
+        Long sellerId = null;
 
         if (role == Role.SELLER) {
             Seller seller = user.getSeller();
@@ -42,9 +43,10 @@ public class AuthServiceImpl implements AuthService {
             } else if (seller.getStatus() == Seller.SellerStatus.REJECTED) {
                 throw new BusinessException(ErrorCode.SELLER_REJECTED);
             }
+            sellerId = seller.getId();
         }
 
-        String accessToken = jwtService.createAccessToken(username, role);
+        String accessToken = jwtService.createAccessToken(username, role, sellerId);
         String refreshToken = jwtService.createRefreshToken(username);
 
         return new TokenResponse(accessToken, refreshToken);
@@ -64,8 +66,14 @@ public class AuthServiceImpl implements AuthService {
 
         // 유저 Role 조회
         Role role = userService.getRoleByEmail(username);
+        Long sellerId = null;
 
-        String newAccessToken = jwtService.createAccessToken(username, role);
+        if (role == Role.SELLER) {
+            Seller seller = userService.getUserEntityByEmail(username).getSeller();
+            sellerId = seller != null ? seller.getId() : null;
+        }
+
+        String newAccessToken = jwtService.createAccessToken(username, role, sellerId);
         String newRefreshToken = jwtService.createRefreshToken(username);
 
         return new TokenResponse(newAccessToken, newRefreshToken);

@@ -12,14 +12,14 @@ import java.util.List;
 
 public interface ProductSellerService {
     // 상품 등록
-    ProductResponse create(ProductCreateRequest request, Long sellerId, List<MultipartFile> imageUrls) throws IOException;
+    ProductResponse create(ProductCreateRequest request, List<MultipartFile> imageUrls) throws IOException;
 
     // 상품 정보 수정
-    ProductResponse update(Long productId, ProductUpdateRequest request, Long sellerId,  List<MultipartFile> imageUrls) throws IOException;
+    ProductResponse update(Long productId, ProductUpdateRequest request, List<MultipartFile> imageUrls) throws IOException;
 
     // 상품 삭제
-    void delete(Long productId, Long sellerId);
+    void delete(Long productId);
 
     // 내 상품 보기
-    Page<ProductResponse> getMine(Long sellerId, Pageable pageable);
+    Page<ProductResponse> getMine(Pageable pageable);
 }
