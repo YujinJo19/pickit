@@ -41,6 +41,7 @@ export interface ProductCreateRequest {
   description: string;
   discountPrice: number;
   categoryId: number;
+  categoryIdParent?: number;
   images: File[];
   inventory: {
     color: string;
