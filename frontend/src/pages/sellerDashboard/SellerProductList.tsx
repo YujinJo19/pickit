@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import { getProduct } from "../../store/thunks/productThunk";
+import { deleteProduct, getProduct } from "../../store/thunks/productThunk";
 import { useSelector } from "react-redux";
 import { PageableType, ProductListType } from "../../types/products";
 import ProductItem from "../../components/product/ProductItem";
@@ -48,8 +48,13 @@ const SellerProductList = () => {
     setCurrentPage(newPage);
   };
 
-  const handleDeleteProduct = (id: number) => {
-    console.log("삭제 요청");
+  const handleDeleteProduct = async (id: number) => {
+    const response = await dispatch(deleteProduct(id));
+
+    if (response.meta.requestStatus === "fulfilled") {
+      alert("상품이 삭제되었습니다.");
+      await fetchProducts(currentPage);
+    }
   };
 
   const totalPages = Math.ceil(totalProducts / pageable.pageSize);
