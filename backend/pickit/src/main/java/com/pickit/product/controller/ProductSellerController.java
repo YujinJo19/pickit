@@ -35,7 +35,7 @@ public class ProductSellerController {
     }
 
     // 상품 수정
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> update(
                 @PathVariable Long id,
                 @RequestPart("dto") ProductUpdateRequest dto,

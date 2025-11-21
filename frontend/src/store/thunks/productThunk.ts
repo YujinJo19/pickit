@@ -51,7 +51,7 @@ export const updateProduct = createAsyncThunk(
   "product/getMyProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.updateProduct(args);
+      const res = await productAPI.updateProduct(args.formData, args.productId);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);

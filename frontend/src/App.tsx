@@ -14,6 +14,7 @@ import DashboardHome from "./components/seller/DashboardHome";
 import SellerProductList from "./pages/sellerDashboard/SellerProductList";
 import SellerProductDetail from "./pages/sellerDashboard/SellerProductDetail";
 import SellerProductCreate from "./pages/sellerDashboard/SellerProductCreate";
+import SellerProductUpdate from "./pages/sellerDashboard/SellerProductUpdate";
 
 const AppContainer = styled.div`
   display: grid;
@@ -62,6 +63,7 @@ function App() {
           <Route path="products" element={<SellerProductList />} />
           <Route path="products/:id" element={<SellerProductDetail />} />
           <Route path="products/create" element={<SellerProductCreate />} />
+          <Route path="products/update/:id" element={<SellerProductUpdate />} />
         </Route>
       </Routes>
     </AppContainer>

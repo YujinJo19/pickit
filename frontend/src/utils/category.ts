@@ -27,9 +27,7 @@ export const getParentCategories = (): Category[] =>
 export const getChildCategories = (parentId: number): Category[] =>
   categories.filter((category) => category.parentId === parentId);
 
-export const getParentIdFromCategoryId = (
-  categoryId: number
-): number | undefined => {
+export const getParentIdFromCategoryId = (categoryId: number): number => {
   const category = categories.find((c) => c.id === categoryId);
-  return category?.parentId || undefined;
+  return category?.parentId || 0;
 };

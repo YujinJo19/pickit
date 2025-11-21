@@ -46,10 +46,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [childCategories, setChildCategories] = useState<Category[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
   const parentId = watch("categoryIdParent");
 
-  // 이미지 추가 버튼 클릭 → 숨겨진 input 발동
   const handleAddImageClick = () => {
     if (previewImages.length >= 3) {
       alert("이미지는 최대 3개까지 업로드 가능합니다.");
@@ -58,12 +56,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
     fileInputRef.current?.click();
   };
 
-  // 이미지 선택 처리 (File 하나만)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 기존 이미지 + 새 이미지 → 최대 3개 제한
     const currentImages = (watch("images") as File[]) || [];
     if (currentImages.length >= 3) {
       alert("이미지는 최대 3개까지 업로드 가능합니다.");
@@ -71,19 +67,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
 
     const newImages = [...currentImages, file];
-
     setValue("images", newImages);
-
-    // 미리보기 업데이트
     setPreviewImages(newImages.map((f) => URL.createObjectURL(f)));
 
-    // input 초기화(같은 파일 다시 선택 가능)
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   };
 
-  // 이미지 삭제
   const handleRemoveImage = (idx: number) => {
     const images = (watch("images") as File[]) || [];
     const newImages = images.filter((_, i) => i !== idx);
@@ -93,12 +84,26 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   useEffect(() => {
-    if (parentId) {
+    if (parentId !== undefined) {
       setChildCategories(getChildCategories(Number(parentId)));
-      setValue("categoryId", 0); // 하위 카테고리 초기화
     }
   }, [parentId, setValue]);
 
+  useEffect(() => {
+    if (defaultValues?.categoryIdParent !== undefined) {
+      const parent = defaultValues.categoryIdParent;
+      setChildCategories(getChildCategories(Number(parent)));
+    }
+  }, [defaultValues]);
+
+  useEffect(() => {
+    if (defaultValues?.images && Array.isArray(defaultValues.images)) {
+      const urls = defaultValues.images.map((img) =>
+        img.startsWith("http") ? img : `https://${img}`
+      );
+      setPreviewImages(urls);
+    }
+  }, [defaultValues]);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Label>상품명</Label>
@@ -183,17 +188,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
               valueAsNumber: true,
             })}
           />
-          <button type="button" onClick={() => remove(index)}>
+          <InventoryDeleteButton type="button" onClick={() => remove(index)}>
             삭제
-          </button>
+          </InventoryDeleteButton>
         </InventoryRow>
       ))}
-      <button
+      <InventoryAddButton
         type="button"
         onClick={() => append({ color: "", size: "", quantity: 0 })}
       >
         재고 추가
-      </button>
+      </InventoryAddButton>
       <SubmitButton type="submit">저장</SubmitButton>
     </form>
   );
@@ -206,38 +211,79 @@ const Label = styled.label`
   margin-top: 10px;
   display: block;
 `;
+
 const Input = styled.input`
   width: 100%;
   padding: 6px;
   margin-top: 4px;
 `;
+
 const Textarea = styled.textarea`
   width: 100%;
   padding: 6px;
   margin-top: 4px;
 `;
+
 const Select = styled.select`
   width: 100%;
   padding: 6px;
   margin-top: 4px;
 `;
+
 const InventoryRow = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 8px;
 `;
-const SubmitButton = styled.button`
-  margin-top: 20px;
-  padding: 10px 20px;
+
+const InventoryDeleteButton = styled.button`
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #e63946;
+  background: transparent;
+  color: #e63946;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: #e63946;
+    color: #fff;
+  }
+`;
+
+const InventoryAddButton = styled.button`
+  margin-top: 10px;
+  padding: 8px 14px;
   background-color: #457b9d;
   color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+
   &:hover {
     background-color: #1d3557;
   }
 `;
+
+const SubmitButton = styled.button`
+  margin-top: 24px;
+  width: 100%;
+  padding: 12px;
+  background-color: #1d3557;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background-color: #0e233d;
+  }
+`;
+
 const Error = styled.span`
   color: red;
   font-size: 0.9rem;

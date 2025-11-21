@@ -18,14 +18,16 @@ const SellerProductList = () => {
   });
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-
   const sellerId = useSelector((state: any) => state.authApi.sellerId);
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const goToDetail = (id: number) => {
     navigate(`${id}`);
+  };
+
+  const goToUpdate = (id: number) => {
+    navigate(`/seller/dashboard/products/update/${id}`);
   };
 
   const fetchProducts = async (page: number) => {
@@ -39,10 +41,6 @@ const SellerProductList = () => {
       setTotalProducts(response.payload.totalElements);
     }
   };
-
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage]);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -58,6 +56,11 @@ const SellerProductList = () => {
   };
 
   const totalPages = Math.ceil(totalProducts / pageable.pageSize);
+
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
+
   return (
     <>
       <h2>상품 목록 ({totalProducts}개)</h2>
@@ -80,12 +83,12 @@ const SellerProductList = () => {
               key={item.id}
               goToDetail={goToDetail}
               onDelete={handleDeleteProduct}
+              goToUpdate={goToUpdate}
             />
           ))}
         </tbody>
       </StyledTable>
 
-      {/* 모바일: 카드 리스트 */}
       <MobileList>
         {productList.map((product) => (
           <ProductItem
@@ -93,11 +96,11 @@ const SellerProductList = () => {
             product={product}
             goToDetail={goToDetail}
             onDelete={handleDeleteProduct}
+            goToUpdate={goToUpdate}
           />
         ))}
       </MobileList>
 
-      {/* 페이지네이션 */}
       <div style={{ marginTop: "20px" }}>
         {Array.from({ length: totalPages }).map((_, idx) => (
           <PaginationButton
