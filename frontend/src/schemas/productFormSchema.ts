@@ -7,7 +7,10 @@ export const productFormSchema = z.object({
   description: z.string({ error: "상품 설명을 입력해주세요." }).min(1),
   categoryIdParent: z.number({ error: "상위 카테고리를 선택해주세요." }).min(1),
   categoryId: z.number().min(0),
-  images: z.any().optional(),
+  images: z
+    .array(z.any())
+    .max(3, "이미지는 최대 3개까지 업로드 가능합니다.")
+    .optional(),
   inventory: z
     .array(
       z.object({

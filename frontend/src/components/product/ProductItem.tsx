@@ -68,7 +68,15 @@ const ProductItem = ({ product, key, onDelete, goToDetail }: Props) => {
         <td>{product.price}</td>
         <td>{product.discountPrice}</td>
         <td>
-          {product.thumbnailUrl && <StyledImg src={product.thumbnailUrl} />}
+          {product.thumbnailUrl && (
+            <StyledImg
+              src={
+                (product.thumbnailUrl as string).startsWith("http")
+                  ? (product.thumbnailUrl as string)
+                  : `https://${product.thumbnailUrl}`
+              }
+            />
+          )}
         </td>
         <td>
           <ActionButton onClick={() => goToDetail(product.id)}>✏️</ActionButton>
@@ -92,7 +100,15 @@ const ProductItem = ({ product, key, onDelete, goToDetail }: Props) => {
         <div>
           <strong>할인:</strong> {product.discountPrice ?? "-"}
         </div>
-        {product.thumbnailUrl && <StyledImg src={product.thumbnailUrl} />}
+        {product.thumbnailUrl && (
+          <StyledImg
+            src={
+              (product.thumbnailUrl as string).startsWith("http")
+                ? (product.thumbnailUrl as string)
+                : `https://${product.thumbnailUrl}`
+            }
+          />
+        )}
         <ActionButton onClick={() => goToDetail(product.id)}>✏️</ActionButton>
         <ActionButton onClick={() => onDelete(product.id)} className="delete">
           🗑️

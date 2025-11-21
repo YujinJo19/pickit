@@ -54,8 +54,8 @@ axiosInstance.interceptors.response.use(
 export const axiosGet = (url: string, params?: any) =>
   axiosInstance.get(url, { params });
 
-export const axiosPost = (url: string, data?: any) =>
-  axiosInstance.post(url, data);
+export const axiosPost = (url: string, data?: any, config?: any) =>
+  axiosInstance.post(url, data, config);
 
 export const axiosDel = (url: string) => axiosInstance.delete(url);
 

@@ -27,7 +27,7 @@ export interface ProductDetailType {
   discountPrice: number;
   description: string;
   categoryId: number;
-  images: [];
+  images: string[];
   inventory: {
     color: string;
     size: string;

@@ -30,7 +30,11 @@ const SellerProductDetail = () => {
     <Container>
       <ImagesWrapper>
         {detailInfo.images.map((item, index) => (
-          <Image key={index} src={item} alt={`상품 이미지 ${index + 1}`} />
+          <Image
+            key={index}
+            src={item.startsWith("http") ? item : `https://${item}`}
+            alt={`상품 이미지 ${index + 1}`}
+          />
         ))}
       </ImagesWrapper>
 

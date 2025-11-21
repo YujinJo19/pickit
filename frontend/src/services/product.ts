@@ -14,7 +14,12 @@ export const getProduct = (args: {
 export const getProductDetail = (id: string) => axiosGet(`/products/${id}`);
 
 // 상품 등록
-export const createProduct = (data: any) => axiosPost("/seller/products", data);
+export const createProduct = (data: any) =>
+  axiosPost("/seller/products", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 // 상품 수정
 export const updateProduct = (data: any) =>
