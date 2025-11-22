@@ -27,7 +27,7 @@ export interface ProductDetailType {
   discountPrice: number;
   description: string;
   categoryId: number;
-  images: [];
+  images: string[];
   inventory: {
     color: string;
     size: string;
@@ -41,6 +41,7 @@ export interface ProductCreateRequest {
   description: string;
   discountPrice: number;
   categoryId: number;
+  categoryIdParent?: number;
   images: File[];
   inventory: {
     color: string;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import { getProduct } from "../../store/thunks/productThunk";
+import { deleteProduct, getProduct } from "../../store/thunks/productThunk";
 import { useSelector } from "react-redux";
 import { PageableType, ProductListType } from "../../types/products";
 import ProductItem from "../../components/product/ProductItem";
@@ -18,14 +18,16 @@ const SellerProductList = () => {
   });
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-
   const sellerId = useSelector((state: any) => state.authApi.sellerId);
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const goToDetail = (id: number) => {
     navigate(`${id}`);
+  };
+
+  const goToUpdate = (id: number) => {
+    navigate(`/seller/dashboard/products/update/${id}`);
   };
 
   const fetchProducts = async (page: number) => {
@@ -40,19 +42,25 @@ const SellerProductList = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage]);
-
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
 
-  const handleDeleteProduct = (id: number) => {
-    console.log("삭제 요청");
+  const handleDeleteProduct = async (id: number) => {
+    const response = await dispatch(deleteProduct(id));
+
+    if (response.meta.requestStatus === "fulfilled") {
+      alert("상품이 삭제되었습니다.");
+      await fetchProducts(currentPage);
+    }
   };
 
   const totalPages = Math.ceil(totalProducts / pageable.pageSize);
+
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
+
   return (
     <>
       <h2>상품 목록 ({totalProducts}개)</h2>
@@ -75,12 +83,12 @@ const SellerProductList = () => {
               key={item.id}
               goToDetail={goToDetail}
               onDelete={handleDeleteProduct}
+              goToUpdate={goToUpdate}
             />
           ))}
         </tbody>
       </StyledTable>
 
-      {/* 모바일: 카드 리스트 */}
       <MobileList>
         {productList.map((product) => (
           <ProductItem
@@ -88,11 +96,11 @@ const SellerProductList = () => {
             product={product}
             goToDetail={goToDetail}
             onDelete={handleDeleteProduct}
+            goToUpdate={goToUpdate}
           />
         ))}
       </MobileList>
 
-      {/* 페이지네이션 */}
       <div style={{ marginTop: "20px" }}>
         {Array.from({ length: totalPages }).map((_, idx) => (
           <PaginationButton

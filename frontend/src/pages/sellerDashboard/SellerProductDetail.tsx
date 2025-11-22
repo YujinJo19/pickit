@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import { getProductDetail } from "../../store/thunks/productThunk";
+import {
+  getProductDetail,
+  deleteProduct,
+} from "../../store/thunks/productThunk";
 import { ProductDetailType } from "../../types/products";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getFullCategoryPath } from "../../utils/category";
 import { styled } from "styled-components";
 
@@ -10,27 +13,43 @@ const SellerProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [detailInfo, setDetailInfo] = useState<ProductDetailType | null>(null);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const fetchProductsDetail = async () => {
     const response = await dispatch(getProductDetail(id));
 
     if (response.meta.requestStatus === "fulfilled") {
       setDetailInfo(response.payload);
-      console.log(response.payload);
     }
   };
+
+  const handleDelete = async () => {
+    if (!id) return;
+
+    if (!window.confirm("정말 이 상품을 삭제하시겠습니까?")) return;
+
+    const res = await dispatch(deleteProduct(Number(id)));
+    if (res.meta.requestStatus === "fulfilled") {
+      alert("상품이 삭제되었습니다.");
+      navigate("/seller/dashboard/products");
+    }
+  };
+
+  if (!detailInfo) return <p>로딩 중...</p>;
 
   useEffect(() => {
     fetchProductsDetail();
   }, [id]);
 
-  if (!detailInfo) return <p>로딩 중...</p>;
-
   return (
     <Container>
       <ImagesWrapper>
         {detailInfo.images.map((item, index) => (
-          <Image key={index} src={item} alt={`상품 이미지 ${index + 1}`} />
+          <Image
+            key={index}
+            src={item.startsWith("http") ? item : `https://${item}`}
+            alt={`상품 이미지 ${index + 1}`}
+          />
         ))}
       </ImagesWrapper>
 
@@ -39,41 +58,34 @@ const SellerProductDetail = () => {
         <Category>
           카테고리: {getFullCategoryPath(detailInfo.categoryId)}
         </Category>
+        <Field>
+          <Label>할인 가격:</Label>
+          <Value>{detailInfo.discountPrice.toLocaleString()}원</Value>
+        </Field>
 
-        <EditableField>
-          <Label>가격:</Label>
-          <input type="number" defaultValue={detailInfo.discountPrice} />
-        </EditableField>
-
-        <EditableField>
+        <Field>
           <Label>설명:</Label>
-          <textarea defaultValue={detailInfo.description} rows={4}></textarea>
-        </EditableField>
+          <Description>{detailInfo.description}</Description>
+        </Field>
 
         <Inventory>
+          <Label>재고 정보:</Label>
           {detailInfo.inventory.map((item, index) => (
             <InventoryGroup key={index}>
-              <EditableField>
-                <Label>색상:</Label>
-                <input type="text" defaultValue={item.color} />
-              </EditableField>
-
-              <EditableField>
-                <Label>사이즈:</Label>
-                <input type="text" defaultValue={item.size} />
-              </EditableField>
-
-              <EditableField>
-                <Label>수량:</Label>
-                <input type="number" defaultValue={item.quantity} />
-              </EditableField>
+              <Value>색상: {item.color}</Value>
+              <Value>사이즈: {item.size}</Value>
+              <Value>수량: {item.quantity}</Value>
             </InventoryGroup>
           ))}
         </Inventory>
 
         <ButtonWrapper>
-          <EditButton>상품 수정</EditButton>
-          <DeleteButton>상품 삭제</DeleteButton>
+          <EditButton
+            onClick={() => navigate(`/seller/dashboard/products/update/${id}`)}
+          >
+            상품 수정
+          </EditButton>
+          <DeleteButton onClick={handleDelete}>상품 삭제</DeleteButton>
         </ButtonWrapper>
       </InfoWrapper>
     </Container>
@@ -81,6 +93,8 @@ const SellerProductDetail = () => {
 };
 
 export default SellerProductDetail;
+
+/* 스타일 */
 
 const Container = styled.div`
   display: flex;
@@ -118,26 +132,33 @@ const Category = styled.p`
   color: #555;
 `;
 
-const EditableField = styled.div`
-  display: flex;
-  flex-direction: column;
+const Field = styled.div`
   margin-bottom: 10px;
 `;
 
 const Label = styled.span`
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-right: 8px;
+`;
+
+const Value = styled.span`
+  font-size: 16px;
+  color: #333;
+`;
+
+const Description = styled.p`
+  white-space: pre-line;
 `;
 
 const Inventory = styled.div`
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const InventoryGroup = styled.div`
-  gap: 15px;
-  align-items: flex-end;
-  margin-bottom: 10px;
+  display: flex;
+  gap: 20px;
 `;
 
 const ButtonWrapper = styled.div`

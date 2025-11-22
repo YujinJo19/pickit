@@ -54,16 +54,16 @@ axiosInstance.interceptors.response.use(
 export const axiosGet = (url: string, params?: any) =>
   axiosInstance.get(url, { params });
 
-export const axiosPost = (url: string, data?: any) =>
-  axiosInstance.post(url, data);
+export const axiosPost = (url: string, data?: any, config?: any) =>
+  axiosInstance.post(url, data, config);
 
 export const axiosDel = (url: string) => axiosInstance.delete(url);
 
-export const axiosPut = (url: string, data: any) =>
-  axiosInstance.put(url, data);
+export const axiosPut = (url: string, data: any, config?: any) =>
+  axiosInstance.put(url, data, config);
 
-export const axiosPatch = (url: string, data: any) =>
-  axiosInstance.patch(url, data);
+export const axiosPatch = (url: string, data: any, config?: any) =>
+  axiosInstance.patch(url, data, config);
 
 export const axiosGetFile = (url: string) =>
   axiosInstance.get(url, { responseType: "blob" });

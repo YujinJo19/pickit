@@ -1,4 +1,4 @@
-import { axiosDel, axiosGet, axiosPatch, axiosPost } from "./api";
+import { axiosDel, axiosGet, axiosPost, axiosPut } from "./api";
 
 // 내 상품 조회
 export const getProduct = (args: {
@@ -14,11 +14,20 @@ export const getProduct = (args: {
 export const getProductDetail = (id: string) => axiosGet(`/products/${id}`);
 
 // 상품 등록
-export const createProduct = (data: any) => axiosPost("/seller/products", data);
+export const createProduct = (data: any) =>
+  axiosPost("/seller/products", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 // 상품 수정
-export const updateProduct = (data: any) =>
-  axiosPatch(`/seller/products/${data.id}`, data);
+export const updateProduct = (formData: any, productId: any) =>
+  axiosPut(`/seller/products/${productId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
 // 상품 삭제
 export const deleteProduct = (id: string) => axiosDel(`/seller/products/${id}`);
