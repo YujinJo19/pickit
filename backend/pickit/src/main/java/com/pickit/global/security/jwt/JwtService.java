@@ -71,8 +71,8 @@ public class JwtService {
     public String createAccessToken(String username, Role role, Long sellerId) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim("role", role.name())  // role 추가
-                .claim("sellerId", sellerId)   // sellerId 추가
+                .claim("role", role.name())
+                .claim("sellerId", sellerId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
