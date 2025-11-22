@@ -43,8 +43,13 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+
                         // static 리소스
                         .requestMatchers("/favicon.ico", "/static/**", "/public/**").permitAll()
+
+                        // 루트 URL
+                        .requestMatchers("/", "/**", "/actuator/**").permitAll()
+
                         // 인증 API 허용 (회원가입/로그인)
                         .requestMatchers("/api/auth/**", "/api/email/**").permitAll()
 
