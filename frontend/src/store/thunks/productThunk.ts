@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as productAPI from "../../services/product";
 
-// 내 상품 조회
+// 전체 상품 조회
 export const getProduct = createAsyncThunk(
-  "product/getMyProduct",
+  "product/getProduct",
   async (args: any, { rejectWithValue }) => {
     try {
       const res = await productAPI.getProduct(args);
@@ -27,31 +27,12 @@ export const getProductDetail = createAsyncThunk(
   }
 );
 
-// 상품 등록
-export const createProduct = createAsyncThunk(
-  "product/getMyProduct",
-  async (args: any, { rejectWithValue }) => {
-    console.log("상품 등록 요청하기", args);
-
-    try {
-      const res = await productAPI.createProduct(args);
-      console.log("상품 등록 성공", res);
-
-      return res.data;
-    } catch (err: any) {
-      console.log("상품 등록 실패", err);
-
-      return rejectWithValue(err.response);
-    }
-  }
-);
-
-// 상품 수정
-export const updateProduct = createAsyncThunk(
-  "product/getMyProduct",
+// 카테고리별 상품 조회
+export const getProductByCategory = createAsyncThunk(
+  "product/getProductByCategory",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.updateProduct(args.formData, args.productId);
+      const res = await productAPI.productByCategory(args);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
@@ -59,12 +40,12 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
-// 상품 삭제
-export const deleteProduct = createAsyncThunk(
-  "product/getMyProduct",
+// 상품 검색
+export const getSearchedProduct = createAsyncThunk(
+  "product/getSearchedProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.deleteProduct(args);
+      const res = await productAPI.searchedProduct(args);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
