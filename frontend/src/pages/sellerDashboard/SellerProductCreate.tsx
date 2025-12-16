@@ -5,7 +5,7 @@ import {
   productFormSchema,
   ProductFormValues,
 } from "../../schemas/productFormSchema";
-import { createProduct } from "../../store/thunks/productThunk";
+import { createProduct } from "../../store/thunks/sellerProductThunk";
 import { useAppDispatch } from "../../store/hooks";
 const SellerProductCreate = () => {
   const navigate = useNavigate();

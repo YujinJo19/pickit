@@ -5,12 +5,10 @@ import {
   productFormSchema,
   ProductFormValues,
 } from "../../schemas/productFormSchema";
-import {
-  getProductDetail,
-  updateProduct,
-} from "../../store/thunks/productThunk";
+import { updateProduct } from "../../store/thunks/sellerProductThunk";
 import { useAppDispatch } from "../../store/hooks";
 import { getParentIdFromCategoryId } from "../../utils/category";
+import { getProductDetail } from "../../store/thunks/productThunk";
 const SellerProductUpdate = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
