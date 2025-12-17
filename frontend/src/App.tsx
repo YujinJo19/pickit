@@ -15,6 +15,7 @@ import SellerProductList from "./pages/sellerDashboard/SellerProductList";
 import SellerProductDetail from "./pages/sellerDashboard/SellerProductDetail";
 import SellerProductCreate from "./pages/sellerDashboard/SellerProductCreate";
 import SellerProductUpdate from "./pages/sellerDashboard/SellerProductUpdate";
+import ProductDetail from "./pages/ProductDetail";
 
 const AppContainer = styled.div`
   display: grid;
@@ -46,6 +47,7 @@ function App() {
     <AppContainer>
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
         // auth
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
