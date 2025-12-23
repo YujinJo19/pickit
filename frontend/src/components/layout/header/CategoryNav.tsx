@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
 import { styled } from "styled-components";
-import { categories } from "../../../data/categories";
 import { useOutsideClick } from "../../../utils/useOutsideClick";
 import { useEscapeKey } from "../../../utils/useEscapeKey";
 import { Dropdown, DropdownItem } from "./dropdown.styles";
