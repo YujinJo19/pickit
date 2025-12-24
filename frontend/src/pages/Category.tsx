@@ -1,16 +1,29 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
-import SellerHeader from "../../components/seller/header/SellerHeader";
-import SellerSidebar from "../../components/seller/SellerSidebar";
+import React, { useEffect, useState } from "react";
+import Header from "../components/layout/header/Header";
+import CategorySidebar from "../components/category/CategorySidebar";
+import { useParams } from "react-router-dom";
+import { useAppDispatch } from "../store/hooks";
+import { getProductByCategory } from "../store/thunks/productThunk";
+import ProductRow from "../components/product/ProductRow";
 import { styled } from "styled-components";
 import { Menu } from "lucide-react";
+import { ProductListType } from "../types/products";
 
-export interface SidebarProps {
-  $open: boolean;
-}
-
-const SellerDashboard = () => {
+const Category = () => {
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
+  const [products, setProducts] = useState<ProductListType[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    dispatch(getProductByCategory(id)).then((response) => {
+      if (response.meta.requestStatus === "fulfilled") {
+        setProducts(response.payload.content);
+        console.log(response.payload.content);
+      }
+    });
+  }, [id, dispatch]);
 
   return (
     <Container>
@@ -18,20 +31,27 @@ const SellerDashboard = () => {
         <MobileMenuButton onClick={() => setSidebarOpen(!sidebarOpen)}>
           <Menu size={24} />
         </MobileMenuButton>
-        <SellerHeader />
+        <Header />
       </HeaderWrapper>
       <ContentWrapper>
         <SidebarWrapper $open={sidebarOpen}>
-          <SellerSidebar />
+          <CategorySidebar onSelect={() => setSidebarOpen(false)} />
         </SidebarWrapper>
         {sidebarOpen && <Overlay onClick={() => setSidebarOpen(false)} />}
         <MainContent>
-          <Outlet />
+          {products.length === 0 ? (
+            <div>상품이 없습니다.</div>
+          ) : (
+            <ProductRow items={products} variant="grid" />
+          )}
         </MainContent>
       </ContentWrapper>
     </Container>
   );
 };
+
+export default Category;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -66,7 +86,7 @@ const ContentWrapper = styled.div`
   position: relative;
 `;
 
-const SidebarWrapper = styled.div<SidebarProps>`
+const SidebarWrapper = styled.div<{ $open: boolean }>`
   width: 240px;
   background-color: #fff;
   border-right: 1px solid #e5e7eb;
@@ -84,7 +104,10 @@ const SidebarWrapper = styled.div<SidebarProps>`
 `;
 
 const Overlay = styled.div`
+  display: none;
+
   @media (max-width: 768px) {
+    display: block;
     position: fixed;
     top: 60px;
     left: 0;
@@ -104,5 +127,3 @@ const MainContent = styled.div`
     padding: 16px;
   }
 `;
-
-export default SellerDashboard;

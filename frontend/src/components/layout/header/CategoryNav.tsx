@@ -7,6 +7,7 @@ import {
   getChildCategories,
   getParentCategories,
 } from "../../../utils/category";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   onSelectCategory?: (parentId: number, childId: number) => void;
@@ -16,7 +17,7 @@ const CategoryNav = ({ onSelectCategory }: Props) => {
   const parents = getParentCategories();
   const [openParentId, setOpenParentId] = useState<number | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
-
+  const navigate = useNavigate();
   const close = () => setOpenParentId(null);
 
   useOutsideClick(navRef, close, openParentId !== null);
@@ -47,6 +48,7 @@ const CategoryNav = ({ onSelectCategory }: Props) => {
                     key={child.id}
                     onClick={() => {
                       onSelectCategory?.(parent.id, child.id);
+                      navigate(`/products/category/${child.id}`);
                       close();
                     }}
                   >
