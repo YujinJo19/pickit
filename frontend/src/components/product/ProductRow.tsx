@@ -5,14 +5,19 @@ import { ProductListType } from "../../types/products";
 
 type Props = {
   items: ProductListType[];
+  variant?: "row" | "grid";
 };
 
-const ProductRow = ({ items }: Props) => {
+const ProductRow = ({ items, variant = "row" }: Props) => {
   const navigate = useNavigate();
   return (
-    <Row>
+    <Row $variant={variant}>
       {items.map((p) => (
-        <Card key={p.id} onClick={() => navigate(`/products/${p.id}`)}>
+        <Card
+          key={p.id}
+          $variant={variant}
+          onClick={() => navigate(`/products/${p.id}`)}
+        >
           <Thumb
             $src={
               (p.thumbnailUrl as string)?.startsWith("http")
@@ -21,16 +26,17 @@ const ProductRow = ({ items }: Props) => {
             }
           />
           <Meta>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 10,
-              }}
-            >
-              <Discount>{p.discountPrice ? `${p.discountPrice}` : ""}</Discount>
-              <Price>{p.price.toLocaleString()}</Price>
+            <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+              {p.discountPrice ? (
+                <>
+                  <Discount>{p.discountPrice.toLocaleString()}원</Discount>
+                  <OriginPrice>{p.price.toLocaleString()}원</OriginPrice>
+                </>
+              ) : (
+                <Price>{p.price.toLocaleString()}원</Price>
+              )}
             </div>
+
             <Name>{p.name}</Name>
           </Meta>
         </Card>
@@ -41,26 +47,35 @@ const ProductRow = ({ items }: Props) => {
 
 export default ProductRow;
 
-const Row = styled.div`
-  display: flex;
+const Row = styled.div<{ $variant: "row" | "grid" }>`
+  ${(p) =>
+    p.$variant === "row"
+      ? `display: flex;
   gap: 12px;
   overflow-x: auto;
   padding-bottom: 8px;
-
   scrollbar-width: thin;
+`
+      : `display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;`}
 
+  @media (max-width: 1024px) {
+    ${(p) => p.$variant === "grid" && `grid-template-columns: repeat(3, 1fr);`}
+  }
   @media (max-width: 768px) {
-    grid-auto-columns: 180px;
-    gap: 12px;
+    ${(p) => p.$variant === "grid" && `grid-template-columns: repeat(2, 1fr);`}
   }
 `;
 
-const Card = styled.button`
+const Card = styled.button<{ $variant?: "row" | "grid" }>`
   border: 0;
   background: transparent;
   padding: 0;
   text-align: left;
   cursor: pointer;
+
+  ${(p) => p.$variant === "row" && `min-width: 220px; max-width: 220px;`}
 `;
 
 const Thumb = styled.div<{ $src: string }>`
@@ -110,4 +125,11 @@ const Name = styled.div`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
+
+const OriginPrice = styled.span`
+  font-weight: 700;
+  color: #999;
+  font-size: 14px;
+  text-decoration: line-through;
 `;

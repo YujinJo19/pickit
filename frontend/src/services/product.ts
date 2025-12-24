@@ -18,8 +18,9 @@ export const searchedProduct = (args: {
   page?: number;
   size?: number;
   keyword?: string;
+  sort?: string;
 }) => {
-  const { page = 0, size = 10, keyword } = args;
+  const { page = 0, size = 10, keyword, sort } = args;
 
-  return axiosGet("/products/search", { keyword, page, size });
+  return axiosGet("/products/search", { keyword, page, size, sort });
 };

@@ -5,14 +5,17 @@ import { IconButton } from "./Header.styles";
 
 type Props = {
   onSubmit?: (q: string) => void;
+  defaultValue?: string;
 };
 
-const HeaderSearch = ({ onSubmit }: Props) => {
-  const [value, setValue] = useState("");
+const HeaderSearch = ({ onSubmit, defaultValue = "" }: Props) => {
+  const [value, setValue] = useState(defaultValue);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(value.trim());
+    const q = value.trim();
+    if (!q) return;
+    onSubmit?.(q);
   };
 
   return (

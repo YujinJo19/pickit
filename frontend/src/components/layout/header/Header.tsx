@@ -10,12 +10,14 @@ import {
 import CategoryNav from "./CategoryNav";
 import HeaderSearch from "./HeaderSearch";
 import UserMenu from "./UserMenu";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  userInfo: string;
-  onLogout: () => Promise<void>;
+  userInfo?: string;
+  onLogout?: () => Promise<void>;
 }
 const Header = ({ userInfo, onLogout }: Props) => {
+  const navigate = useNavigate();
   return (
     <HeaderContainer>
       <LeftArea>
@@ -31,15 +33,18 @@ const Header = ({ userInfo, onLogout }: Props) => {
       <RightArea>
         <HeaderSearch
           onSubmit={(q) => {
-            console.log("search:", q);
+            if (!q) return;
+            navigate(`/search?keyword=${encodeURIComponent(q)}&page=0&size=10`);
           }}
         />
-        <UserMenu
-          userInfo={userInfo}
-          onProfile={() => console.log("profile")}
-          onSettings={() => console.log("settings")}
-          onLogout={onLogout}
-        />
+        {userInfo && onLogout && (
+          <UserMenu
+            userInfo={userInfo}
+            onProfile={() => console.log("profile")}
+            onSettings={() => console.log("settings")}
+            onLogout={onLogout}
+          />
+        )}
         <IconButton type="button" aria-label="cart">
           <ShoppingCart size={20} />
         </IconButton>
