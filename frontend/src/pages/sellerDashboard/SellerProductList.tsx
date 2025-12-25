@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import { deleteProduct, getProduct } from "../../store/thunks/productThunk";
+import {
+  deleteProduct,
+  getProduct,
+} from "../../store/thunks/sellerProductThunk";
 import { useSelector } from "react-redux";
 import { PageableType, ProductListType } from "../../types/products";
 import ProductItem from "../../components/product/ProductItem";
@@ -12,7 +15,7 @@ const SellerProductList = () => {
   const [pageable, setPageable] = useState<PageableType>({
     offset: 0,
     pageNumber: 0,
-    pageSize: 0,
+    pageSize: 1,
     paged: true,
     sort: { empty: true, sorted: false, unsorted: true },
   });
@@ -32,7 +35,7 @@ const SellerProductList = () => {
 
   const fetchProducts = async (page: number) => {
     const response = await dispatch(
-      getProduct({ sellerId, page, size: pageable.pageSize })
+      getProduct({ page, size: pageable.pageSize })
     );
 
     if (response.meta.requestStatus === "fulfilled") {

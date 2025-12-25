@@ -1,33 +1,26 @@
 import { axiosDel, axiosGet, axiosPost, axiosPut } from "./api";
 
-// 내 상품 조회
-export const getProduct = (args: {
-  sellerId?: string;
-  page?: number;
-  size?: number;
-}) => {
+// 전체 상품 조회
+export const getProduct = (args: { page?: number; size?: number }) => {
   const { page = 0, size = 10 } = args;
-  return axiosGet("/seller/products/mine", { page, size });
+  return axiosGet("/products", { page, size });
 };
 
 // 상품 상세 조회
 export const getProductDetail = (id: string) => axiosGet(`/products/${id}`);
 
-// 상품 등록
-export const createProduct = (data: any) =>
-  axiosPost("/seller/products", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+// 카테고리별 상품 조회
+export const productByCategory = (id: string) =>
+  axiosGet(`/products/category/${id}`);
 
-// 상품 수정
-export const updateProduct = (formData: any, productId: any) =>
-  axiosPut(`/seller/products/${productId}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+// 상품 검색
+export const searchedProduct = (args: {
+  page?: number;
+  size?: number;
+  keyword?: string;
+  sort?: string;
+}) => {
+  const { page = 0, size = 10, keyword, sort } = args;
 
-// 상품 삭제
-export const deleteProduct = (id: string) => axiosDel(`/seller/products/${id}`);
+  return axiosGet("/products/search", { keyword, page, size, sort });
+};

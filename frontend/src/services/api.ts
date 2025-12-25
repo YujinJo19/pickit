@@ -2,8 +2,8 @@ import axios from "axios";
 import { getToken, removeToken, setToken } from "../utils/token";
 
 const API_URL = process.env.REACT_APP_BACKEND_BASEURI;
-const ACCESS_TOKEN = process.env.REACT_APP_DEV_ACCESS_TOKEN;
-
+// const ACCESS_TOKEN = process.env.REACT_APP_DEV_ACCESS_TOKEN;
+const ACCESS_TOKEN = false;
 let axiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,

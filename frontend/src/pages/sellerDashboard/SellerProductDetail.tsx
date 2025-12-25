@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
-import {
-  getProductDetail,
-  deleteProduct,
-} from "../../store/thunks/productThunk";
+import { deleteProduct } from "../../store/thunks/sellerProductThunk";
 import { ProductDetailType } from "../../types/products";
 import { useParams, useNavigate } from "react-router-dom";
 import { getFullCategoryPath } from "../../utils/category";
 import { styled } from "styled-components";
+import { getProductDetail } from "../../store/thunks/productThunk";
 
 const SellerProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,11 +33,11 @@ const SellerProductDetail = () => {
     }
   };
 
-  if (!detailInfo) return <p>로딩 중...</p>;
-
   useEffect(() => {
     fetchProductsDetail();
   }, [id]);
+
+  if (!detailInfo) return <p>로딩 중...</p>;
 
   return (
     <Container>

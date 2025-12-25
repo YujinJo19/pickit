@@ -33,6 +33,7 @@ export interface ProductDetailType {
     size: string;
     quantity: number;
   }[];
+  price: number;
 }
 
 export interface ProductCreateRequest {

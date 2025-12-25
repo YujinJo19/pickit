@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import * as productAPI from "../../services/product";
+import * as productAPI from "../../services/sellerProduct";
 
-// 전체 상품 조회
+// 내 상품 조회
 export const getProduct = createAsyncThunk(
-  "product/getProduct",
+  "product/getMyProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.getProduct(args);
+      const res = await productAPI.getProductMine(args);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
@@ -14,12 +14,12 @@ export const getProduct = createAsyncThunk(
   }
 );
 
-// 상품 상세 조회
-export const getProductDetail = createAsyncThunk(
-  "product/getProductDetail",
+// 상품 등록
+export const createProduct = createAsyncThunk(
+  "product/getMyProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.getProductDetail(args);
+      const res = await productAPI.createProduct(args);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
@@ -27,12 +27,12 @@ export const getProductDetail = createAsyncThunk(
   }
 );
 
-// 카테고리별 상품 조회
-export const getProductByCategory = createAsyncThunk(
-  "product/getProductByCategory",
+// 상품 수정
+export const updateProduct = createAsyncThunk(
+  "product/getMyProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.productByCategory(args);
+      const res = await productAPI.updateProduct(args.formData, args.productId);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
@@ -40,12 +40,12 @@ export const getProductByCategory = createAsyncThunk(
   }
 );
 
-// 상품 검색
-export const getSearchedProduct = createAsyncThunk(
-  "product/getSearchedProduct",
+// 상품 삭제
+export const deleteProduct = createAsyncThunk(
+  "product/getMyProduct",
   async (args: any, { rejectWithValue }) => {
     try {
-      const res = await productAPI.searchedProduct(args);
+      const res = await productAPI.deleteProduct(args);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
