@@ -20,7 +20,6 @@ const Category = () => {
     dispatch(getProductByCategory(id)).then((response) => {
       if (response.meta.requestStatus === "fulfilled") {
         setProducts(response.payload.content);
-        console.log(response.payload.content);
       }
     });
   }, [id, dispatch]);

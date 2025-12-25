@@ -5,7 +5,7 @@ type Props = {
   images: string[];
   autoPlay?: boolean;
   intervalMs?: number;
-  aspectRatio?: string; // "1 / 1" 같은 형태
+  aspectRatio?: string;
 };
 
 const toUrl = (src: string) =>

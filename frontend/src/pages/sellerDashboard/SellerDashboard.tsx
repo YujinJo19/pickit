@@ -5,7 +5,7 @@ import SellerSidebar from "../../components/seller/SellerSidebar";
 import { styled } from "styled-components";
 import { Menu } from "lucide-react";
 
-export interface SidebarProps {
+interface SidebarProps {
   $open: boolean;
 }
 
