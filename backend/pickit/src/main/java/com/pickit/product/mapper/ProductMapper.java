@@ -11,6 +11,15 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductMapper {
+    // 썸네일 추출 메서드
+    static String extractThumbnailUrl(Product p) {
+        return p.getImages().stream()
+                .filter(ProductImage::isThumbnail)
+                .findFirst()
+                .map(img -> img.getThumbnailUrl() != null
+                ? img.getThumbnailUrl():img.getImageUrl()
+                        ).orElse(null);
+    }
     // DTO → Entity 변환 (생성 시)
     static Product toEntity(ProductCreateRequest req, com.pickit.seller.entity.Seller seller, Category category) {
         return Product.builder()
@@ -25,18 +34,12 @@ public interface ProductMapper {
 
     // Entity → Response 변환 (리스트용)
     static ProductResponse toResponse(Product p) {
-        String thumbnailUrl = p.getImages().stream()
-                .filter(ProductImage::isThumbnail)
-                .findFirst()
-                .map(img -> img.getThumbnailUrl() != null ? img.getThumbnailUrl() : img.getImageUrl())
-                .orElse(null);
-
         return ProductResponse.builder()
                 .id(p.getId())
                 .name(p.getName())
                 .price(p.getPrice())
                 .discountPrice(p.getDiscountPrice())
-                .thumbnailUrl(thumbnailUrl)
+                .thumbnailUrl(extractThumbnailUrl(p))
                 .categoryId(p.getCategory().getId())
                 .build();
     }
@@ -52,7 +55,9 @@ public interface ProductMapper {
                 .categoryId(p.getCategory().getId())
                 .images(
                         p.getImages().stream()
-                                .map(img -> img.getThumbnailUrl() != null ? img.getThumbnailUrl() : img.getImageUrl())
+                                .map(img -> img.getThumbnailUrl() != null
+                                        ? img.getThumbnailUrl()
+                                        : img.getImageUrl())
                                 .distinct()
                                 .toList()
                 )
