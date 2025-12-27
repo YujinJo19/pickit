@@ -24,6 +24,7 @@ public class ProductDetailResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class InventoryDto {
+        private Long id;
         private String color;
         private String size;
         private Integer quantity;

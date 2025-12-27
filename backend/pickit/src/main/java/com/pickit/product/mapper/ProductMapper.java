@@ -64,6 +64,7 @@ public interface ProductMapper {
                 .inventory(
                         p.getInventories().stream()
                                 .map(inv -> new ProductDetailResponse.InventoryDto(
+                                        inv.getId(),
                                         inv.getColor(),
                                         inv.getSize(),
                                         inv.getQuantity())
