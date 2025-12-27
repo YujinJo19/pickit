@@ -68,9 +68,10 @@ public class JwtService {
         }
     }
 
-    public String createAccessToken(String username, Role role, Long sellerId) {
+    public String createAccessToken(String username,Long userId, Role role, Long sellerId) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", userId)
                 .claim("role", role.name())
                 .claim("sellerId", sellerId)
                 .setIssuedAt(new Date())
@@ -117,7 +118,11 @@ public class JwtService {
     }
 
     public String getUsernameFromToken(String token) {
+
         return parseClaims(token).getSubject();
+    }
+    public Long getUserIdFromToken(String token) {
+        return parseClaims(token).get("userId", Long.class);
     }
 
     public void blacklistAccessToken(String token) {
