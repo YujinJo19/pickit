@@ -29,6 +29,16 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Category Not Found"),
     UNAUTHORIZED_PRODUCT_ACCESS(HttpStatus.FORBIDDEN, "Unauthorized Access"),
 
+    // 장바구니 관련
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart Not Found"),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart Item Not Found"),
+    CART_ITEM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "Cart Item Access Denied"),
+    INVALID_CART_QUANTITY(HttpStatus.BAD_REQUEST, "Invalid Cart Item Quantity"),
+
+    // 재고 관련
+    INVENTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Inventory Not Found"),
+    INVENTORY_PRODUCT_MISMATCH(HttpStatus.BAD_REQUEST, "Inventory Does Not Belong To Product"),
+
     // Auth/Token 관련
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Refresh Token"),
     REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "Refresh Token Mismatch"),
