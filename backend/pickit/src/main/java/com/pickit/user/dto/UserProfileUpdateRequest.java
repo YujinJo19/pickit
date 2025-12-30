@@ -13,7 +13,4 @@ public class UserProfileUpdateRequest {
 
     @Pattern(regexp = "^\\d{10,11}$", message = "전화번호는 10~11자리 숫자여야 합니다.")
     private String phoneNumber;
-
-    @Pattern(regexp = "^(http|https)://.*$", message = "유효한 URL 형식이 아닙니다.")
-    private String profileImageUrl;
 }
