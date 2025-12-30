@@ -9,12 +9,15 @@ import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
 import com.pickit.user.mapper.UserMapper;
 import com.pickit.user.repository.UserRepository;
+import com.pickit.user.service.ProfileImageService;
 import com.pickit.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Slf4j  // 로그
 @Service
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ProfileImageService profileImageService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final StringRedisTemplate redisTemplate;
 
@@ -63,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     // 3. 회원정보 조회 - id
@@ -90,7 +94,7 @@ public class UserServiceImpl implements UserService {
         log.info("회원탈퇴 성공 - ID: {}", id);
     }
 
-    // 5. 프로필 수정 (닉네임, 전화번호, 프로필 이미지)
+    // 5. 프로필 수정 (닉네임, 전화번호)
     @Override
     public UserResponse updateUserProfile(Long id, UserProfileUpdateRequest request) {
         User user = getExistingUserById(id);
@@ -123,4 +127,40 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND))
                 .getRole();
     }
+
+    // 9. 프로필 이미지 업로드 후 유저 반환
+    @Override
+    public UserResponse updateProfileImage(Long userId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new BusinessException(ErrorCode.INVALID_PROFILE_IMAGE_FILE);
+        }
+
+        User user = getExistingUserById(userId);
+        String oldUrl = user.getProfileImageUrl();
+
+        String newUrl = profileImageService.uploadFile(file);
+        user.setProfileImageUrl(newUrl);
+        User updatedUser = userRepository.save(user);
+
+        if (oldUrl != null && !oldUrl.isBlank()) {
+            profileImageService.deleteFile(oldUrl);
+        }
+        return UserMapper.toResponse(updatedUser);
+    }
+
+
+    // 10. 프로필 이미지 삭제 후 유저 반환
+    @Override
+    public UserResponse deleteProfileImage(Long id) {
+        User user = getExistingUserById(id);
+        String oldUrl = user.getProfileImageUrl();
+
+        if (oldUrl != null && !oldUrl.isBlank()) {
+            profileImageService.deleteFile(oldUrl);
+        }
+        user.setProfileImageUrl(null);
+        User updatedUser = userRepository.save(user);
+        return UserMapper.toResponse(updatedUser);
+    }
+
 }

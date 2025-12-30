@@ -5,6 +5,7 @@ import com.pickit.user.dto.UserProfileUpdateRequest;
 import com.pickit.user.dto.UserResponse;
 import com.pickit.user.dto.UserSignupRequest;
 import com.pickit.user.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface UserService {
@@ -33,4 +34,11 @@ public interface UserService {
 
     // 8. 역할 조회
     Role getRoleByEmail(String email);
-}
+
+    // 9. 프로필 이미지 수정 후 유저 반환
+    UserResponse updateProfileImage(Long userId, MultipartFile file);
+
+    // 10. 프로필 이미지 삭제 후 유저 반환
+    UserResponse deleteProfileImage(Long id);
+
+    }

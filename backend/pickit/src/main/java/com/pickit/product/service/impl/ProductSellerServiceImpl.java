@@ -38,7 +38,6 @@ public class ProductSellerServiceImpl implements ProductSellerService {
     private final SellerRepository sellerRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageService productImageService;
-    private final ProductMapper productMapper;
 
     @Override
     @Transactional
