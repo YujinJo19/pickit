@@ -15,4 +15,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // 특정 사용자의 기본 배송지 조회 (isDefault = true)
     Optional<Address> findByUserAndIsDefaultTrue(User user);
+
+    // 주문 생성 용 - 사용자 주소 단건 조회
+    Optional<Address> findByIdAndUserId(Long addressId, Long userId);
 }
