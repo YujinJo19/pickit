@@ -34,10 +34,18 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart Item Not Found"),
     CART_ITEM_ACCESS_DENIED(HttpStatus.FORBIDDEN, "Cart Item Access Denied"),
     INVALID_CART_QUANTITY(HttpStatus.BAD_REQUEST, "Invalid Cart Item Quantity"),
+    CART_EMPTY(HttpStatus.BAD_REQUEST, "Cart is Empty"),
 
     // 재고 관련
     INVENTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Inventory Not Found"),
     INVENTORY_PRODUCT_MISMATCH(HttpStatus.BAD_REQUEST, "Inventory Does Not Belong To Product"),
+    INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "Insufficient Stock"),
+
+    // Address 관련
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "Address Not Found"),
+
+    // Order 관련
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order Not Found"),
 
     // Auth/Token 관련
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Refresh Token"),
