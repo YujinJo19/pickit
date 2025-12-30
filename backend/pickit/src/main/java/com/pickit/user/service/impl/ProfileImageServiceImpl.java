@@ -1,5 +1,7 @@
 package com.pickit.user.service.impl;
 
+import com.pickit.global.exception.BusinessException;
+import com.pickit.global.exception.ErrorCode;
 import com.pickit.user.service.ProfileImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +36,7 @@ public class ProfileImageServiceImpl implements ProfileImageService {
             s3Client.putObject(originalRequest, RequestBody.fromBytes(file.getBytes()));
             return cloudFrontDomain + "/" + originalKey;
         } catch (IOException e) {
-            throw new RuntimeException("프로필 이미지 업로드 실패", e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
     }

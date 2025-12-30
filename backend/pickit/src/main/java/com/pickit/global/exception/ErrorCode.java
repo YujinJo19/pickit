@@ -19,6 +19,7 @@ public enum ErrorCode {
     PASSWORD_REQUEST_LIMIT_EXCEEDED(HttpStatus.TOO_MANY_REQUESTS, "Password Code Request Limit Exceeded"),
     EMAIL_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "Email Verification Failed"),
     INVALID_PROFILE_IMAGE_FILE(HttpStatus.BAD_REQUEST, "Image file is Empty"),
+
     // 판매자 관련
     SELLER_NOT_FOUND(HttpStatus.NOT_FOUND, "Seller Not Found"),
     SELLER_PENDING(HttpStatus.FORBIDDEN, "Seller Approval Pending"),
