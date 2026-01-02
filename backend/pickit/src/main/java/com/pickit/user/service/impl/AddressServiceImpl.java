@@ -25,7 +25,8 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     @Override
     public AddressResponse createAddress(Long userId, AddressRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (Boolean.TRUE.equals(request.getIsDefault())) {
             addressRepository.clearDefaultByUserId(userId);
@@ -53,13 +54,17 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(readOnly = true)
     @Override
     public List<AddressResponse> getAddresses(Long userId) {
-        return addressRepository.findByUserId(userId).stream().map(this::toResponse).toList();
+        return addressRepository.findByUserId(userId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional
     @Override
     public void deleteAddress(Long userId, Long addressId) {
-        Address address = addressRepository.findByIdAndUserId(addressId, userId).orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
 
         addressRepository.delete(address);
     }
@@ -67,7 +72,8 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     @Override
     public AddressResponse updateAddress(Long userId, Long addressId, AddressRequest request) {
-        Address address = addressRepository.findByIdAndUserId(addressId, userId).orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
 
         if (Boolean.TRUE.equals(request.getIsDefault())) {
             addressRepository.clearDefaultByUserId(userId);
@@ -93,14 +99,13 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     @Override
     public AddressResponse setDefaultAddress(Long userId, Long addressId) {
-        Address address = addressRepository.findByIdAndUserId(addressId, userId).orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
 
-        // 이미 기본이면 그대로 반환
         if (Boolean.TRUE.equals(address.getIsDefault())) {
             return toResponse(address);
         }
 
-        // 기존 기본 배송지 해제 후 현재 주소를 기본으로
         addressRepository.clearDefaultByUserId(userId);
         address.setIsDefault(true);
 
@@ -109,6 +114,19 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private AddressResponse toResponse(Address address) {
-        return AddressResponse.builder().id(address.getId()).label(address.getLabel()).addressRaw(address.getAddressRaw()).city(address.getCity()).district(address.getDistrict()).neighborhood(address.getNeighborhood()).streetAddress(address.getStreetAddress()).zipCode(address.getZipCode()).recipientName(address.getRecipientName()).phone(address.getPhone()).isDefault(address.getIsDefault()).deliveryRequest(address.getDeliveryRequest()).build();
+        return AddressResponse.builder()
+                .id(address.getId())
+                .label(address.getLabel())
+                .addressRaw(address.getAddressRaw())
+                .city(address.getCity())
+                .district(address.getDistrict())
+                .neighborhood(address.getNeighborhood())
+                .streetAddress(address.getStreetAddress())
+                .zipCode(address.getZipCode())
+                .recipientName(address.getRecipientName())
+                .phone(address.getPhone())
+                .isDefault(address.getIsDefault())
+                .deliveryRequest(address.getDeliveryRequest())
+                .build();
     }
 }
