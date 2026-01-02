@@ -9,9 +9,9 @@ import com.pickit.user.entity.User;
 import com.pickit.user.repository.AddressRepository;
 import com.pickit.user.repository.UserRepository;
 import com.pickit.user.service.AddressService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +28,10 @@ public class AddressServiceImpl implements AddressService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
+        if (Boolean.TRUE.equals(request.getIsDefault())) {
+            addressRepository.clearDefaultByUserId(userId);
+        }
+
         Address address = Address.builder()
                 .user(user)
                 .label(request.getLabel())
@@ -39,46 +43,90 @@ public class AddressServiceImpl implements AddressService {
                 .zipCode(request.getZipCode())
                 .recipientName(request.getRecipientName())
                 .phone(request.getPhone())
-                .isDefault(request.getIsDefault())
+                .isDefault(Boolean.TRUE.equals(request.getIsDefault()))
                 .deliveryRequest(request.getDeliveryRequest())
                 .build();
-        if (request.getIsDefault() != null && request.getIsDefault()) {
-            addressRepository.findByUserId(userId).stream()
-                    .filter(Address::getIsDefault)
-                    .forEach(addr -> {
-                        addr.setIsDefault(false);
-                        addressRepository.save(addr);
-                    });
-        }
 
         Address saved = addressRepository.save(address);
-
-        return AddressResponse.builder()
-                .id(saved.getId())
-                .label(saved.getLabel())
-                .city(saved.getCity())
-                .zipCode(saved.getZipCode())
-                .recipientName(saved.getRecipientName())
-                .phone(saved.getPhone())
-                .build();
+        return toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<AddressResponse> getAddresses(Long userId) {
-        return addressRepository.findByUserId(userId).stream()
-                .map(address -> AddressResponse.builder()
-                        .id(address.getId())
-                        .label(address.getLabel())
-                        .city(address.getCity())
-                        .zipCode(address.getZipCode())
-                        .recipientName(address.getRecipientName())
-                        .phone(address.getPhone())
-                        .build()
-                ).toList();
+        return addressRepository.findByUserId(userId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
+    @Transactional
     @Override
-    public void deleteAddress(Long addressId) {
-        addressRepository.deleteById(addressId);
+    public void deleteAddress(Long userId, Long addressId) {
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        addressRepository.delete(address);
+    }
+
+    @Transactional
+    @Override
+    public AddressResponse updateAddress(Long userId, Long addressId, AddressRequest request) {
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        if (Boolean.TRUE.equals(request.getIsDefault())) {
+            addressRepository.clearDefaultByUserId(userId);
+            address.setIsDefault(true);
+        } else if (request.getIsDefault() != null) {
+            address.setIsDefault(false);
+        }
+        address.setLabel(request.getLabel());
+        address.setAddressRaw(request.getAddressRaw());
+        address.setCity(request.getCity());
+        address.setDistrict(request.getDistrict());
+        address.setNeighborhood(request.getNeighborhood());
+        address.setStreetAddress(request.getStreetAddress());
+        address.setZipCode(request.getZipCode());
+        address.setRecipientName(request.getRecipientName());
+        address.setPhone(request.getPhone());
+        address.setDeliveryRequest(request.getDeliveryRequest());
+
+        Address saved = addressRepository.save(address);
+        return toResponse(saved);
+    }
+
+    @Transactional
+    @Override
+    public AddressResponse setDefaultAddress(Long userId, Long addressId) {
+        Address address = addressRepository.findByIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
+
+        if (Boolean.TRUE.equals(address.getIsDefault())) {
+            return toResponse(address);
+        }
+
+        addressRepository.clearDefaultByUserId(userId);
+        address.setIsDefault(true);
+
+        Address saved = addressRepository.save(address);
+        return toResponse(saved);
+    }
+
+    private AddressResponse toResponse(Address address) {
+        return AddressResponse.builder()
+                .id(address.getId())
+                .label(address.getLabel())
+                .addressRaw(address.getAddressRaw())
+                .city(address.getCity())
+                .district(address.getDistrict())
+                .neighborhood(address.getNeighborhood())
+                .streetAddress(address.getStreetAddress())
+                .zipCode(address.getZipCode())
+                .recipientName(address.getRecipientName())
+                .phone(address.getPhone())
+                .isDefault(address.getIsDefault())
+                .deliveryRequest(address.getDeliveryRequest())
+                .build();
     }
 }

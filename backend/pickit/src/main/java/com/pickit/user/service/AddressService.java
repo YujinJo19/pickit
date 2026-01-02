@@ -14,5 +14,11 @@ public interface AddressService {
     List<AddressResponse> getAddresses(Long userId);
 
     // 3. 주소 삭제
-    void deleteAddress(Long addressId);
+    void deleteAddress(Long userId, Long addressId);
+
+    // 4. 주소 수정
+    AddressResponse updateAddress(Long userId, Long addressId, AddressRequest request);
+
+    // 5. 기본배송지 설정
+    AddressResponse setDefaultAddress(Long userId, Long addressId);
 }
