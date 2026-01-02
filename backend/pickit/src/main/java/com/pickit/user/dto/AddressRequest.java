@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressRequest {
+    @NotBlank(message = "주소 별칭은 필수입니다.")
     private String label;
 
     private String addressRaw;
