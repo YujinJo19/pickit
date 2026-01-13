@@ -1,16 +1,27 @@
-import React, { useState } from "react";
-import { UseFormRegister, UseFormRegisterReturn } from "react-hook-form";
+import React from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 import { styled, css } from "styled-components";
 import { ErrorMessage } from "../auth/EmailVerification";
 
 interface Props {
   label?: string;
   type?: string;
-  field?: UseFormRegisterReturn;
+  field: UseFormRegisterReturn;
   error?: string;
-  name: string;
   readOnly?: boolean;
 }
+
+const Input = ({ label, type = "text", field, error, readOnly }: Props) => {
+  return (
+    <StyledInput type={type}>
+      {label && <label htmlFor={field.name}>{label}</label>}
+      <input {...field} type={type} readOnly={readOnly} />
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </StyledInput>
+  );
+};
+
+export default Input;
 
 interface StyledInputProps {
   type?: string;
@@ -63,15 +74,3 @@ export const StyledInput = styled.div<StyledInputProps>`
     }
   }
 `;
-
-const Input = ({ label, type, field, error, name, readOnly }: Props) => {
-  return (
-    <StyledInput type={type}>
-      {label && <label htmlFor={name}>{label}</label>}
-      <input id={name} type={type} {...field} readOnly={readOnly} />
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-    </StyledInput>
-  );
-};
-
-export default Input;

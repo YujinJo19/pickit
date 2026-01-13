@@ -7,7 +7,7 @@ import { useEscapeKey } from "../../../utils/useEscapeKey";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
-  userInfo: string;
+  userInfo?: string;
   onProfile?: () => void;
   onSettings?: () => void;
   onLogout?: () => void;
@@ -20,8 +20,6 @@ const UserMenu = ({ userInfo, onProfile, onSettings, onLogout }: Props) => {
   const close = useMemo(() => () => setOpen(false), []);
   useOutsideClick(ref, close, open);
   useEscapeKey(close, open);
-  console.log(userInfo);
-
   return (
     <PopoverAnchor ref={ref}>
       <IconButton

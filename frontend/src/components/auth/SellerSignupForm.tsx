@@ -19,6 +19,7 @@ export interface SellerSignupProps {
     password: string;
     password2: string;
     phoneNumber: string;
+    agreeTerms: string;
   }>;
   dispatchEmailCheck: () => void;
   dispatchCodeSend: () => void;
@@ -53,7 +54,6 @@ const SellerSignupForm = ({
           label="이름"
           field={register("name")}
           error={errors.name?.message}
-          name={"name"}
         />
         <EmailVerification
           register={
@@ -73,31 +73,26 @@ const SellerSignupForm = ({
           label="전화번호"
           field={register("phoneNumber")}
           error={errors.phoneNumber?.message}
-          name={"phoneNumber"}
         />
         <Input
           label="판매자명"
           field={register("storeName")}
           error={errors.storeName?.message}
-          name={"storeName"}
         />
         <Input
           label="사업장 주소"
           field={register("storeAddress")}
           error={errors.storeAddress?.message}
-          name={"storeAddress"}
         />
         <Input
           label="사업장번호"
           field={register("businessNumber")}
           error={errors.businessNumber?.message}
-          name={"businessNumber"}
         />
         <Input
           label="비밀번호"
           field={register("password")}
           error={errors.password?.message}
-          name={"password"}
           type="password"
         />
         <Input
@@ -108,15 +103,15 @@ const SellerSignupForm = ({
               value === password || "비밀번호가 일치하지 않습니다.",
           })}
           error={errors.password2?.message}
-          name={"password2"}
           type="password"
         />
         <Input
           label="이용약관에 모두 동의합니다"
           type="checkbox"
-          name={"checkbox"}
+          field={register("agreeTerms")}
+          error={errors.agreeTerms?.message}
         />
-        <Button contents="회원가입" onSubmit={onSubmit} />
+        <Button contents="회원가입" type="submit" />
       </div>
     </StyledLoginForm>
   );

@@ -14,6 +14,7 @@ export interface SignupProps {
     password: string;
     password2: string;
     phoneNumber: string;
+    agreeTerms: boolean;
   }>;
   errors: FieldErrors<{
     name: string;
@@ -22,6 +23,7 @@ export interface SignupProps {
     password: string;
     password2: string;
     phoneNumber: string;
+    agreeTerms: string;
   }>;
   dispatchEmailCheck: () => void;
   dispatchCodeSend: () => void;
@@ -56,7 +58,6 @@ const SignupForm = ({
           label="이름"
           field={register("name")}
           error={errors.name?.message}
-          name={"name"}
         />
         <EmailVerification
           register={
@@ -76,13 +77,11 @@ const SignupForm = ({
           label="전화번호"
           field={register("phoneNumber")}
           error={errors.phoneNumber?.message}
-          name={"phoneNumber"}
         />
         <Input
           label="비밀번호"
           field={register("password")}
           error={errors.password?.message}
-          name={"password"}
           type="password"
         />
         <Input
@@ -93,15 +92,15 @@ const SignupForm = ({
               value === password || "비밀번호가 일치하지 않습니다.",
           })}
           error={errors.password2?.message}
-          name={"password2"}
           type="password"
         />
         <Input
           label="이용약관에 모두 동의합니다"
           type="checkbox"
-          name={"checkbox"}
+          field={register("agreeTerms")}
+          error={errors.agreeTerms?.message}
         />
-        <Button contents="회원가입" onSubmit={onSubmit} />
+        <Button contents="회원가입" type="submit" />
       </div>
     </StyledLoginForm>
   );

@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 
 interface Props {
   contents: string;
-  onSubmit?: React.Dispatch<React.SetStateAction<any>>;
+  type?: "button" | "submit";
   onClick?: (e: any) => void;
 }
 
@@ -25,10 +25,10 @@ export const StyledButton = styled.button`
   }
 `;
 
-const Button = ({ contents, onSubmit, onClick }: Props) => {
+const Button = ({ contents, type, onClick }: Props) => {
   return (
     <div>
-      <StyledButton onSubmit={onSubmit} onClick={onClick}>
+      <StyledButton type={type} onClick={onClick}>
         {contents}
       </StyledButton>
     </div>

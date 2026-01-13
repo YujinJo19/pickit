@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { css, styled } from "styled-components";
+import { toUrl } from "../../utils/image";
 
 type Props = {
   images: string[];
@@ -7,9 +8,6 @@ type Props = {
   intervalMs?: number;
   aspectRatio?: string;
 };
-
-const toUrl = (src: string) =>
-  src.startsWith("http") ? src : `https://${src}`;
 
 const ImageCarousel = ({
   images,
