@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { styled } from "styled-components";
@@ -18,6 +18,10 @@ import SellerProductUpdate from "./pages/sellerDashboard/SellerProductUpdate";
 import ProductDetail from "./pages/ProductDetail";
 import Category from "./pages/Category";
 import Search from "./pages/Search";
+import ProfilePage from "./pages/mypage/MypageDashboard";
+import Mypage from "./pages/mypage/Mypage";
+import ProfileEditPage from "./pages/mypage/profile/ProfileEditPage";
+import MypageDashboard from "./pages/mypage/MypageDashboard";
 
 const AppContainer = styled.div`
   display: grid;
@@ -56,6 +60,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup/seller" element={<SellerSignup />} />
+        // user
+        <Route path="/mypage" element={<Mypage />}>
+          <Route index element={<MypageDashboard />} />
+          <Route path="profile/edit" element={<ProfileEditPage />} />
+        </Route>
         // seller
         <Route
           path="/seller/dashboard"
@@ -71,6 +80,8 @@ function App() {
           <Route path="products/create" element={<SellerProductCreate />} />
           <Route path="products/update/:id" element={<SellerProductUpdate />} />
         </Route>
+        {/* 404 -> main으로 이동 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppContainer>
   );
