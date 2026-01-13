@@ -18,10 +18,9 @@ import SellerProductUpdate from "./pages/sellerDashboard/SellerProductUpdate";
 import ProductDetail from "./pages/ProductDetail";
 import Category from "./pages/Category";
 import Search from "./pages/Search";
-import ProfilePage from "./pages/mypage/MypageDashboard";
 import Mypage from "./pages/mypage/Mypage";
-import ProfileEditPage from "./pages/mypage/profile/ProfileEditPage";
 import MypageDashboard from "./pages/mypage/MypageDashboard";
+import ProfileEditPage from "./pages/mypage/ProfileEditPage";
 
 const AppContainer = styled.div`
   display: grid;

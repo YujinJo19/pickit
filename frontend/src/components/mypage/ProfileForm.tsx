@@ -43,7 +43,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input
-        field={{ ...register("nickname") }}
+        field={register("nickname")}
         label="닉네임"
         error={errors.nickname?.message}
       />
@@ -53,11 +53,15 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
         readOnly
       />
       <Input
-        field={{ ...register("phoneNumber") }}
+        field={register("phoneNumber")}
         label="전화번호"
         error={errors.phoneNumber?.message}
       />
-      <Button contents="변경사항 저장" type="submit" />
+      <Button
+        contents={isSubmitting ? "저장 중" : "변경사항 저장"}
+        type="submit"
+        disabled={isSubmitting}
+      />
     </form>
   );
 };
