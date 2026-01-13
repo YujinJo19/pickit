@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUser, login, logout } from "../thunks/authThunk";
+import { login, logout } from "../thunks/authThunk";
 import { getRoleFromToken, getSellerIdFromToken } from "../../utils/token";
+import {
+  deleteProfileImg,
+  getUser,
+  updateProfileImg,
+} from "../thunks/userThunk";
 
 interface AuthState {
   user: any;
@@ -53,6 +58,16 @@ const authSlice = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(updateProfileImg.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.profileImageUrl = action.payload.profileImageUrl;
+        }
+      })
+      .addCase(deleteProfileImg.fulfilled, (state) => {
+        if (state.user) {
+          state.user.profileImageUrl = null;
+        }
       });
   },
 });

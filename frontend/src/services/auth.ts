@@ -1,8 +1,5 @@
 import { axiosGet, axiosPost } from "./api";
 
-// 회원정보 조회
-export const getUser = (id: string) => axiosGet(`/user/${id}`);
-
 // 로그인
 export const login = (data: any) => axiosPost("/auth/login", data);
 
