@@ -128,8 +128,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </PreviewWrapper>
         ))}
       </PreviewContainer>
-
-      <Label>가격</Label>
       <Input
         label="가격"
         type="number"
