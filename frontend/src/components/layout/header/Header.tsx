@@ -37,10 +37,10 @@ const Header = ({ userInfo, onLogout }: Props) => {
             navigate(`/search?keyword=${encodeURIComponent(q)}&page=0&size=10`);
           }}
         />
-        {userInfo && onLogout && (
+        {onLogout && (
           <UserMenu
             userInfo={userInfo}
-            onProfile={() => console.log("profile")}
+            onProfile={() => navigate("/mypage")}
             onSettings={() => console.log("settings")}
             onLogout={onLogout}
           />

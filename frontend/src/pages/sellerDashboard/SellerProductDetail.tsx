@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getFullCategoryPath } from "../../utils/category";
 import { styled } from "styled-components";
 import { getProductDetail } from "../../store/thunks/productThunk";
+import { DEFAULT_PRODUCT_IMAGE, toUrl } from "../../utils/image";
 
 const SellerProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +46,7 @@ const SellerProductDetail = () => {
         {detailInfo.images.map((item, index) => (
           <Image
             key={index}
-            src={item.startsWith("http") ? item : `https://${item}`}
+            src={item ? toUrl(item) : DEFAULT_PRODUCT_IMAGE}
             alt={`상품 이미지 ${index + 1}`}
           />
         ))}

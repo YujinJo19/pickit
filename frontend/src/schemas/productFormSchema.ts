@@ -8,7 +8,7 @@ export const productFormSchema = z.object({
   categoryIdParent: z.number({ error: "상위 카테고리를 선택해주세요." }).min(1),
   categoryId: z.number().min(0),
   images: z
-    .array(z.any())
+    .array(z.instanceof(File))
     .max(3, "이미지는 최대 3개까지 업로드 가능합니다.")
     .optional(),
   inventory: z

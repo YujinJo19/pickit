@@ -3,6 +3,7 @@ import { ProductListType } from "../../types/products";
 import styled from "styled-components";
 import { getFullCategoryPath } from "../../utils/category";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_PRODUCT_IMAGE, toUrl } from "../../utils/image";
 
 interface Props {
   product: ProductListType;
@@ -32,9 +33,9 @@ const ProductItem = ({
           {product.thumbnailUrl && (
             <StyledImg
               src={
-                (product.thumbnailUrl as string).startsWith("http")
-                  ? (product.thumbnailUrl as string)
-                  : `https://${product.thumbnailUrl}`
+                product.thumbnailUrl
+                  ? toUrl(product.thumbnailUrl as string)
+                  : DEFAULT_PRODUCT_IMAGE
               }
             />
           )}
@@ -63,9 +64,9 @@ const ProductItem = ({
         {product.thumbnailUrl && (
           <StyledImg
             src={
-              (product.thumbnailUrl as string).startsWith("http")
-                ? (product.thumbnailUrl as string)
-                : `https://${product.thumbnailUrl}`
+              product.thumbnailUrl
+                ? toUrl(product.thumbnailUrl as string)
+                : DEFAULT_PRODUCT_IMAGE
             }
           />
         )}

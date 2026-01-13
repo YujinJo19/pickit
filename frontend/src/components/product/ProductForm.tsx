@@ -8,17 +8,17 @@ import {
 } from "../../schemas/productFormSchema";
 import { getParentCategories, getChildCategories } from "../../utils/category";
 import { Category } from "../../data/categories";
-import { ZodType } from "zod";
+import Input from "../ui/Input";
 
 interface ProductFormProps {
   defaultValues?: Partial<ProductFormValues>;
-  schema: ZodType<ProductFormValues>;
+  existingImages?: string[];
   onSubmit: SubmitHandler<ProductFormValues>;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   defaultValues,
-  schema,
+  existingImages,
   onSubmit,
 }) => {
   const {
@@ -60,7 +60,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const currentImages = (watch("images") as File[]) || [];
+    const currentImages = watch("images") ?? [];
     if (currentImages.length >= 3) {
       alert("이미지는 최대 3개까지 업로드 가능합니다.");
       return;
@@ -76,7 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   const handleRemoveImage = (idx: number) => {
-    const images = (watch("images") as File[]) || [];
+    const images = watch("images") ?? [];
     const newImages = images.filter((_, i) => i !== idx);
 
     setValue("images", newImages);
@@ -97,19 +97,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
   }, [defaultValues]);
 
   useEffect(() => {
-    if (defaultValues?.images && Array.isArray(defaultValues.images)) {
-      const urls = defaultValues.images.map((img) =>
-        img.startsWith("http") ? img : `https://${img}`
-      );
-      setPreviewImages(urls);
-    }
-  }, [defaultValues]);
+    if (!existingImages) return;
+    setPreviewImages(existingImages);
+  }, [existingImages]);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Label>상품명</Label>
-      <Input {...register("name")} />
-      {errors.name && <Error>{errors.name.message}</Error>}
-
+      <Input
+        label="이름"
+        field={register("name")}
+        error={errors.name?.message}
+      />
       <Label>상품 이미지 (최대 3개)</Label>
       <button type="button" onClick={handleAddImageClick}>
         이미지 추가
@@ -131,16 +128,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </PreviewWrapper>
         ))}
       </PreviewContainer>
-
-      <Label>가격</Label>
-      <Input type="number" {...register("price", { valueAsNumber: true })} />
-      {errors.price && <Error>{errors.price.message}</Error>}
-      <Label>할인 가격</Label>
       <Input
+        label="가격"
         type="number"
-        {...register("discountPrice", { valueAsNumber: true })}
+        field={register("price", { valueAsNumber: true })}
+        error={errors.price?.message}
       />
-      {errors.discountPrice && <Error>{errors.discountPrice.message}</Error>}
+      <Input
+        label="할인 가격"
+        type="number"
+        field={register("discountPrice", { valueAsNumber: true })}
+        error={errors.discountPrice?.message}
+      />
 
       <Label>설명</Label>
       <Textarea {...register("description")} />
@@ -175,16 +174,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <InventoryRow key={item.id}>
           <Input
             placeholder="색상"
-            {...register(`inventory.${index}.color` as const)}
+            field={register(`inventory.${index}.color`)}
           />
           <Input
             placeholder="사이즈"
-            {...register(`inventory.${index}.size` as const)}
+            field={register(`inventory.${index}.size`)}
           />
           <Input
             placeholder="수량"
             type="number"
-            {...register(`inventory.${index}.quantity`, {
+            field={register(`inventory.${index}.quantity`, {
               valueAsNumber: true,
             })}
           />
@@ -208,16 +207,10 @@ export default ProductForm;
 
 const Label = styled.label`
   font-weight: bold;
-  margin-top: 10px;
-  display: block;
+  color: #333;
+  margin: 10px 0;
+  flex-shrink: 0;
 `;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 6px;
-  margin-top: 4px;
-`;
-
 const Textarea = styled.textarea`
   width: 100%;
   padding: 6px;

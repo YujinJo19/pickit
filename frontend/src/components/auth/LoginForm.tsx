@@ -45,13 +45,11 @@ const LoginForm = ({ onSubmit, register, errors }: Props) => {
             label="아이디"
             field={register("email")}
             error={errors.email?.message}
-            name={"email"}
           />
           <Input
             label="비밀번호"
             field={register("password")}
             error={errors.password?.message}
-            name={"password"}
             type="password"
           />
         </div>
@@ -59,12 +57,11 @@ const LoginForm = ({ onSubmit, register, errors }: Props) => {
           <Input
             label="자동로그인"
             type="checkbox"
-            name={"checkbox"}
             field={register("autoLogin")}
           />
           <TextButton>비밀번호 찾기</TextButton>
         </StyledCheckboxContainer>
-        <Button contents="로그인" onSubmit={onSubmit} />
+        <Button contents="로그인" type="submit" />
         <StyledButton>
           <Link to="/signup">회원가입</Link>
         </StyledButton>

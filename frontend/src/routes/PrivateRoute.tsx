@@ -1,6 +1,5 @@
 import React, { JSX } from "react";
 import { useSelector } from "react-redux";
-import { getRoleFromToken, getToken } from "../utils/token";
 import { Navigate } from "react-router-dom";
 
 interface PrivateRouteProps {
@@ -9,7 +8,7 @@ interface PrivateRouteProps {
 }
 
 export function PrivateRoute({ children, roles }: PrivateRouteProps) {
-  const role = useSelector((state: any) => state.authApi.role);
+  const role = useSelector((state: any) => state.auth.role);
   console.log("role", role);
 
   if (roles && !roles.includes(role)) {

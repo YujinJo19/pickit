@@ -1,19 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authAPI from "../../services/auth";
 
-// 회원정보 조회
-export const getUser = createAsyncThunk(
-  "auth/getUser",
-  async (args: any, { rejectWithValue }) => {
-    try {
-      const res = await authAPI.getUser(args);
-      return res.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response);
-    }
-  }
-);
-
 // 로그인
 export const login = createAsyncThunk(
   "auth/login",

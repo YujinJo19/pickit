@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { css, styled } from "styled-components";
+import { DEFAULT_PRODUCT_IMAGE, toUrl } from "../../utils/image";
 
 type Props = {
   images: string[];
@@ -7,9 +8,6 @@ type Props = {
   intervalMs?: number;
   aspectRatio?: string;
 };
-
-const toUrl = (src: string) =>
-  src.startsWith("http") ? src : `https://${src}`;
 
 const ImageCarousel = ({
   images,
@@ -37,11 +35,17 @@ const ImageCarousel = ({
   if (!len) return null;
 
   const go = (next: number) => setIndex((next + len) % len);
+  console.log(safeImages[index]);
 
   return (
     <Wrap>
       <Main $ratio={aspectRatio}>
-        <Img src={toUrl(safeImages[index])} alt={`상품 이미지 ${index + 1}`} />
+        <Img
+          src={
+            safeImages[index] ? toUrl(safeImages[index]) : DEFAULT_PRODUCT_IMAGE
+          }
+          alt={`상품 이미지 ${index + 1}`}
+        />
         {len > 1 && (
           <>
             <ArrowBtn
@@ -83,7 +87,7 @@ const ImageCarousel = ({
               onClick={() => setIndex(i)}
               aria-label={`select image ${i + 1}`}
             >
-              <ThumbImg src={toUrl(src)} alt="" />
+              <ThumbImg src={src ? toUrl(src) : DEFAULT_PRODUCT_IMAGE} alt="" />
             </ThumbBtn>
           ))}
         </ThumbRow>

@@ -64,7 +64,7 @@ function EmailVerification<TForm extends FieldValues & EmailVerificationForm>({
     return (
       <>
         <InputButtonContainer>
-          <Input label="이메일" field={register("email")} name="email" />
+          <Input label="이메일" field={register("email")} />
           <StyledCheckButton type="button" onClick={dispatchEmailCheck}>
             중복확인
           </StyledCheckButton>
@@ -78,7 +78,7 @@ function EmailVerification<TForm extends FieldValues & EmailVerificationForm>({
     return (
       <>
         <InputButtonContainer>
-          <Input label="이메일" field={register("email")} name="email" />
+          <Input label="이메일" field={register("email")} />
           <StyledCheckButton type="button" onClick={dispatchCodeSend}>
             코드전송
           </StyledCheckButton>
@@ -90,15 +90,10 @@ function EmailVerification<TForm extends FieldValues & EmailVerificationForm>({
   if (!isCodeVerified) {
     return (
       <>
-        <Input
-          label="이메일"
-          field={register("email")}
-          name="email"
-          readOnly={isCodeSent}
-        />
+        <Input label="이메일" field={register("email")} readOnly={isCodeSent} />
         <>
           <InputButtonContainer>
-            <Input label="인증코드" field={register("code")} name="code" />
+            <Input label="인증코드" field={register("code")} />
             <StyledCheckButton
               type="button"
               onClick={dispatchCodeVerify}
@@ -134,7 +129,6 @@ function EmailVerification<TForm extends FieldValues & EmailVerificationForm>({
       label="이메일"
       field={register("email")}
       error={errors.email?.message}
-      name="email"
     />
   );
 }

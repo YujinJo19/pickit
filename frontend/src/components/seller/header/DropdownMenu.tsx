@@ -1,5 +1,24 @@
 import styled from "styled-components";
 
+interface Props {
+  handleLogout: () => void;
+}
+
+const DropdownMenu = ({ handleLogout }: Props) => {
+  return (
+    <Menu>
+      <MenuItem>내 프로필</MenuItem>
+      <MenuItem>설정</MenuItem>
+      <Divider />
+      <MenuItem $danger onClick={handleLogout}>
+        로그아웃
+      </MenuItem>
+    </Menu>
+  );
+};
+
+export default DropdownMenu;
+
 const Menu = styled.div`
   position: absolute;
   right: 0;
@@ -29,16 +48,3 @@ const Divider = styled.div`
   background: ${({ theme }) => theme.colors.gray};
   margin: 6px 0;
 `;
-
-const DropdownMenu = () => {
-  return (
-    <Menu>
-      <MenuItem>내 프로필</MenuItem>
-      <MenuItem>설정</MenuItem>
-      <Divider />
-      <MenuItem $danger>로그아웃</MenuItem>
-    </Menu>
-  );
-};
-
-export default DropdownMenu;

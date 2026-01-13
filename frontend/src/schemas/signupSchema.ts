@@ -10,6 +10,9 @@ export const signupSchema = z
     phoneNumber: z
       .string()
       .regex(/^010\d{8}$/, "휴대폰 번호 형식이 올바르지 않습니다."),
+    agreeTerms: z.boolean().refine((v) => v, {
+      message: "이용약관에 동의해야 가입할 수 있습니다.",
+    }),
   })
   .refine((data) => data.password === data.password2, {
     path: ["password2"],

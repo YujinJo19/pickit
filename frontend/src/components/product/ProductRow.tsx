@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ProductListType } from "../../types/products";
-
+import { DEFAULT_PRODUCT_IMAGE, toUrl } from "../../utils/image";
 type Props = {
   items: ProductListType[];
   variant?: "row" | "grid";
@@ -20,11 +20,12 @@ const ProductRow = ({ items, variant = "row" }: Props) => {
         >
           <Thumb
             $src={
-              (p.thumbnailUrl as string)?.startsWith("http")
-                ? (p.thumbnailUrl as string)
-                : `https://${p.thumbnailUrl}`
+              p.thumbnailUrl
+                ? toUrl(p.thumbnailUrl as string)
+                : DEFAULT_PRODUCT_IMAGE
             }
           />
+
           <Meta>
             <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
               {p.discountPrice ? (

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import SellerHeader from "../../components/seller/header/SellerHeader";
 import SellerSidebar from "../../components/seller/SellerSidebar";
 import { styled } from "styled-components";
 import { Menu } from "lucide-react";
+import { useAppDispatch } from "../../store/hooks";
+import { logout } from "../../store/thunks/authThunk";
+import { removeToken } from "../../utils/token";
 
 interface SidebarProps {
   $open: boolean;
@@ -12,13 +15,24 @@ interface SidebarProps {
 const SellerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    const response = await dispatch(logout());
+    if (response.meta.requestStatus === "fulfilled") {
+      removeToken();
+      console.log("로그아웃됨");
+      navigate("/login");
+    }
+  };
+
   return (
     <Container>
       <HeaderWrapper>
         <MobileMenuButton onClick={() => setSidebarOpen(!sidebarOpen)}>
           <Menu size={24} />
         </MobileMenuButton>
-        <SellerHeader />
+        <SellerHeader handleLogout={handleLogout} />
       </HeaderWrapper>
       <ContentWrapper>
         <SidebarWrapper $open={sidebarOpen}>

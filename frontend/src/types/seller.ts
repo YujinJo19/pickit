@@ -11,4 +11,5 @@ export interface SellerFormData extends EmailVerificationForm {
   password: string;
   password2: string;
   phoneNumber: string;
+  agreeTerms: boolean;
 }

@@ -38,7 +38,7 @@ const Main = () => {
     if (response.meta.requestStatus === "fulfilled") {
       removeToken();
       console.log("로그아웃됨");
-      navigate("/");
+      navigate("/login");
     }
   };
 
