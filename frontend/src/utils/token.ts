@@ -40,3 +40,8 @@ export const getSellerIdFromToken = (token: string) => {
   const decoded: any = decodeToken(token);
   return decoded ? decoded?.sellerId : "";
 };
+
+export const getUserIdFromToken = (token: string) => {
+  const decoded: any = decodeToken(token);
+  return decoded ? decoded?.userId : "";
+};
