@@ -21,7 +21,7 @@ const SellerProductList = () => {
   });
   const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const sellerId = useSelector((state: any) => state.authApi.sellerId);
+  const sellerId = useSelector((state: any) => state.auth.sellerId);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

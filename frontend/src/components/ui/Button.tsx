@@ -6,6 +6,7 @@ interface Props {
   contents: string;
   type?: "button" | "submit";
   onClick?: (e: any) => void;
+  disabled?: true | false;
 }
 
 export const StyledButton = styled.button`
@@ -25,10 +26,10 @@ export const StyledButton = styled.button`
   }
 `;
 
-const Button = ({ contents, type, onClick }: Props) => {
+const Button = ({ contents, type, onClick, disabled = false }: Props) => {
   return (
     <div>
-      <StyledButton type={type} onClick={onClick}>
+      <StyledButton type={type} onClick={onClick} disabled={disabled}>
         {contents}
       </StyledButton>
     </div>

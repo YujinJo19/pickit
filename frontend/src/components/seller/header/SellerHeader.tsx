@@ -39,8 +39,10 @@ const HeaderRight = styled.div`
     gap: 14px;
   }
 `;
-
-const SellerHeader = () => {
+interface Props {
+  handleLogout: () => void;
+}
+const SellerHeader = ({ handleLogout }: Props) => {
   return (
     <HeaderContainer>
       <HeaderLeft>
@@ -49,7 +51,7 @@ const SellerHeader = () => {
 
       <HeaderRight>
         <NotificationBell />
-        <Avatar />
+        <Avatar handleLogout={handleLogout} />
       </HeaderRight>
     </HeaderContainer>
   );

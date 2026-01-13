@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import { useAppDispatch } from "../../../store/hooks";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../../store/thunks/authThunk";
+import { removeToken } from "../../../utils/token";
 
 const Menu = styled.div`
   position: absolute;
@@ -29,14 +33,18 @@ const Divider = styled.div`
   background: ${({ theme }) => theme.colors.gray};
   margin: 6px 0;
 `;
-
-const DropdownMenu = () => {
+interface Props {
+  handleLogout: () => void;
+}
+const DropdownMenu = ({ handleLogout }: Props) => {
   return (
     <Menu>
       <MenuItem>내 프로필</MenuItem>
       <MenuItem>설정</MenuItem>
       <Divider />
-      <MenuItem $danger>로그아웃</MenuItem>
+      <MenuItem $danger onClick={handleLogout}>
+        로그아웃
+      </MenuItem>
     </Menu>
   );
 };

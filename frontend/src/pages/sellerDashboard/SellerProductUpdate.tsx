@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductForm from "../../components/product/ProductForm";
-import {
-  productFormSchema,
-  ProductFormValues,
-} from "../../schemas/productFormSchema";
+import { ProductFormValues } from "../../schemas/productFormSchema";
 import { updateProduct } from "../../store/thunks/sellerProductThunk";
 import { useAppDispatch } from "../../store/hooks";
 import { getParentIdFromCategoryId } from "../../utils/category";
@@ -75,13 +72,7 @@ const SellerProductUpdate = () => {
   };
 
   if (!defaultValues) return <div>로딩 중...</div>;
-  return (
-    <ProductForm
-      defaultValues={defaultValues}
-      schema={productFormSchema}
-      onSubmit={handleSubmit}
-    />
-  );
+  return <ProductForm defaultValues={defaultValues} onSubmit={handleSubmit} />;
 };
 
 export default SellerProductUpdate;

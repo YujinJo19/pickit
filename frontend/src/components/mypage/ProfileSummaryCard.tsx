@@ -21,6 +21,7 @@ const ProfileSummaryCard = ({
       <ProfileRow>
         <ProfileInfo>
           <EmailText>{email}</EmailText>
+          <EmailText>{nickname}</EmailText>
 
           <Link to="/mypage/profile/edit">
             <EditButton>회원정보 수정</EditButton>

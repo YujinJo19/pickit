@@ -1,12 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const MypageSidebar = () => {
+  const navigate = useNavigate();
   return (
     <aside style={{ width: 240, background: "#f2f2f2", padding: 24 }}>
       <Section>
         <Title>프로필 관리</Title>
-        <Item>프로필 수정</Item>
+        <Item onClick={() => navigate("/mypage/profile/edit")}>
+          프로필 수정
+        </Item>
         <Item>비밀번호 변경</Item>
       </Section>
 

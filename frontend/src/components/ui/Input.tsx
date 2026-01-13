@@ -9,13 +9,26 @@ interface Props {
   field: UseFormRegisterReturn;
   error?: string;
   readOnly?: boolean;
+  placeholder?: string;
 }
 
-const Input = ({ label, type = "text", field, error, readOnly }: Props) => {
+const Input = ({
+  label,
+  type = "text",
+  field,
+  error,
+  readOnly,
+  placeholder,
+}: Props) => {
   return (
     <StyledInput type={type}>
       {label && <label htmlFor={field.name}>{label}</label>}
-      <input {...field} type={type} readOnly={readOnly} />
+      <input
+        {...field}
+        type={type}
+        readOnly={readOnly}
+        placeholder={placeholder}
+      />
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </StyledInput>
   );

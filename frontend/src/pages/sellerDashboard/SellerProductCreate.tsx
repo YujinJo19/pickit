@@ -1,10 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ProductForm from "../../components/product/ProductForm";
-import {
-  productFormSchema,
-  ProductFormValues,
-} from "../../schemas/productFormSchema";
+import { ProductFormValues } from "../../schemas/productFormSchema";
 import { createProduct } from "../../store/thunks/sellerProductThunk";
 import { useAppDispatch } from "../../store/hooks";
 const SellerProductCreate = () => {
@@ -33,7 +30,7 @@ const SellerProductCreate = () => {
     }
   };
 
-  return <ProductForm schema={productFormSchema} onSubmit={handleSubmit} />;
+  return <ProductForm onSubmit={handleSubmit} />;
 };
 
 export default SellerProductCreate;

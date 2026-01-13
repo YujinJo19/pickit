@@ -19,14 +19,18 @@ const ProfileImg = styled.img`
     opacity: 0.8;
   }
 `;
-const Avatar = () => {
+
+interface Props {
+  handleLogout: () => void;
+}
+const Avatar = ({ handleLogout }: Props) => {
   const [open, setOpen] = useState(false);
   const toggleMenu = () => setOpen(!open);
 
   return (
     <AvatarContainer>
       <ProfileImg src={default_img} alt="Seller Avatar" onClick={toggleMenu} />
-      {open && <DropdownMenu />}
+      {open && <DropdownMenu handleLogout={handleLogout} />}
     </AvatarContainer>
   );
 };

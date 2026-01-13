@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import ProfileForm from "../../../components/mypage/ProfileForm";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { getToken, getUserIdFromToken } from "../../../utils/token";
-import { deleteUser, getUser } from "../../../store/thunks/userThunk";
-
-import { styled } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../store/thunks/authThunk";
+import styled from "styled-components";
+import ProfileForm from "../../components/mypage/ProfileForm";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { getToken, getUserIdFromToken } from "../../utils/token";
+import { deleteUser, getUser } from "../../store/thunks/userThunk";
+import { logout } from "../../store/thunks/authThunk";
 
 const ProfileEditPage = () => {
   const dispatch = useAppDispatch();

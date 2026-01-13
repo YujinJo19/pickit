@@ -107,6 +107,8 @@ const ProductDetail = () => {
       options: selectedOptions,
     });
   };
+  console.log(detailInfo);
+
   if (!detailInfo) return <p>로딩 중...</p>;
   return (
     <S.Page>
