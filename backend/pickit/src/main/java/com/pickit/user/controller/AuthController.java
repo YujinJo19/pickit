@@ -6,6 +6,9 @@ import com.pickit.seller.service.SellerService;
 import com.pickit.user.dto.*;
 import com.pickit.user.service.AuthService;
 import com.pickit.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,11 +19,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
 
 import static com.pickit.global.security.util.CookieUtil.extractRefreshToken;
 
+@Tag(
+        name = "Auth",
+        description = "회원가입, 로그인, 토큰 재발급, 로그아웃 API"
+)
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -34,7 +41,14 @@ public class AuthController {
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 
-    // 1. 회원가입
+    @Operation(
+            summary = "회원가입",
+            description = "role 값(USER 또는 SELLER)에 따라 일반 사용자 또는 판매자로 회원가입을 처리합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 role 값 또는 요청 데이터 오류")
+    })
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody Map<String, Object> requestBody) {
         String role = (String) requestBody.get("role");
@@ -51,7 +65,15 @@ public class AuthController {
         }
     }
 
-    // 2. 로그인
+    @Operation(
+            summary = "로그인",
+            description = "이메일과 비밀번호로 로그인하며, Access Token은 응답 바디로, Refresh Token은 HttpOnly 쿠키로 반환합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류"),
+            @ApiResponse(responseCode = "401", description = "이메일 또는 비밀번호 불일치")
+    })
     @PostMapping("/login")
     public ResponseEntity <TokenResponse> login(
             @Valid @RequestBody LoginRequest request,
@@ -75,7 +97,14 @@ public class AuthController {
         return ResponseEntity.ok(responseBody);
     }
 
-    // 3. 토큰 재발급
+    @Operation(
+            summary = "토큰 재발급",
+            description = "쿠키에 저장된 Refresh Token을 검증하여 새로운 Access Token을 발급합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
+            @ApiResponse(responseCode = "401", description = "유효하지 않은 Refresh Token")
+    })
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(HttpServletRequest request,
                                                  HttpServletResponse response) {
@@ -98,7 +127,15 @@ public class AuthController {
         return ResponseEntity.ok(responseBody);
     }
 
-    // 4. 로그아웃
+    @Operation(
+            summary = "로그아웃",
+            description = "Access Token을 무효화하고 Refresh Token 쿠키를 삭제합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "400", description = "Authorization 헤더 누락"),
+            @ApiResponse(responseCode = "401", description = "유효하지 않은 Access Token")
+    })
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
