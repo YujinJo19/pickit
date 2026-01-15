@@ -39,4 +39,18 @@ public class SwaggerConfig {
                 .packagesToScan("com.pickit.product.controller")
                 .build();
     }
+    @Bean
+    public GroupedOpenApi cartApi() {
+        return GroupedOpenApi.builder()
+                .group("Cart API")
+                .packagesToScan("com.pickit.cart.controller")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi orderApi() {
+        return GroupedOpenApi.builder()
+                .group("Order API")
+                .packagesToScan("com.pickit.order.controller")
+                .build();
+    }
 }
