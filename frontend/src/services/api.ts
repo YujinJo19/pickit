@@ -59,7 +59,7 @@ export const axiosPost = (url: string, data?: any, config?: any) =>
 
 export const axiosDel = (url: string) => axiosInstance.delete(url);
 
-export const axiosPut = (url: string, data: any, config?: any) =>
+export const axiosPut = (url: string, data?: any, config?: any) =>
   axiosInstance.put(url, data, config);
 
 export const axiosPatch = (url: string, data: any, config?: any) =>

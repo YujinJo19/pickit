@@ -21,6 +21,7 @@ import Search from "./pages/Search";
 import Mypage from "./pages/mypage/Mypage";
 import MypageDashboard from "./pages/mypage/MypageDashboard";
 import ProfileEditPage from "./pages/mypage/ProfileEditPage";
+import Address from "./pages/mypage/Address";
 
 const AppContainer = styled.div`
   display: grid;
@@ -63,6 +64,7 @@ function App() {
         <Route path="/mypage" element={<Mypage />}>
           <Route index element={<MypageDashboard />} />
           <Route path="profile/edit" element={<ProfileEditPage />} />
+          <Route path="address" element={<Address />} />
         </Route>
         // seller
         <Route
