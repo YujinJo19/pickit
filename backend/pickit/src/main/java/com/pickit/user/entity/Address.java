@@ -26,12 +26,8 @@ public class Address extends BaseEntity {
     @Column(name = "address_raw", columnDefinition = "TEXT")
     private String addressRaw;
 
-    private String city;
-    private String district;
-    private String neighborhood;
-
-    @Column(name = "street_address")
-    private String streetAddress;
+    @Column(name = "address_detail")
+    private String addressDetail ;
 
     @Column(name = "zip_code")
     private String zipCode;
@@ -45,7 +41,4 @@ public class Address extends BaseEntity {
 
     @Column(name = "is_default", nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isDefault; // 기본 배송지 여부 (true/false)
-
-    @Column(name = "delivery_request", columnDefinition = "TEXT")
-    private String deliveryRequest; // 배송 요청사항
 }
