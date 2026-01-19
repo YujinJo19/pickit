@@ -36,15 +36,11 @@ public class AddressServiceImpl implements AddressService {
                 .user(user)
                 .label(request.getLabel())
                 .addressRaw(request.getAddressRaw())
-                .city(request.getCity())
-                .district(request.getDistrict())
-                .neighborhood(request.getNeighborhood())
-                .streetAddress(request.getStreetAddress())
+                .addressDetail (request.getAddressDetail ())
                 .zipCode(request.getZipCode())
                 .recipientName(request.getRecipientName())
                 .phone(request.getPhone())
                 .isDefault(Boolean.TRUE.equals(request.getIsDefault()))
-                .deliveryRequest(request.getDeliveryRequest())
                 .build();
 
         Address saved = addressRepository.save(address);
@@ -62,11 +58,12 @@ public class AddressServiceImpl implements AddressService {
 
     @Transactional
     @Override
-    public void deleteAddress(Long userId, Long addressId) {
-        Address address = addressRepository.findByIdAndUserId(addressId, userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ADDRESS_NOT_FOUND));
-
-        addressRepository.delete(address);
+    public void deleteAddresses(Long userId, List<Long> addressIds) {
+        List<Address> addresses = addressRepository.findAllByIdInAndUserId(addressIds, userId);
+        if (addresses.size() != addressIds.size()) {
+            throw new BusinessException(ErrorCode.ADDRESS_NOT_FOUND);
+        }
+        addressRepository.deleteAll(addresses);
     }
 
     @Transactional
@@ -83,15 +80,10 @@ public class AddressServiceImpl implements AddressService {
         }
         address.setLabel(request.getLabel());
         address.setAddressRaw(request.getAddressRaw());
-        address.setCity(request.getCity());
-        address.setDistrict(request.getDistrict());
-        address.setNeighborhood(request.getNeighborhood());
-        address.setStreetAddress(request.getStreetAddress());
+        address.setAddressDetail(request.getAddressDetail());
         address.setZipCode(request.getZipCode());
         address.setRecipientName(request.getRecipientName());
         address.setPhone(request.getPhone());
-        address.setDeliveryRequest(request.getDeliveryRequest());
-
         Address saved = addressRepository.save(address);
         return toResponse(saved);
     }
@@ -118,15 +110,11 @@ public class AddressServiceImpl implements AddressService {
                 .id(address.getId())
                 .label(address.getLabel())
                 .addressRaw(address.getAddressRaw())
-                .city(address.getCity())
-                .district(address.getDistrict())
-                .neighborhood(address.getNeighborhood())
-                .streetAddress(address.getStreetAddress())
+                .addressDetail(address.getAddressDetail())
                 .zipCode(address.getZipCode())
                 .recipientName(address.getRecipientName())
                 .phone(address.getPhone())
                 .isDefault(address.getIsDefault())
-                .deliveryRequest(address.getDeliveryRequest())
                 .build();
     }
 }
