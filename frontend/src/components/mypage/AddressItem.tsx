@@ -4,13 +4,27 @@ import { styled } from "styled-components";
 
 interface Props {
   item: AddressType;
+  onEdit: (address: AddressType) => void;
+  checked: boolean;
+  onToggle: (id: number) => void;
+  handleDefaultAddress: (addressId: number) => void;
 }
 
-const AddressItem = ({ item }: Props) => {
+const AddressItem = ({
+  item,
+  onEdit,
+  checked,
+  onToggle,
+  handleDefaultAddress,
+}: Props) => {
   return (
     <ItemWrapper>
       <Left>
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={() => onToggle(item.id)}
+        />
         <div>
           <div>
             {item.label}
@@ -26,7 +40,12 @@ const AddressItem = ({ item }: Props) => {
       </Left>
 
       <Right>
-        <button>수정</button>
+        <button onClick={() => onEdit(item)}>수정</button>
+        {!item.isDefault && (
+          <button onClick={() => handleDefaultAddress(item.id)}>
+            기본배송지
+          </button>
+        )}
       </Right>
     </ItemWrapper>
   );

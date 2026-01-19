@@ -9,16 +9,12 @@ export interface User {
 }
 
 export interface AddressType {
-  addressRaw: string;
-  city: string;
-  deliveryRequest: string;
-  district: string;
   id: number;
+  addressRaw: string;
+  addressDetail: string;
   isDefault: boolean;
   label: string;
-  neighborhood: string;
   phone: string;
   recipientName: string;
-  streetAddress: string;
   zipCode: string;
 }

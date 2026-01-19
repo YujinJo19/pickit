@@ -1,29 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Postcode from "./Postcode";
 import { styled } from "styled-components";
 import { useForm } from "react-hook-form";
+import { AddressType } from "../../types/user";
 
 interface Props {
   onClose: () => void;
   onSubmit: (data: any) => void;
+  defaultValues?: AddressType | null;
 }
 
-const AddressFormModal = ({ onClose, onSubmit }: Props) => {
-  const { register, handleSubmit, setValue } = useForm();
+const AddressFormModal = ({ onClose, onSubmit, defaultValues }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange", // 입력하면서 검증
+    defaultValues: defaultValues ?? {},
+  });
   const [openPostcode, setOpenPostcode] = useState(false);
 
   const handleComplete = (data: any) => {
-    setValue("zipcode", data.zonecode);
-    setValue("addressRaw", data.address);
+    setValue("zipCode", data.zonecode, { shouldValidate: true });
+    setValue("addressRaw", data.address, { shouldValidate: true });
     setOpenPostcode(false);
   };
 
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    } else {
+      reset(); // 추가 모드일 때 초기화
+    }
+  }, [defaultValues, reset]);
   return (
     <>
       <Overlay>
         <Modal>
           <Header>
-            <Title>배송지 추가</Title>
+            <Title>{defaultValues ? "배송지 수정" : "배송지 추가"}</Title>
             <CloseButton
               onClick={() => {
                 onClose();
@@ -32,29 +50,41 @@ const AddressFormModal = ({ onClose, onSubmit }: Props) => {
               ✕
             </CloseButton>
           </Header>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+          >
             <Section>
               <Label>배송지명</Label>
               <Input
                 placeholder="최대 7글자까지 자유롭게 수정가능"
-                {...register("label")}
+                {...register("label", {
+                  required: "배송지명을 입력해주세요.",
+                })}
               />
             </Section>
-
             <Section>
               <Label>받는 분</Label>
               <Input
                 placeholder="이름을 입력해 주세요."
-                {...register("recipientName")}
+                {...register("recipientName", {
+                  required: "이름을 입력해주세요.",
+                })}
               />
               <SubInput
                 placeholder="휴대폰번호를 - 없이 입력해 주세요."
-                {...register("phone")}
+                {...register("phone", {
+                  required: "휴대폰번호를 입력해주세요.",
+                })}
               />
             </Section>
-
             <Section>
+              <SubInput
+                type="hidden"
+                {...register("zipCode", {
+                  required: true,
+                })}
+              />
               <Label>주소</Label>
               <AddressRow>
                 <Input readOnly {...register("addressRaw")} />
@@ -67,16 +97,14 @@ const AddressFormModal = ({ onClose, onSubmit }: Props) => {
               </AddressRow>
               <SubInput
                 placeholder="상세 주소"
-                {...register("addressDetail")}
+                {...register("addressDetail", {
+                  required: "상세주소를 입력해주세요.",
+                })}
               />
             </Section>
-
-            <CheckboxRow>
-              <input type="checkbox" {...register("isDefault")} />
-              기본배송지로 설정
-            </CheckboxRow>
-
-            <SubmitButton>저장</SubmitButton>
+            <SubmitButton type="submit" disabled={!isValid}>
+              저장
+            </SubmitButton>
           </form>
         </Modal>
       </Overlay>
@@ -177,7 +205,6 @@ const SubmitButton = styled.button`
   width: 100%;
   height: 48px;
   background: #b6b8e2;
-  color: #fff;
   font-size: 16px;
   font-weight: 600;
   border-radius: 10px;

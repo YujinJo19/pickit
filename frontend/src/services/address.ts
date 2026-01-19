@@ -8,8 +8,10 @@ export const create = (id: number, data: any) =>
 export const getList = (id: number) => axiosGet(`/user/${id}/address`);
 
 // 배송지 삭제
-export const del = (id: number, addressId: number) =>
-  axiosDel(`/user/${id}/address/${addressId}`);
+export const del = (id: number, addressIds: number[]) =>
+  axiosDel(`/user/${id}/address`, {
+    addressIds,
+  });
 
 // 배송지 수정
 export const update = (id: number, addressId: number, data: any) =>
@@ -17,4 +19,4 @@ export const update = (id: number, addressId: number, data: any) =>
 
 // 기본 배송지 설정
 export const updateDefault = (id: number, addressId: number) =>
-  axiosPut(`/user/${id}/address/${addressId}`);
+  axiosPut(`/user/${id}/address/${addressId}/default`);

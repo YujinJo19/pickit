@@ -12,7 +12,6 @@ let axiosInstance = axios.create({
 
 // 요청 인터셉터 - 모든 요청에 토큰 포함 시킴
 axiosInstance.interceptors.request.use((config) => {
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === "development" && ACCESS_TOKEN) {
     config.headers.Authorization = `Bearer ${ACCESS_TOKEN}`;
   } else {
@@ -35,7 +34,7 @@ axiosInstance.interceptors.response.use(
         const refreshResponse = await axios.post(
           `${API_URL}/auth/refresh`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
         const newToken = refreshResponse.data.accessToken;
         setToken(newToken);
@@ -48,7 +47,7 @@ axiosInstance.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const axiosGet = (url: string, params?: any) =>
@@ -57,7 +56,10 @@ export const axiosGet = (url: string, params?: any) =>
 export const axiosPost = (url: string, data?: any, config?: any) =>
   axiosInstance.post(url, data, config);
 
-export const axiosDel = (url: string) => axiosInstance.delete(url);
+export const axiosDel = (url: string, data?: any) =>
+  axiosInstance.delete(url, {
+    data,
+  });
 
 export const axiosPut = (url: string, data?: any, config?: any) =>
   axiosInstance.put(url, data, config);
