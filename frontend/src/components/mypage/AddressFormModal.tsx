@@ -18,7 +18,7 @@ const AddressFormModal = ({ onClose, onSubmit, defaultValues }: Props) => {
     reset,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange", // 입력하면서 검증
+    mode: "onChange",
     defaultValues: defaultValues ?? {},
   });
   const [openPostcode, setOpenPostcode] = useState(false);
@@ -33,7 +33,7 @@ const AddressFormModal = ({ onClose, onSubmit, defaultValues }: Props) => {
     if (defaultValues) {
       reset(defaultValues);
     } else {
-      reset(); // 추가 모드일 때 초기화
+      reset();
     }
   }, [defaultValues, reset]);
   return (

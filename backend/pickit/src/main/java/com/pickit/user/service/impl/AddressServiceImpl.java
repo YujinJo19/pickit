@@ -36,7 +36,7 @@ public class AddressServiceImpl implements AddressService {
                 .user(user)
                 .label(request.getLabel())
                 .addressRaw(request.getAddressRaw())
-                .addressDetail (request.getAddressDetail ())
+                .addressDetail(request.getAddressDetail ())
                 .zipCode(request.getZipCode())
                 .recipientName(request.getRecipientName())
                 .phone(request.getPhone())
