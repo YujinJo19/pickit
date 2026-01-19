@@ -26,4 +26,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Address a set a.isDefault = false where a.user.id = :userId and a.isDefault = true")
     int clearDefaultByUserId(@Param("userId") Long userId);
+
+    // 배송지 아이디 리스트로 배송지 삭제
+    List<Address> findAllByIdInAndUserId(List<Long> ids, Long userId);
 }

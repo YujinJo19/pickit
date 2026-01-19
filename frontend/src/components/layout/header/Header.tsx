@@ -11,7 +11,7 @@ import CategoryNav from "./CategoryNav";
 import HeaderSearch from "./HeaderSearch";
 import UserMenu from "./UserMenu";
 import { useNavigate } from "react-router-dom";
-
+import LogoImage from "../../../assets/images/logo_image.jpeg";
 interface Props {
   userInfo?: string;
   onLogout?: () => Promise<void>;
@@ -22,7 +22,7 @@ const Header = ({ userInfo, onLogout }: Props) => {
     <HeaderContainer>
       <LeftArea>
         <LogoContainer>
-          <img src="logo_image.jpeg" alt="logo" />
+          <img src={LogoImage} alt="logo" />
         </LogoContainer>
         <CategoryNav
           onSelectCategory={(mainId, subId) => {

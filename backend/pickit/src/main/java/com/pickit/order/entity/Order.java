@@ -32,6 +32,9 @@ public class Order {
     @Column(nullable = false)
     private Integer totalPrice = 0;
 
+    @Column(name = "delivery_request", columnDefinition = "TEXT")
+    private String deliveryRequest;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private OrderStatus status = OrderStatus.CREATED;

@@ -2,6 +2,7 @@ package com.pickit.user.controller;
 
 import com.pickit.user.dto.AddressRequest;
 import com.pickit.user.dto.AddressResponse;
+import com.pickit.user.dto.DeleteAddressRequest;
 import com.pickit.user.service.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,10 +51,11 @@ public class AddressController {
             summary = "배송지 삭제",
             description = "회원 ID, 배송지 ID를 통해 해당 배송지를 삭제합니다."
     )
-    @DeleteMapping("/{addressId}")
+    @DeleteMapping
     public ResponseEntity<Void> delete(
-            @PathVariable Long userId, @PathVariable Long addressId) {
-        addressService.deleteAddress(userId, addressId);
+            @PathVariable Long userId,
+            @RequestBody @Valid DeleteAddressRequest request) {
+        addressService.deleteAddresses(userId, request.getAddressIds());
         return ResponseEntity.noContent().build();
     }
 

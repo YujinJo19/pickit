@@ -14,7 +14,7 @@ public interface AddressService {
     List<AddressResponse> getAddresses(Long userId);
 
     // 3. 주소 삭제
-    void deleteAddress(Long userId, Long addressId);
+    void deleteAddresses(Long userId, List<Long> addressId);
 
     // 4. 주소 수정
     AddressResponse updateAddress(Long userId, Long addressId, AddressRequest request);

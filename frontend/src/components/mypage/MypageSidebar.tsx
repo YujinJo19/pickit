@@ -22,7 +22,9 @@ const MypageSidebar = () => {
 
       <Section>
         <Title>배송 관리</Title>
-        <Item>등록된 배송지 보기</Item>
+        <Item onClick={() => navigate("/mypage/address")}>
+          등록된 배송지 보기
+        </Item>
       </Section>
 
       <Section>
@@ -37,10 +39,17 @@ export default MypageSidebar;
 
 const Section = styled.div`
   marginbottom: 24px;
+  display: block;
 `;
 
 const Title = styled.h4``;
 
 const Item = styled.div`
-  margintop: 8px;
+  margin: 10px 0;
+  cursor: pointer;
+  padding: 5px;
+
+  &:hover {
+    background-color: #b5aaaa77;
+  }
 `;
