@@ -13,17 +13,9 @@ import { getProduct } from "../store/thunks/productThunk";
 import { homeBanners } from "../data/mainMock";
 
 const Main = () => {
-  const [userInfo, setUserInfo] = useState<string>("");
   const [productList, setProductList] = useState<ProductListType[]>([]);
-  const [pageable, setPageable] = useState<PageableType>({
-    offset: 0,
-    pageNumber: 0,
-    pageSize: 1,
-    paged: true,
-    sort: { empty: true, sorted: false, unsorted: true },
-  });
+
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const fetchProducts = async () => {
     const response = await dispatch(getProduct(""));
@@ -32,31 +24,13 @@ const Main = () => {
       setProductList(response.payload.content);
     }
   };
-
-  const handleLogout = async () => {
-    const response = await dispatch(logout());
-    if (response.meta.requestStatus === "fulfilled") {
-      removeToken();
-      console.log("로그아웃됨");
-      navigate("/login");
-    }
-  };
-
-  useEffect(() => {
-    const token = getToken();
-    if (token) {
-      const info = decodeToken(token);
-      setUserInfo(info?.sub ? info.sub : "");
-    }
-  }, [userInfo]);
-
   useEffect(() => {
     fetchProducts();
   }, []);
 
   return (
     <Page>
-      <Header userInfo={userInfo} onLogout={handleLogout} />
+      <Header />
       <Carousel items={homeBanners} />
       <h2>회원님을 위한 추천 상품</h2>
       <ProductGrid>

@@ -5,7 +5,12 @@ import { styled } from "styled-components";
 import Main from "./pages/Main";
 import { useAppDispatch } from "./store/hooks";
 import { useEffect } from "react";
-import { getToken, removeToken, setToken } from "./utils/token";
+import {
+  getToken,
+  getUserIdFromToken,
+  removeToken,
+  setToken,
+} from "./utils/token";
 import { refreshAccessToken } from "./store/thunks/authThunk";
 import SellerDashboard from "./pages/sellerDashboard/SellerDashboard";
 import SellerSignup from "./pages/SellerSignup";
@@ -22,6 +27,8 @@ import Mypage from "./pages/mypage/Mypage";
 import MypageDashboard from "./pages/mypage/MypageDashboard";
 import ProfileEditPage from "./pages/mypage/ProfileEditPage";
 import Address from "./pages/mypage/Address";
+import Cart from "./pages/Cart";
+import { getUser } from "./store/thunks/userThunk";
 
 const AppContainer = styled.div`
   display: grid;
@@ -34,21 +41,29 @@ function App() {
   useEffect(() => {
     const initializeAuth = async () => {
       const token = getToken();
+      const id = getUserIdFromToken(token || "");
       const autoLogin = localStorage.getItem("autoLogin");
-      if (!token && autoLogin) {
-        try {
-          const response = await dispatch(refreshAccessToken());
-          const newAccessToken = response.payload.accessToken;
-          setToken(newAccessToken);
-        } catch (err) {
-          localStorage.removeItem("autoLogin");
-          removeToken();
-          navigate("/login");
+
+      try {
+        if (!token && autoLogin) {
+          const response = await dispatch(refreshAccessToken()).unwrap();
+          setToken(response.accessToken);
         }
+
+        const currentToken = getToken();
+        if (currentToken) {
+          await dispatch(getUser(id));
+        }
+      } catch (err) {
+        localStorage.removeItem("autoLogin");
+        removeToken();
+        navigate("/login");
       }
     };
+
     initializeAuth();
   }, [dispatch, navigate]);
+
   return (
     <AppContainer>
       <Routes>
@@ -56,6 +71,7 @@ function App() {
         <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="/products/category/:id" element={<Category />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/cart" element={<Cart />} />
         // auth
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

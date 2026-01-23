@@ -6,8 +6,11 @@ import { useAppDispatch } from "../store/hooks";
 import { getProductDetail } from "../store/thunks/productThunk";
 import { getFullCategoryPath } from "../utils/category";
 import ImageCarousel from "../components/product/ImageCarousel";
+import { addCartItem } from "../store/thunks/cartThunk";
+import Header from "../components/layout/header/Header";
 
 type SelectedOption = {
+  inventoryId: number;
   color: string;
   size: string;
   quantity: number;
@@ -42,7 +45,7 @@ const ProductDetail = () => {
   const colors = useMemo(() => {
     if (!detailInfo?.inventory) return [];
     return Array.from(new Set(detailInfo.inventory.map((i) => i.color))).filter(
-      Boolean
+      Boolean,
     );
   }, [detailInfo?.inventory]);
 
@@ -54,8 +57,8 @@ const ProductDetail = () => {
       new Set(
         detailInfo.inventory
           .filter((i) => i.color === selectedColor)
-          .map((i) => i.size)
-      )
+          .map((i) => i.size),
+      ),
     ).filter(Boolean);
   }, [detailInfo?.inventory, selectedColor]);
 
@@ -64,7 +67,7 @@ const ProductDetail = () => {
     if (!detailInfo?.inventory) return 0;
     if (!selectedColor || !selectedSize) return 0;
     const checkQuantity = detailInfo.inventory.find(
-      (i) => i.color === selectedColor && i.size === selectedSize
+      (i) => i.color === selectedColor && i.size === selectedSize,
     );
     return checkQuantity?.quantity ?? 0;
   }, [detailInfo?.inventory, selectedColor, selectedSize]);
@@ -73,45 +76,64 @@ const ProductDetail = () => {
 
   const addOption = (color: string, size: string) => {
     if (!detailInfo) return;
-    const stock =
-      detailInfo.inventory.find((i) => i.color === color && i.size === size)
-        ?.quantity ?? 0;
+    const inventory = detailInfo.inventory.find(
+      (i) => i.color === color && i.size === size,
+    );
 
+    if (!inventory || inventory.quantity <= 0) return;
+    const { id: inventoryId, quantity: stock } = inventory;
     if (stock <= 0) return;
     setSelectedOptions((prev) => {
-      const key = `${color}_${size}`;
-      const exists = prev.find((o) => `${o.color}_${o.size}` === key);
+      const exists = prev.find((o) => o.inventoryId === inventoryId);
 
       if (exists) {
         return prev.map((o) =>
-          `${o.color}_${o.size}` === key
+          o.inventoryId === inventoryId
             ? { ...o, quantity: Math.min(o.stock, o.quantity + 1) }
-            : o
+            : o,
         );
       }
-      return [...prev, { color, size, quantity: 1, stock }];
+
+      return [
+        ...prev,
+        {
+          inventoryId,
+          color,
+          size,
+          quantity: 1,
+          stock,
+        },
+      ];
     });
   };
 
   const canBuy = selectedOptions.length > 0;
   const totalPrice = selectedOptions.reduce(
     (sum, o) => sum + o.quantity * unitPrice,
-    0
+    0,
   );
 
-  const addToCart = () => {
+  const addToCart = async () => {
     if (!canBuy) return;
+    const payload = selectedOptions.map((opt) => ({
+      productId: detailInfo!.id,
+      inventoryId: opt.inventoryId,
+      quantity: opt.quantity,
+    }));
 
-    console.log("장바구니 payload", {
-      productId: detailInfo?.id,
-      options: selectedOptions,
+    const response = payload.forEach((item: any) => {
+      dispatch(addCartItem(item)).then((response) => {
+        if (response.meta.requestStatus === "fulfilled") {
+          alert("장바구니에 상품이 추가되었습니다.");
+        }
+      });
     });
   };
-  console.log(detailInfo);
 
   if (!detailInfo) return <p>로딩 중...</p>;
   return (
     <S.Page>
+      <Header />
       <S.Container>
         <S.Left>
           <ImageCarousel
@@ -129,7 +151,7 @@ const ProductDetail = () => {
             {detailInfo.price > 0 && unitPrice < detailInfo.price && (
               <S.Price>
                 {Math.round(
-                  ((detailInfo.price - unitPrice) / detailInfo.price) * 100
+                  ((detailInfo.price - unitPrice) / detailInfo.price) * 100,
                 )}
                 %
               </S.Price>
@@ -183,7 +205,7 @@ const ProductDetail = () => {
               {sizesByColor.map((s) => {
                 const stock =
                   detailInfo.inventory.find(
-                    (i) => i.color === selectedColor && i.size === s
+                    (i) => i.color === selectedColor && i.size === s,
                   )?.quantity ?? 0;
                 return (
                   <S.OptionBtn
@@ -194,7 +216,7 @@ const ProductDetail = () => {
                     onClick={() => {
                       setSelectedSize(s);
                       if (!selectedColor) return;
-                      addOption(selectedColor, s); // ✅ A안
+                      addOption(selectedColor, s);
                     }}
                   >
                     {s}
@@ -230,8 +252,8 @@ const ProductDetail = () => {
                       prev.map((o) =>
                         o.color === opt.color && o.size === opt.size
                           ? { ...o, quantity: Math.max(1, o.quantity - 1) }
-                          : o
-                      )
+                          : o,
+                      ),
                     )
                   }
                 >
@@ -247,8 +269,8 @@ const ProductDetail = () => {
                               ...o,
                               quantity: Math.min(o.stock, o.quantity + 1),
                             }
-                          : o
-                      )
+                          : o,
+                      ),
                     )
                   }
                 >
@@ -262,8 +284,8 @@ const ProductDetail = () => {
                 onClick={() =>
                   setSelectedOptions((prev) =>
                     prev.filter(
-                      (o) => !(o.color === opt.color && o.size === opt.size)
-                    )
+                      (o) => !(o.color === opt.color && o.size === opt.size),
+                    ),
                   )
                 }
               >
@@ -290,8 +312,8 @@ const ProductDetail = () => {
                   onClick={() =>
                     setSelectedOptions((prev) =>
                       prev.filter(
-                        (o) => !(o.color === opt.color && o.size === opt.size)
-                      )
+                        (o) => !(o.color === opt.color && o.size === opt.size),
+                      ),
                     )
                   }
                 >
