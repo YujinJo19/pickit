@@ -7,11 +7,14 @@ export const getProduct = (args: { page?: number; size?: number }) => {
 };
 
 // 상품 상세 조회
-export const getProductDetail = (id: string) => axiosGet(`/products/${id}`);
+export const getProductDetail = (id: string) => {
+  return axiosGet(`/products/${id}`);
+};
 
 // 카테고리별 상품 조회
-export const productByCategory = (id: string) =>
-  axiosGet(`/products/category/${id}`);
+export const productByCategory = (id: string) => {
+  return axiosGet(`/products/category/${id}`);
+};
 
 // 상품 검색
 export const searchedProduct = (args: {

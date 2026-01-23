@@ -7,20 +7,24 @@ export const getProductMine = (args: { page?: number; size?: number }) => {
 };
 
 // 상품 등록
-export const createProduct = (data: any) =>
-  axiosPost("/seller/products", data, {
+export const createProduct = (data: any) => {
+  return axiosPost("/seller/products", data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+};
 
 // 상품 수정
-export const updateProduct = (formData: any, productId: any) =>
-  axiosPut(`/seller/products/${productId}`, formData, {
+export const updateProduct = (formData: any, productId: any) => {
+  return axiosPut(`/seller/products/${productId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+};
 
 // 상품 삭제
-export const deleteProduct = (id: string) => axiosDel(`/seller/products/${id}`);
+export const deleteProduct = (id: string) => {
+  return axiosDel(`/seller/products/${id}`);
+};
