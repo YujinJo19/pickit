@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SellerHeader from "../../components/seller/header/SellerHeader";
 import SellerSidebar from "../../components/seller/SellerSidebar";
 import { styled } from "styled-components";
@@ -17,12 +17,13 @@ const SellerDashboard = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleLogout = async () => {
     const response = await dispatch(logout());
     if (response.meta.requestStatus === "fulfilled") {
       removeToken();
-      console.log("로그아웃됨");
-      navigate("/login");
+      navigate("/login", { state: { redirectTo: location.pathname } });
     }
   };
 

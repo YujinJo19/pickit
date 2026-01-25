@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import * as S from "./ProductDetail.styles";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ProductDetailType } from "../types/products";
 import { useAppDispatch } from "../store/hooks";
 import { getProductDetail } from "../store/thunks/productThunk";
@@ -8,6 +8,7 @@ import { getFullCategoryPath } from "../utils/category";
 import ImageCarousel from "../components/product/ImageCarousel";
 import { addCartItem } from "../store/thunks/cartThunk";
 import Header from "../components/layout/header/Header";
+import { getToken } from "../utils/token";
 
 type SelectedOption = {
   inventoryId: number;
@@ -25,6 +26,8 @@ const ProductDetail = () => {
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!id) return;
@@ -112,22 +115,40 @@ const ProductDetail = () => {
     (sum, o) => sum + o.quantity * unitPrice,
     0,
   );
-
   const addToCart = async () => {
     if (!canBuy) return;
+    if (!getToken()) {
+      if (
+        window.confirm(
+          "로그인 후 장바구니에 추가할 수 있습니다. \n로그인 페이지로 이동하시겠습니까?",
+        )
+      ) {
+        navigate("/login", { state: { redirectTo: location.pathname } });
+      }
+      return;
+    }
+
     const payload = selectedOptions.map((opt) => ({
       productId: detailInfo!.id,
       inventoryId: opt.inventoryId,
       quantity: opt.quantity,
     }));
 
-    const response = payload.forEach((item: any) => {
-      dispatch(addCartItem(item)).then((response) => {
-        if (response.meta.requestStatus === "fulfilled") {
-          alert("장바구니에 상품이 추가되었습니다.");
-        }
-      });
-    });
+    try {
+      await Promise.all(
+        payload.map((item: any) => dispatch(addCartItem(item)).unwrap()),
+      );
+      alert("장바구니에 추가되었습니다");
+      if (window.confirm("장바구니로 이동하시겠습니까?")) {
+        navigate("/cart");
+      }
+    } catch (e: any) {
+      if (e?.data.error === "EXCEEDS_STOCK") {
+        alert("재고를 초과했습니다");
+      } else {
+        alert("장바구니 추가에 실패했습니다");
+      }
+    }
   };
 
   if (!detailInfo) return <p>로딩 중...</p>;
