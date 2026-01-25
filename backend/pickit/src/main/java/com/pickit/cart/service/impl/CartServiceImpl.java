@@ -52,12 +52,19 @@ public class CartServiceImpl implements CartService {
 
         CartItem cartItem = cartItemRepository
                 .findByCartIdAndInventoryId(cart.getId(), inventoryId)
-                .orElseGet(() -> {
-                    CartItem newItem = CartItem.create(product, inventory, 0);
-                    cart.addItem(newItem);
-                    return newItem;
-                });
-        cartItem.increase(quantity);
+                .orElse(null);
+        int currentQuantity = cartItem != null ? cartItem.getQuantity(): 0;
+        int stock = inventory.getQuantity();
+
+        if (currentQuantity + quantity > stock) {
+            throw new BusinessException(ErrorCode.EXCEEDS_STOCK);
+        };
+        if (cartItem != null) {
+            cartItem.increase(quantity);
+        } else {
+            CartItem newItem = CartItem.create(product, inventory, quantity);
+            cart.addItem(newItem);
+        }
     }
 
     @Override
@@ -70,6 +77,11 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
 
         validateOwner(cartItem, userId);
+
+        int stock = cartItem.getInventory().getQuantity();
+        if (quantity > stock) {
+            throw new BusinessException(ErrorCode.EXCEEDS_STOCK);
+        }
         cartItem.changeQuantity(quantity);
     }
 

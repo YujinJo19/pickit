@@ -4,7 +4,7 @@ import { IconButton, PopoverAnchor } from "./Header.styles";
 import { Dropdown, DropdownItem, Divider } from "./dropdown.styles";
 import { useOutsideClick } from "../../../utils/useOutsideClick";
 import { useEscapeKey } from "../../../utils/useEscapeKey";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {
   userInfo?: string;
@@ -17,6 +17,7 @@ const UserMenu = ({ userInfo, onProfile, onSettings, onLogout }: Props) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const close = useMemo(() => () => setOpen(false), []);
   useOutsideClick(ref, close, open);
   useEscapeKey(close, open);
@@ -80,7 +81,9 @@ const UserMenu = ({ userInfo, onProfile, onSettings, onLogout }: Props) => {
               type="button"
               role="menuitem"
               onClick={() => {
-                navigate("/login");
+                navigate("/login", {
+                  state: { redirectTo: location.pathname },
+                });
               }}
             >
               로그인

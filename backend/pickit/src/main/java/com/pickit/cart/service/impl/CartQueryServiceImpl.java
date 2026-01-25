@@ -41,6 +41,7 @@ public class CartQueryServiceImpl implements CartQueryService {
         int unitPrice = item.getProduct().getDiscountPrice() != null
                 ? item.getProduct().getDiscountPrice()
                 : item.getProduct().getPrice();
+        int maxQuantity = item.getInventory().getQuantity();
 
         return CartItemResponse.builder()
                 .cartItemId(item.getId())
@@ -53,6 +54,7 @@ public class CartQueryServiceImpl implements CartQueryService {
                 .quantity(item.getQuantity())
                 .price(unitPrice)
                 .totalPrice(unitPrice * item.getQuantity())
+                .maxQuantity(maxQuantity)
                 .build();
     }
 }

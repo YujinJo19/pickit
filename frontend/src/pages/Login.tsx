@@ -4,9 +4,10 @@ import { styled, css } from "styled-components";
 import LoginImage from "../assets/images/login.jpg";
 import { login } from "../store/thunks/authThunk";
 import { useAppDispatch } from "../store/hooks";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLoginForm } from "../components/auth/hooks/useSignupForm";
 import { getRoleFromToken, setToken } from "../utils/token";
+import Header from "../components/layout/header/Header";
 
 export const AuthPageContainer = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const Login = () => {
   } = useLoginForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onValid = async (data: any) => {
     const { email, password, autoLogin } = data;
@@ -65,23 +67,26 @@ const Login = () => {
       if (role === "SELLER") {
         navigate("/seller/dashboard");
       } else {
-        navigate("/");
+        navigate(location.state?.redirectTo || "/");
       }
     }
   };
   return (
-    <AuthPageContainer>
-      <AuthImageContainer>
-        <img src={LoginImage} width={"100%"} alt="loginImage" />
-      </AuthImageContainer>
-      <AuthFormContainer>
-        <LoginForm
-          onSubmit={handleSubmit(onValid)}
-          register={register}
-          errors={errors}
-        />
-      </AuthFormContainer>
-    </AuthPageContainer>
+    <>
+      <Header />
+      <AuthPageContainer>
+        <AuthImageContainer>
+          <img src={LoginImage} width={"100%"} alt="loginImage" />
+        </AuthImageContainer>
+        <AuthFormContainer>
+          <LoginForm
+            onSubmit={handleSubmit(onValid)}
+            register={register}
+            errors={errors}
+          />
+        </AuthFormContainer>
+      </AuthPageContainer>
+    </>
   );
 };
 

@@ -35,8 +35,6 @@ const ImageCarousel = ({
   if (!len) return null;
 
   const go = (next: number) => setIndex((next + len) % len);
-  console.log(safeImages[index]);
-
   return (
     <Wrap>
       <Main $ratio={aspectRatio}>

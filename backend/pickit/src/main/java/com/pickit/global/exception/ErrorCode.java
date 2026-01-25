@@ -41,6 +41,7 @@ public enum ErrorCode {
     INVENTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Inventory Not Found"),
     INVENTORY_PRODUCT_MISMATCH(HttpStatus.BAD_REQUEST, "Inventory Does Not Belong To Product"),
     INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "Insufficient Stock"),
+    EXCEEDS_STOCK(HttpStatus.BAD_REQUEST, "Exceeds Stock"),
 
     // Address 관련
     ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "Address Not Found"),
