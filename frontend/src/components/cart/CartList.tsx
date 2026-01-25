@@ -6,8 +6,9 @@ import { styled } from "styled-components";
 type Props = {
   cartList: CartItemType[];
   handleQuantity: (cartItemId: number, quantity: number) => void;
+  handleDelete: (cartItemId: number) => void;
 };
-const CartList = ({ cartList, handleQuantity }: Props) => {
+const CartList = ({ cartList, handleQuantity, handleDelete }: Props) => {
   if (!cartList || cartList.length === 0) {
     return (
       <EmptyWrapper>
@@ -31,7 +32,9 @@ const CartList = ({ cartList, handleQuantity }: Props) => {
           size={item.size}
           thumbnailUrl={item.thumbnailUrl}
           totalPrice={item.totalPrice}
+          maxQuantity={item.maxQuantity}
           handleQuantity={handleQuantity}
+          handleDelete={handleDelete}
         />
       ))}
     </ListWrapper>

@@ -2,9 +2,14 @@ import React, { useEffect, useState } from "react";
 import CartList from "../components/cart/CartList";
 import { getToken, getUserIdFromToken } from "../utils/token";
 import { useAppDispatch } from "../store/hooks";
-import { getCart, updateQuantity } from "../store/thunks/cartThunk";
+import {
+  deleteCartItem,
+  getCart,
+  updateQuantity,
+} from "../store/thunks/cartThunk";
 import Header from "../components/layout/header/Header";
 import { styled } from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
 const SHIPPING_FEE = 3000;
 
 const Cart = () => {
@@ -12,6 +17,8 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const userId = getUserIdFromToken(getToken() || "");
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchCart = async () => {
     const response = await dispatch(getCart(userId));
@@ -29,6 +36,18 @@ const Cart = () => {
     );
     if (response.meta.requestStatus === "fulfilled") {
       fetchCart();
+    } else {
+      alert("재고 수량을 초과할 수 없습니다.");
+      fetchCart();
+    }
+  };
+
+  const handleDelete = async (cartItemId: number) => {
+    const ok = window.confirm("해당 상품을 장바구니에서 삭제하시겠습니까?");
+    if (!ok) return;
+    const response = await dispatch(deleteCartItem({ cartItemId }));
+    if (response.meta.requestStatus === "fulfilled") {
+      fetchCart();
     }
   };
 
@@ -39,6 +58,25 @@ const Cart = () => {
 
     fetchCart();
   }, [dispatch, userId]);
+
+  if (!userId) {
+    return (
+      <div>
+        <Header />
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <p>로그인 후 장바구니에 상품을 추가할 수 있어요.</p>
+          <button
+            onClick={() => {
+              navigate("/login", { state: { redirectTo: location.pathname } });
+            }}
+          >
+            로그인
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -47,7 +85,11 @@ const Cart = () => {
 
         <Content>
           <Left>
-            <CartList cartList={cartList} handleQuantity={handleQuantity} />
+            <CartList
+              cartList={cartList}
+              handleQuantity={handleQuantity}
+              handleDelete={handleDelete}
+            />
           </Left>
 
           <Right>

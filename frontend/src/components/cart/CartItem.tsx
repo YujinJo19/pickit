@@ -2,9 +2,11 @@ import React from "react";
 import { CartItemType } from "../../types/cart";
 import { styled } from "styled-components";
 import { toUrl } from "../../utils/image";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   handleQuantity: (cartItemId: number, quantity: number) => void;
+  handleDelete: (cartItemId: number) => void;
   cartItemId: number;
   productId: number;
   productName: string;
@@ -14,6 +16,7 @@ type Props = {
   quantity: number;
   price: number;
   totalPrice: number;
+  maxQuantity: number;
 };
 const CartItem = ({
   cartItemId,
@@ -25,13 +28,17 @@ const CartItem = ({
   size,
   thumbnailUrl,
   totalPrice,
+  maxQuantity,
   handleQuantity,
+  handleDelete,
 }: Props) => {
+  const navigate = useNavigate();
+  const isMax = quantity >= maxQuantity;
   return (
     <ItemWrapper>
       <Thumbnail src={toUrl(thumbnailUrl || "")} alt={productName} />
       <Content>
-        <Top>
+        <Top onClick={() => navigate(`/products/${productId}`)}>
           <ProductName>{productName}</ProductName>
           <Option>
             {color} / {size}
@@ -44,7 +51,10 @@ const CartItem = ({
               -
             </button>
             <span>{quantity}</span>
-            <button onClick={() => handleQuantity(cartItemId, quantity + 1)}>
+            <button
+              onClick={() => handleQuantity(cartItemId, quantity + 1)}
+              disabled={isMax}
+            >
               +
             </button>
           </QuantityBox>
@@ -55,7 +65,9 @@ const CartItem = ({
           </PriceBox>
         </Bottom>
 
-        <DeleteButton>삭제</DeleteButton>
+        <DeleteButton onClick={() => handleDelete(cartItemId)}>
+          삭제
+        </DeleteButton>
       </Content>
     </ItemWrapper>
   );
@@ -85,6 +97,7 @@ const Content = styled.div`
 
 const Top = styled.div`
   margin-bottom: 8px;
+  cursor: pointer;
 `;
 
 const ProductName = styled.div`

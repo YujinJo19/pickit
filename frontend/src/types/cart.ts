@@ -8,4 +8,5 @@ export interface CartItemType {
   quantity: number;
   price: number;
   totalPrice: number;
+  maxQuantity: number;
 }

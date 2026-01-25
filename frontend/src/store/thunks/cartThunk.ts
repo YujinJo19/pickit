@@ -20,8 +20,6 @@ export const addCartItem = createAsyncThunk(
   async (args, { rejectWithValue }) => {
     try {
       const response = await cartAPI.addCart(args);
-      console.log(response, args);
-
       return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response);
@@ -48,9 +46,9 @@ export const updateQuantity = createAsyncThunk(
 // 개별 삭제
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async (args, { rejectWithValue }) => {
+  async ({ cartItemId }: { cartItemId: number }, { rejectWithValue }) => {
     try {
-      const response = await cartAPI.deleteItem(args);
+      const response = await cartAPI.deleteItem(cartItemId);
       return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response);

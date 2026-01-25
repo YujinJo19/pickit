@@ -16,8 +16,8 @@ export const updateQuantity = (cartItemId: number, data: any) => {
 };
 
 // 개별 삭제
-export const deleteItem = (args: any) => {
-  return axiosDel(`/cart/items/${args.cartItemId}`);
+export const deleteItem = (cartItemId: number) => {
+  return axiosDel(`/cart/items/${cartItemId}`);
 };
 
 // 장바구니 전체 삭제

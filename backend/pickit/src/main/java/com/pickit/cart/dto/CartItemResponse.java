@@ -17,4 +17,6 @@ public class CartItemResponse {
     private int quantity;
     private int price;       // 단가
     private int totalPrice;  // 단가 * 수량
+
+    private int maxQuantity;
 }
