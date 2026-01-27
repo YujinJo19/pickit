@@ -29,6 +29,7 @@ import ProfileEditPage from "./pages/mypage/ProfileEditPage";
 import Address from "./pages/mypage/Address";
 import Cart from "./pages/Cart";
 import { getUser } from "./store/thunks/userThunk";
+import Order from "./pages/Order";
 
 const AppContainer = styled.div`
   display: grid;
@@ -72,6 +73,7 @@ function App() {
         <Route path="/products/category/:id" element={<Category />} />
         <Route path="/search" element={<Search />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<Order />} />
         // auth
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
