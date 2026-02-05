@@ -6,7 +6,6 @@ import { useState } from "react";
 
 const MypageLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
   return (
     <>
       <DesktopOnly>
