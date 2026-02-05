@@ -2,10 +2,15 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const MypageSidebar = () => {
+type Props = {
+  onClose?: () => void;
+};
+
+const MypageSidebar = ({ onClose }: Props) => {
   const navigate = useNavigate();
   return (
-    <aside style={{ width: 240, background: "#f2f2f2", padding: 24 }}>
+    <>
+      <CloseButton onClick={onClose}>×</CloseButton>
       <Section>
         <Title>프로필 관리</Title>
         <Item onClick={() => navigate("/mypage/profile/edit")}>
@@ -16,7 +21,7 @@ const MypageSidebar = () => {
 
       <Section>
         <Title>주문 관리</Title>
-        <Item>최근 주문 내역</Item>
+        <Item onClick={() => navigate("/mypage/orders")}>최근 주문 내역</Item>
         <Item>주문 상세 보기</Item>
       </Section>
 
@@ -31,7 +36,7 @@ const MypageSidebar = () => {
         <Title>고객센터 및 지원</Title>
         <Item>문의하기</Item>
       </Section>
-    </aside>
+    </>
   );
 };
 
@@ -51,5 +56,19 @@ const Item = styled.div`
 
   &:hover {
     background-color: #b5aaaa77;
+  }
+`;
+
+const CloseButton = styled.button`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-self: right;
+    font-size: 24px;
+    background: none;
+    border: none;
+    margin: 0 12px;
+    cursor: pointer;
   }
 `;

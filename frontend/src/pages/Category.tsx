@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/layout/header/Header";
 import CategorySidebar from "../components/category/CategorySidebar";
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { getProductByCategory } from "../store/thunks/productThunk";
 import ProductRow from "../components/product/ProductRow";
 import { styled } from "styled-components";
-import { Menu } from "lucide-react";
 import { ProductListType } from "../types/products";
 
 const Category = () => {
@@ -26,12 +24,6 @@ const Category = () => {
 
   return (
     <Container>
-      <HeaderWrapper>
-        <MobileMenuButton onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <Menu size={24} />
-        </MobileMenuButton>
-        <Header />
-      </HeaderWrapper>
       <ContentWrapper>
         <SidebarWrapper $open={sidebarOpen}>
           <CategorySidebar onSelect={() => setSidebarOpen(false)} />
@@ -55,27 +47,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  height: 60px;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  position: relative;
-`;
-
-const MobileMenuButton = styled.button`
-  display: none;
-  background: none;
-  border: none;
-
-  @media (max-width: 768px) {
-    display: block;
-    margin-right: 12px;
-  }
 `;
 
 const ContentWrapper = styled.div`
