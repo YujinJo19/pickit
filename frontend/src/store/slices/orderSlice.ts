@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { makeOrder, getOrders, getOrderItem } from "../thunks/orderThunk";
+import { OrderListResponse } from "../../types/order";
 
 interface OrderState {
-  orders: any[];
+  orders: OrderListResponse[];
   orderDetail: any | null;
   loading: boolean;
 }
@@ -30,9 +31,6 @@ const orderSlice = createSlice({
       })
       .addCase(getOrders.fulfilled, (state, action) => {
         state.orders = action.payload;
-      })
-      .addCase(getOrderItem.fulfilled, (state, action) => {
-        state.orderDetail = action.payload;
       });
   },
 });
