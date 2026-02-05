@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Header from "../components/layout/header/Header";
 import ProductRow from "../components/product/ProductRow";
 import { useAppDispatch } from "../store/hooks";
 import { getSearchedProduct } from "../store/thunks/productThunk";
@@ -43,15 +42,12 @@ const Search = () => {
         } else {
           console.log("rejected:", response);
         }
-      }
+      },
     );
   }, [dispatch, keyword, page, size, sort]);
 
   return (
     <Container>
-      <HeaderWrapper>
-        <Header />
-      </HeaderWrapper>
       <ContentWrapper>
         <MainContent>
           <TopBar>
@@ -94,16 +90,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  min-height: 60px;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  position: relative;
 `;
 
 const ContentWrapper = styled.div`

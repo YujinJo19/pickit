@@ -15,7 +15,7 @@ const SellerProductList = () => {
   const [pageable, setPageable] = useState<PageableType>({
     offset: 0,
     pageNumber: 0,
-    pageSize: 1,
+    pageSize: 20,
     paged: true,
     sort: { empty: true, sorted: false, unsorted: true },
   });
@@ -35,7 +35,7 @@ const SellerProductList = () => {
 
   const fetchProducts = async (page: number) => {
     const response = await dispatch(
-      getProduct({ page, size: pageable.pageSize })
+      getProduct({ page, size: pageable.pageSize }),
     );
 
     if (response.meta.requestStatus === "fulfilled") {
@@ -63,6 +63,7 @@ const SellerProductList = () => {
   useEffect(() => {
     fetchProducts(currentPage);
   }, [currentPage]);
+  console.log(productList);
 
   return (
     <>

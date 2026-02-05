@@ -7,7 +7,6 @@ import { getProductDetail } from "../store/thunks/productThunk";
 import { getFullCategoryPath } from "../utils/category";
 import ImageCarousel from "../components/product/ImageCarousel";
 import { addCartItem } from "../store/thunks/cartThunk";
-import Header from "../components/layout/header/Header";
 import { getToken } from "../utils/token";
 
 type SelectedOption = {
@@ -154,7 +153,6 @@ const ProductDetail = () => {
   if (!detailInfo) return <p>로딩 중...</p>;
   return (
     <S.Page>
-      <Header />
       <S.Container>
         <S.Left>
           <ImageCarousel

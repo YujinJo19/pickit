@@ -23,12 +23,18 @@ import SellerProductUpdate from "./pages/sellerDashboard/SellerProductUpdate";
 import ProductDetail from "./pages/ProductDetail";
 import Category from "./pages/Category";
 import Search from "./pages/Search";
-import Mypage from "./pages/mypage/Mypage";
 import MypageDashboard from "./pages/mypage/MypageDashboard";
 import ProfileEditPage from "./pages/mypage/ProfileEditPage";
 import Address from "./pages/mypage/Address";
 import Cart from "./pages/Cart";
 import { getUser } from "./store/thunks/userThunk";
+import Order from "./pages/Order";
+import OrderList from "./pages/mypage/OrderList";
+import OrderDetail from "./pages/mypage/OrderDetail";
+import DefaultLayout from "./components/layout/layouts/DefaultLayout";
+import MypageLayout from "./components/layout/layouts/MypageLayout";
+import NoHeaderLayout from "./components/layout/layouts/NoHeaderLayout";
+import SellerLayout from "./components/layout/layouts/SellerLayout";
 
 const AppContainer = styled.div`
   display: grid;
@@ -67,37 +73,54 @@ function App() {
   return (
     <AppContainer>
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-        <Route path="/products/category/:id" element={<Category />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/cart" element={<Cart />} />
-        // auth
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signup/seller" element={<SellerSignup />} />
-        // user
-        <Route path="/mypage" element={<Mypage />}>
-          <Route index element={<MypageDashboard />} />
-          <Route path="profile/edit" element={<ProfileEditPage />} />
-          <Route path="address" element={<Address />} />
+        {/* 기본 사용자 */}
+        <Route element={<DefaultLayout />}>
+          <Route path="/" element={<Main />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/products/category/:id" element={<Category />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/order" element={<Order />} />
         </Route>
-        // seller
+
+        {/* auth */}
+        <Route element={<NoHeaderLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup/seller" element={<SellerSignup />} />
+        </Route>
+
+        {/* 마이페이지 */}
+        <Route element={<MypageLayout />}>
+          <Route path="/mypage">
+            <Route index element={<MypageDashboard />} />
+            <Route path="profile/edit" element={<ProfileEditPage />} />
+            <Route path="address" element={<Address />} />
+            <Route path="orders" element={<OrderList />} />
+            <Route path="orders/:id" element={<OrderDetail />} />
+          </Route>
+        </Route>
+
+        {/* 판매자 */}
         <Route
-          path="/seller/dashboard"
           element={
             <PrivateRoute roles={["SELLER"]}>
-              <SellerDashboard />
+              <SellerLayout />
             </PrivateRoute>
           }
         >
-          <Route index element={<DashboardHome />} />
-          <Route path="products" element={<SellerProductList />} />
-          <Route path="products/:id" element={<SellerProductDetail />} />
-          <Route path="products/create" element={<SellerProductCreate />} />
-          <Route path="products/update/:id" element={<SellerProductUpdate />} />
+          <Route path="/seller/dashboard">
+            <Route index element={<SellerDashboard />} />
+            <Route path="products" element={<SellerProductList />} />
+            <Route path="products/:id" element={<SellerProductDetail />} />
+            <Route path="products/create" element={<SellerProductCreate />} />
+            <Route
+              path="products/update/:id"
+              element={<SellerProductUpdate />}
+            />
+          </Route>
         </Route>
-        {/* 404 -> main으로 이동 */}
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppContainer>

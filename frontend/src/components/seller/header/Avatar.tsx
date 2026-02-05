@@ -21,7 +21,7 @@ const ProfileImg = styled.img`
 `;
 
 interface Props {
-  handleLogout: () => void;
+  handleLogout?: () => void;
 }
 const Avatar = ({ handleLogout }: Props) => {
   const [open, setOpen] = useState(false);
@@ -30,7 +30,7 @@ const Avatar = ({ handleLogout }: Props) => {
   return (
     <AvatarContainer>
       <ProfileImg src={default_img} alt="Seller Avatar" onClick={toggleMenu} />
-      {open && <DropdownMenu handleLogout={handleLogout} />}
+      {open && handleLogout && <DropdownMenu handleLogout={handleLogout} />}
     </AvatarContainer>
   );
 };

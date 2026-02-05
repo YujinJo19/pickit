@@ -7,7 +7,6 @@ import {
   getCart,
   updateQuantity,
 } from "../store/thunks/cartThunk";
-import Header from "../components/layout/header/Header";
 import { styled } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 const SHIPPING_FEE = 3000;
@@ -62,7 +61,6 @@ const Cart = () => {
   if (!userId) {
     return (
       <div>
-        <Header />
         <div style={{ padding: "40px", textAlign: "center" }}>
           <p>로그인 후 장바구니에 상품을 추가할 수 있어요.</p>
           <button
@@ -79,7 +77,6 @@ const Cart = () => {
 
   return (
     <>
-      <Header />
       <Page>
         <Title>장바구니</Title>
 
@@ -112,7 +109,10 @@ const Cart = () => {
                 <strong>{finalPrice.toLocaleString()}원</strong>
               </TotalRow>
 
-              <OrderButton disabled={cartList.length === 0}>
+              <OrderButton
+                onClick={() => navigate("/order")}
+                disabled={cartList.length === 0}
+              >
                 주문하기
               </OrderButton>
             </SummaryBox>

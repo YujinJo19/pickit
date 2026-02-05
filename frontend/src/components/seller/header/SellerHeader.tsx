@@ -40,7 +40,7 @@ const HeaderRight = styled.div`
   }
 `;
 interface Props {
-  handleLogout: () => void;
+  handleLogout?: () => void;
 }
 const SellerHeader = ({ handleLogout }: Props) => {
   return (

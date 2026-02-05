@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../store/hooks";
-import { logout } from "../store/thunks/authThunk";
-import { useNavigate } from "react-router-dom";
-import { decodeToken, getToken, removeToken } from "../utils/token";
-import Header from "../components/layout/header/Header";
 import Carousel from "../components/layout/Carousel";
 import ProductRow from "../components/product/ProductRow";
 import Footer from "../components/layout/Footer";
 import { styled } from "styled-components";
-import { PageableType, ProductListType } from "../types/products";
-import { getProduct } from "../store/thunks/productThunk";
+import { ProductListType } from "../types/products";
 import { homeBanners } from "../data/mainMock";
+import { getProduct } from "../store/thunks/productThunk";
 
 const Main = () => {
   const [productList, setProductList] = useState<ProductListType[]>([]);
@@ -30,7 +26,6 @@ const Main = () => {
 
   return (
     <Page>
-      <Header />
       <Carousel items={homeBanners} />
       <h2>회원님을 위한 추천 상품</h2>
       <ProductGrid>

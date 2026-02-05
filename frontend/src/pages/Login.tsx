@@ -7,7 +7,6 @@ import { useAppDispatch } from "../store/hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLoginForm } from "../components/auth/hooks/useSignupForm";
 import { getRoleFromToken, setToken } from "../utils/token";
-import Header from "../components/layout/header/Header";
 
 export const AuthPageContainer = styled.div`
   display: flex;
@@ -73,7 +72,6 @@ const Login = () => {
   };
   return (
     <>
-      <Header />
       <AuthPageContainer>
         <AuthImageContainer>
           <img src={LoginImage} width={"100%"} alt="loginImage" />
